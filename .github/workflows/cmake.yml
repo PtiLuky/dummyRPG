@@ -1,0 +1,32 @@
+name: CMake Build Matrix
+
+on: [push, pull_request]
+
+# Env variables
+env:
+  BUILD_TYPE: Release
+  
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macOS-latest]
+      
+    steps:        
+    - uses: actions/checkout@v2
+          
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+      
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE
