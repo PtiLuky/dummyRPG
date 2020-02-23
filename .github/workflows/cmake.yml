@@ -1,6 +1,6 @@
 name: CMake Build Matrix
 
-on: [push, pull_request]
+on: [push]
 
 # Env variables
 env:
@@ -9,11 +9,17 @@ env:
 jobs:
   build:
     name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
+        config:
+          - name: "Windows"
+            os: windows-latest
+          - name: "Linux"
+            os: ubuntu-latest
+          - name: "Mac"
+            os: macOS-latest
       
     steps:        
     - uses: actions/checkout@v2
