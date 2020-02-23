@@ -6,7 +6,7 @@ Core library for a 2D RPG game engine.
 
 ## Actual state
 
-¯\_(ツ)_/¯
+`¯\_(ツ)_/¯`
 
 ## Installation
 

@@ -6,11 +6,11 @@
 * 65'535 (uint16) objets max
 * 4'294'967'295 (uint32) characters max (alliés + pnj + créatures)
 * 4'294'967'295 (uint32) événements max
-* 255 (uint8) palettes (de 4064*4064 max)
+* 255 (uint8) palettes max (de 4064*4064 max)
 
 ## Cartes
 
-* parentage de maps possible 
+* parentage de cartes possible 
 * Une carte contient : 
   * 255 (uint8) étages max. Chaque étage est un étage d'interactivité avec le joueur. Quand le joueur est sur un étage, seulement cet étage et les étages inférieurs sont montrés à l'écran.
   * 8 palettes max
@@ -20,7 +20,7 @@
   * *des pnj*
   * une couche de blocage (blocking layer) : où le joueur peut marcher ou non
   * 2 couches graphiques inférieures (sous le joueur)
-  * 6 couches graphiques max (2 par défaut) supérieures (devant le joueur)
+  * 6 couches graphiques supérieures max (2 par défaut) (devant le joueur)
 * Une couche graphique contient :
   * 2'000 lignes max ~~65'535 (uint16) lignes max~~
   * 2'000 colonnes max ~~65'535 (uint16) colonnes max~~
@@ -33,8 +33,8 @@
 **Taille d'une carte en RAM :**  
 Par tuile : 3 * uint8 = 3 bytes  
 Nb Tuiles max : 65'535 * 65'535 = 4'294'836'225  (sans restriction à 2'000 lignes/colonnes)  
-Taille par étages : 4'294'836'225 * (8 * 3 (visibles) + 1 (blocking)) = 107'370'905'625‬ 
-**Aux tailles maximums un étage fait 107 Go...**
+Taille par étages : 4'294'836'225 * (8 * 3 (visibles) + 1 (blocking)) = 107'370'905'625‬  
+**Aux tailles maximales un étage fait 107 Go...**
 
 Avec la restriction à 2000, taille max par étage : 100Mo
   
@@ -51,7 +51,7 @@ Avec la restriction à 2000, taille max par étage : 100Mo
 ## Combats
 
 * Combat perso vs monstres
-* on ne controle pas de créature (mode pokemon)
+* on ne controle pas de créature (contrairement à pokemon)
 * drop/loot à la fin du combat
 
 ## Monstres
