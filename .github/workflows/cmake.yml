@@ -70,6 +70,7 @@ jobs:
       run: $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output cmake --build . --config $BUILD_TYPE
 
     - name: Sonar scanner
+      working-directory: ${{runner.workspace}}/build
       env:
         SONAR_SCANNER_OPTS: -server
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
