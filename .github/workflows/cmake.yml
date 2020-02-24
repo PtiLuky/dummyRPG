@@ -78,8 +78,9 @@ jobs:
     - name: Run tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ./main_tests
-      run: bw-output/main_tests
+      run: |
+        ./main_tests
+        bw-output/main_tests
 
     - name: Sonar scanner
       env:
