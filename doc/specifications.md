@@ -57,18 +57,42 @@ Avec la restriction à 2000, taille max par étage : 100Mo
 ## Monstres
 
 * différents types de monstres
-* chaque type : stats et drops et couleur (?) en fonction du niveau
 * chaque monstre a un type + niveau
+* proposition: les monstres de même type on une couleur differente ne fonction de leur niveau pour faire une differenciation visuelle des differents niveaux. exemple slime lvl1-20 = vert etc... 
 * Niveaux allant de 1 à 100
 
 ## Drops
 
-* A la fin de chaque combat
+* A la fin de chaque combat si combat victorieux
 * les taux de drop dépendent du type + niveau du monstre tué
+* items droped en fonction du type de monstre
 
-## Crafting
+## Metiers
 
-* Assemblage d'objets type A + B = C et C + C = super C
+  Forgeronerie:
+	* Le personnage a la capacité de forger des objets a partir du loot récupéré sur les monstres, acheté, collecté, recupéré durant les quetes (très similaire a Skyrim)
+	* Assemblage d'objets type A + B = C
+	* proposition: systeme de probabilité de réussite ou de propabilité sur les stats? pas fan
+	* proposition: recettes a collecter pour savoir forget un element? Formation au pres du forgeron des differents villages?
+	* Le prix de vent des items craftés est plus elevé que la somme des prix de vente des elements utilisés pour crafter l'item
+
+  Alchimie:
+	* Le personnage a la capacité de créer des potions aux effets differents a partir du loot récupéré sur les monstres, acheté, collecté, recupéré durant les quetes
+
+## Leveling
+
+* Le personnage possède plusieurs leveling distincts:
+
+  niveau du joueur:
+	* Chaque niveau demande un montant d'XP croissant
+	* XP gagnée après combat si combat gagné ou fuite après avoir tué un des monstres (gagne seulement l'XP du monstre tué)
+	* Chaque niveau augmente les stats principales du personnage (attaque, defense, attaque speciale, etc...)
+	* Deblocage de competances et autres evenements en fonction du niveau
+
+  forgeronerie:
+	* Chaque niveau demande un montant d'XP croissant
+	* chaque element forgé donne au personnage un certain montant d'XP 
+
 
 ## Economie
 
