@@ -71,13 +71,27 @@ Avec la restriction à 2000, taille max par étage : 100Mo
 
   Forgeronerie:
 	* Le personnage a la capacité de forger des objets a partir du loot récupéré sur les monstres, acheté, collecté, recupéré durant les quetes (très similaire a Skyrim)
+	* Les items craftés en forgeronerie sont des equipements (armes, protections, anneaux etc...)
+	* Il faut une forge pour forger
 	* Assemblage d'objets type A + B = C
 	* proposition: systeme de probabilité de réussite ou de propabilité sur les stats? pas fan
 	* proposition: recettes a collecter pour savoir forget un element? Formation au pres du forgeron des differents villages?
 	* Le prix de vent des items craftés est plus elevé que la somme des prix de vente des elements utilisés pour crafter l'item
 
   Alchimie:
-	* Le personnage a la capacité de créer des potions aux effets differents a partir du loot récupéré sur les monstres, acheté, collecté, recupéré durant les quetes
+	* Le personnage a la capacité de créer des items aux effets differents a partir du loot récupéré sur les monstres, acheté, collecté, recupéré durant les quetes.
+	* Les items craftés en Alchimie sont des potions (potion de vie, de mana, etc...) 
+	* il faut un laboratoire d'alchimie pour faire de l'achimie
+
+  Peche:
+	* Le personnage a la capacité de pecher des poissons.
+	* Les poissons péchés varies en fonction de la localisation (lac, mer, ocean, etans)
+	* La taille des poissons péchés est en fonction du niveau de peche du personnage et de la canne a peche utilisée avec une composante aléatoire
+	* Le prix de vente des poissons est en fonction de la taille de ce dernier et de son espece.
+	* Il est possible soit de vendre le poisson en entier soit du recuperer des elements du poisson (exemple= ecailles + viande de poisson) 
+
+  Farming:
+	* Le personnage a la capacité de Farmer des legumes et arbres fruitiers.
 
 ## Leveling
 
@@ -92,15 +106,24 @@ Avec la restriction à 2000, taille max par étage : 100Mo
   forgeronerie:
 	* Chaque niveau demande un montant d'XP croissant
 	* chaque element forgé donne au personnage un certain montant d'XP 
+	* Le niveau de forgeronerie permet de debloquer de nouvelles possibilités de forgage
 
+  Alchimie:
+	* Chaque niveau demande un montant d'XP croissant
+	* chaque element crafté donne au personnage un certain montant d'XP 
+	* Le niveau d'alchimie permet de debloquer de nouvelles possibilités d'alchimie
+
+  Peche:
+	* Chaque niveau demande un montant d'XP croissant
+	* chaque element crafté donne au personnage un certain montant d'XP 
+
+  Farming:
+	* Chaque niveau demande un montant d'XP croissant
+	* chaque element recolté donne au personnage un certain montant d'XP 
 
 ## Economie
 
 * pieces bronze argent or
-
-## Farming 
-
-* ?
 
 ## Events
 
