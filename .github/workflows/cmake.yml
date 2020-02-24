@@ -78,9 +78,7 @@ jobs:
     - name: Run tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: |
-        ./main_tests
-        bw-output/main_tests
+      run: ./main_tests -r junits > output-tests.txt
 
     - name: Sonar scanner
       env:
@@ -88,4 +86,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: bash
-      run: $HOME/.sonar/sonar/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.cfamily.build-wrapper-output=${{runner.workspace}}/build/bw-output
+      run: $HOME/.sonar/sonar/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.cfamily.build-wrapper-output=${{runner.workspace}}/build/bw-output -Dsonar.junit.reportPaths=${{runner.workspace}}/build/output-tests.txt
