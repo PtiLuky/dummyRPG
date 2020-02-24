@@ -78,7 +78,7 @@ jobs:
     - name: Run tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ./main_tests -r junits > output-tests.txt
+      run: ./main_tests -r junit > output-tests.txt
 
     - name: Sonar scanner
       env:
