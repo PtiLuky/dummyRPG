@@ -75,6 +75,12 @@ jobs:
       shell: bash
       run: $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output cmake --build . --config $BUILD_TYPE
 
+    - name: Run tests
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: ./main_tests
+      run: bw-output/main_tests
+
     - name: Sonar scanner
       env:
         SONAR_SCANNER_OPTS: -server

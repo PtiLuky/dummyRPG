@@ -29,6 +29,11 @@ public:
     ///
     Layer(uint16_t width, uint16_t height, T defaultValue)
     {
+        if (width == 0)
+            height = 0;
+        else if (height == 0)
+            width = 0;
+
         if (width > MAX_LAYER_BORDER_SIZE)
             width = MAX_LAYER_BORDER_SIZE;
         if (height > MAX_LAYER_BORDER_SIZE)
@@ -70,8 +75,7 @@ public:
     ///
     bool areCoordValid(tilecoords coords)
     {
-        uint32_t rowIdx = coords.second;
-        return (coords.first + rowIdx * m_width) < m_content.size();
+        return (coords.first < m_width && coords.second < m_height);
     }
 
 private:
