@@ -1,6 +1,12 @@
 name: C++ Build
 
-on: [push]
+on:
+  push:
+    paths:
+    - '.github/workflows/cmake.yml'
+    - 'src/**'
+    - 'include/**'
+    - 'tests/**'
 
 # Env variables
 env:
