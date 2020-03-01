@@ -23,19 +23,37 @@ jobs:
         config:
           - name: "Windows"
             os: windows-latest
-          - name: "Mac"
-            os: macOS-latest
+            sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip"
+            archvieName: "SFML-2.5.1.zip"
+            uncompressCmd: "unzip SFML-2.5.1.zip -d ."
+            # Disable macOS build for the moment, SFML is getting harder to install and I don't have a Mac to test
+#          - name: "Mac"
+#            os: macOS-latest
+#            sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz"
+#            archvieName: "SFML-2.5.1.zip.tar.gz"
+#            uncompressCmd: "tar -xf SFML-2.5.1.zip.tar.gz && mv SFML-2.5.1-macos-clang SFML-2.5.1"
       
     steps:        
     - uses: actions/checkout@v2
-          
+
+    - name: Create Lib Environment
+      shell: bash
+      working-directory: ${{runner.workspace}}
+      run: |
+        mkdir libs
+        cd libs
+        curl -o  ${{ matrix.config.archvieName }} ${{ matrix.config.sfmlbin }}
+        ${{ matrix.config.uncompressCmd }}
+
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
       
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: |
+        export WORKSPACE_PATH=$(echo "${{runner.workspace}}" | sed 's/\\/\//g')
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSFML_DIR:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1/lib/cmake/SFML -DSFML_ROOT:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1
   
     - name: Build
       working-directory: ${{runner.workspace}}/build
@@ -50,7 +68,16 @@ jobs:
       
     steps:        
     - uses: actions/checkout@v2
-          
+
+    - name: Create Lib Environment
+      shell: bash
+      working-directory: ${{runner.workspace}}
+      run: |
+        mkdir libs
+        cd libs
+        wget -O SFML-2.5.1.zip "https://www.sfml-dev.org/files/SFML-2.5.1-linux-gcc-64-bit.tar.gz"
+        tar -xf SFML-2.5.1.zip
+
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
     
@@ -68,7 +95,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSFML_DIR:PATH=${{runner.workspace}}/libs/SFML-2.5.1/lib/cmake/SFML -DSFML_ROOT:PATH=${{runner.workspace}}/libs/SFML-2.5.1
   
     - name: Build with sonar observer
       working-directory: ${{runner.workspace}}/build
@@ -78,7 +105,7 @@ jobs:
     - name: Run tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ./main_tests -r junit > output-tests.txt
+      run: ./dummyRPG/main_tests -r junit > output-tests.txt
 
     - name: Sonar scanner
       env:
