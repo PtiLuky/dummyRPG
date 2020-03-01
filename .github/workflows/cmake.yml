@@ -23,19 +23,33 @@ jobs:
         config:
           - name: "Windows"
             os: windows-latest
+            sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip"
           - name: "Mac"
             os: macOS-latest
+            sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz"
       
     steps:        
     - uses: actions/checkout@v2
           
+    - name: setup SFML
+      shell: bash
+      working-directory: ${{runner.workspace}}/libs
+      run: |
+        wget -O SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
+        unzip SFML-2.5.1.zip -d .
+        ls .
+        ls SFML-2.5.1
+
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
       
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: cmake $GITHUB_WORKSPACE \
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+        -DSFML_DIR:PATH=${{runner.workspace}}/libs/SFML-2.5.1/lib/cmake/SFML \
+        -DSFML_ROOT:PATH=${{runner.workspace}}/libs/SFML-2.5.1
   
     - name: Build
       working-directory: ${{runner.workspace}}/build
@@ -50,7 +64,12 @@ jobs:
       
     steps:        
     - uses: actions/checkout@v2
-          
+
+    - name: setup SFML
+      shell: bash
+      working-directory: ${{runner.workspace}}/libs
+      run: sudo apt-get install libsfml-dev
+
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
     
