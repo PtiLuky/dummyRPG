@@ -55,11 +55,11 @@ jobs:
         export WORKSPACE_PATH=$(echo "${{runner.workspace}}" | sed 's/\\/\//g')
         echo $WORKSPACE_PATH/libs
         echo "With :"
-        ll $WORKSPACE_PATH/libs
+        ls $WORKSPACE_PATH/libs
         echo "With :"
-        ll $WORKSPACE_PATH/libs/SFML-2.5.1
+        ls $WORKSPACE_PATH/libs/SFML-2.5.1
         echo "And :"
-        ll $WORKSPACE_PATH/libs/SFML-2.5.1/cmake/SFML
+        ls $WORKSPACE_PATH/libs/SFML-2.5.1/cmake/SFML
         cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSFML_DIR:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1/lib/cmake/SFML -DSFML_ROOT:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1
   
     - name: Build
