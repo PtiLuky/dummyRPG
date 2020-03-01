@@ -24,9 +24,13 @@ jobs:
           - name: "Windows"
             os: windows-latest
             sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip"
+            archvieName: "SFML-2.5.1.zip"
+            uncompressCmd: "unzip SFML-2.5.1.zip -d ."
           - name: "Mac"
             os: macOS-latest
             sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz"
+            archvieName: "SFML-2.5.1.zip.tar.gz"
+            uncompressCmd: "tar -xf SFML-2.5.1.zip.tar.gz"
       
     steps:        
     - uses: actions/checkout@v2
@@ -37,8 +41,8 @@ jobs:
       run: |
         mkdir libs
         cd libs
-        curl -o SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
-        unzip SFML-2.5.1.zip -d .
+        curl -o  ${{ matrix.config.archvieName }} ${{ matrix.config.sfmlbin }}
+        ${{ matrix.config.uncompressCmd }}
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -47,11 +51,15 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: |
-        export LIBS_PATH=$(echo ${{runner.workspace}} | sed 's/\\/\//g')
+        export WORKSPACE_PATH=$(echo ${{runner.workspace}} | sed 's/\\/\//g')
+        echo $WORKSPACE_PATH
+        ls .
+        echo "Lib dir :"
+        ls $WORKSPACE_PATH
         cmake $GITHUB_WORKSPACE
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-        -DSFML_DIR:PATH=$LIBS_PATH/libs/SFML-2.5.1/lib/cmake/SFML
-        -DSFML_ROOT:PATH=$LIBS_PATH/libs/SFML-2.5.1
+        -DSFML_DIR:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1/lib/cmake/SFML
+        -DSFML_ROOT:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1
   
     - name: Build
       working-directory: ${{runner.workspace}}/build
