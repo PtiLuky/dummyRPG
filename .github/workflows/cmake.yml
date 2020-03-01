@@ -26,11 +26,12 @@ jobs:
             sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip"
             archvieName: "SFML-2.5.1.zip"
             uncompressCmd: "unzip SFML-2.5.1.zip -d ."
-          - name: "Mac"
-            os: macOS-latest
-            sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz"
-            archvieName: "SFML-2.5.1.zip.tar.gz"
-            uncompressCmd: "tar -xf SFML-2.5.1.zip.tar.gz"
+            # Disable macOS build for the moment, SFML is getting harder to install and I don't have a Mac to test
+#          - name: "Mac"
+#            os: macOS-latest
+#            sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz"
+#            archvieName: "SFML-2.5.1.zip.tar.gz"
+#            uncompressCmd: "tar -xf SFML-2.5.1.zip.tar.gz && mv SFML-2.5.1-macos-clang SFML-2.5.1"
       
     steps:        
     - uses: actions/checkout@v2
@@ -54,13 +55,12 @@ jobs:
         export WORKSPACE_PATH=$(echo "${{runner.workspace}}" | sed 's/\\/\//g')
         echo $WORKSPACE_PATH/libs
         echo "With :"
-        ls $WORKSPACE_PATH/libs
+        ll $WORKSPACE_PATH/libs
         echo "With :"
-        ls $WORKSPACE_PATH/libs/SFML-2.5.1
-        cmake $GITHUB_WORKSPACE
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-        -DSFML_DIR:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1/lib/cmake/SFML
-        -DSFML_ROOT:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1
+        ll $WORKSPACE_PATH/libs/SFML-2.5.1
+        echo "And :"
+        ll $WORKSPACE_PATH/libs/SFML-2.5.1/cmake/SFML
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSFML_DIR:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1/lib/cmake/SFML -DSFML_ROOT:PATH=$WORKSPACE_PATH/libs/SFML-2.5.1
   
     - name: Build
       working-directory: ${{runner.workspace}}/build
@@ -102,10 +102,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-        -DSFML_DIR:PATH=${{runner.workspace}}/libs/SFML-2.5.1/lib/cmake/SFML
-        -DSFML_ROOT:PATH=${{runner.workspace}}/libs/SFML-2.5.1
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSFML_DIR:PATH=${{runner.workspace}}/libs/SFML-2.5.1/lib/cmake/SFML -DSFML_ROOT:PATH=${{runner.workspace}}/libs/SFML-2.5.1
   
     - name: Build with sonar observer
       working-directory: ${{runner.workspace}}/build
