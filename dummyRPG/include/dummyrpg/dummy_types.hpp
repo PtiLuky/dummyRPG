@@ -12,11 +12,11 @@ using chip_id = uint8_t;
 /// tilecoords represents coordinates of a tile. As a pair of <x, y>
 using tilecoords = std::pair<uint16_t, uint16_t>; // x, y
 /// tilecoords represents coordinates of a chipset tile. As a tuple of <x, y, chipset_id>
-struct tileaspect
+struct Tileaspect
 {
-    uint8_t x;
-    uint8_t y;
-    chip_id chipId;
+    uint8_t m_x;
+    uint8_t m_y;
+    chip_id m_chipId;
 };
 
 
@@ -24,7 +24,7 @@ struct tileaspect
 /// CONST definitions
 
 /// Default tile aspect value. Will always be considered as undefined.
-const tileaspect undefAspect {static_cast<uint8_t>(-1), static_cast<uint8_t>(-1),
+const Tileaspect undefAspect {static_cast<uint8_t>(-1), static_cast<uint8_t>(-1),
                               static_cast<chip_id>(0)};
 /// The size in px of a tile (on the chipset and on the map)
 const int TILE_SIZE = 16;

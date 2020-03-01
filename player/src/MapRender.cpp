@@ -61,27 +61,24 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
     const sf::Color neutralColor(255, 255, 0);
 
     // Create below/above textures
+    size_t layersCnt = 0;
     for (auto& floor : map.floors()) {
-        sf::Image tileMapBelow;
-        sf::Image tileMapAbove;
-        tileMapBelow.create(w, h, neutralColor);
-        tileMapAbove.create(w, h, neutralColor);
         auto& layers = floor->graphicLayers();
 
         const uint8_t nbLayers = static_cast<uint8_t>(layers.size());
         for (uint8_t i = 0; i < nbLayers; ++i) {
-            if (i < Dummy::Floor::INF_LAYERS_COUNT)
-                layerToImage(layers[i], tileMapBelow, chipIdToIdx);
-            else
-                layerToImage(layers[i], tileMapAbove, chipIdToIdx);
+            sf::Image tilemap;
+            tilemap.create(w, h, neutralColor);
+
+            layerToImage(layers[i], tilemap, chipIdToIdx);
+
+            sf::Texture tex;
+            tex.loadFromImage(tilemap);
+            m_tilemaps.push_back(tex);
         }
 
-        sf::Texture texBelow;
-        sf::Texture texAbove;
-        texBelow.loadFromImage(tileMapBelow);
-        texAbove.loadFromImage(tileMapAbove);
-        m_tilemaps.push_back(texBelow);
-        m_tilemaps.push_back(texAbove);
+        m_firstTexsIdx.push_back(layersCnt);
+        layersCnt += nbLayers;
     }
 
     m_mapSprite.setTexture(m_tilemaps[0]);
@@ -90,9 +87,12 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
 
 void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)
 {
-    size_t nbTexturesBelow = playerFloor * 2 + 1;
+    if (playerFloor >= m_firstTexsIdx.size())
+        return; // wrong parameter...
+
+    size_t nbTexturesBelow = m_firstTexsIdx[playerFloor] + 2;
     if (nbTexturesBelow >= m_tilemaps.size())
-        return;
+        return; // Data corrupted ? Should not happen...
 
     for (size_t fIdx = 0; fIdx < nbTexturesBelow; ++fIdx) {
         m_mapShader.setUniform("tilemap", m_tilemaps[fIdx]);
@@ -102,12 +102,21 @@ void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)
 
 void MapRender::renderAbove(sf::RenderWindow& renderWindow, uint8_t playerFloor)
 {
-    size_t nbTexturesBelow = playerFloor * 2 + 1;
-    if (nbTexturesBelow >= m_tilemaps.size())
-        return;
+    if (playerFloor >= m_firstTexsIdx.size())
+        return; // wrong parameter...
 
-    m_mapShader.setUniform("tilemap", m_tilemaps[nbTexturesBelow]);
-    renderWindow.draw(m_mapSprite, &m_mapShader);
+    size_t nbTexturesBelow = m_firstTexsIdx[playerFloor] + 2;
+    if (nbTexturesBelow >= m_tilemaps.size())
+        return; // Data corrupted ? Should not happen...
+
+    size_t nextFloorLayersIdx = m_tilemaps.size();
+    if (playerFloor + 1 < m_firstTexsIdx.size())
+        nextFloorLayersIdx = m_firstTexsIdx[playerFloor + 1];
+
+    for (size_t fIdx = nbTexturesBelow; fIdx < nextFloorLayersIdx; ++fIdx) {
+        m_mapShader.setUniform("tilemap", m_tilemaps[fIdx]);
+        renderWindow.draw(m_mapSprite, &m_mapShader);
+    }
 }
 
 void MapRender::layerToImage(const Dummy::GraphicLayer& lay, sf::Image& img,
@@ -118,15 +127,15 @@ void MapRender::layerToImage(const Dummy::GraphicLayer& lay, sf::Image& img,
 
     for (uint16_t y = 0; y < h; ++y) {
         for (uint16_t x = 0; x < w; ++x) {
-            tileaspect val = lay.at({x, y});
-            if (val.x == undefAspect.x || val.y == undefAspect.y)
+            Tileaspect val = lay.at({x, y});
+            if (val.m_x == undefAspect.m_x || val.m_y == undefAspect.m_y)
                 continue;
 
-            if (idMap.find(val.chipId) == idMap.end())
+            if (idMap.find(val.m_chipId) == idMap.end())
                 continue;
 
-            uint8_t chipLocalIdx = idMap.at(val.chipId);
-            sf::Color tileIndex(val.x, val.y, chipLocalIdx);
+            uint8_t chipLocalIdx = idMap.at(val.m_chipId);
+            sf::Color tileIndex(val.m_x, val.m_y, chipLocalIdx);
             img.setPixel(x, y, tileIndex);
         }
     }

@@ -42,7 +42,7 @@ void Floor::removeChipRef(chip_id idx)
         for (uint16_t y = 0; y < h; ++y) {
             for (uint16_t x = 0; x < w; ++x) {
                 auto val = layer.at({x, y});
-                if (val.chipId == idx)
+                if (val.m_chipId == idx)
                     layer.set({x, y}, undefAspect);
             }
         }

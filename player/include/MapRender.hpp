@@ -56,7 +56,8 @@ private:
     float m_zoom = 2.F;
     sf::Shader m_mapShader;
     sf::Sprite m_mapSprite;
-    std::vector<sf::Texture> m_tilemaps; ///< Each floor has 2 textures : one below, one above
+    std::vector<sf::Texture> m_tilemaps; ///< Each floor has up to 6 textures,
+    std::vector<size_t> m_firstTexsIdx;  ///< index of the first texture of each floor in m_tilemaps
     std::vector<sf::Texture> m_chipsets;
 };
 

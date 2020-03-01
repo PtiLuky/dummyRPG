@@ -16,18 +16,27 @@ static const int WIN_FPS    = 30;
 #pragma warning(disable : 4244)
 static Game createFakeGame()
 {
-    Game game;
-    game.m_chipsetPaths.insert({42, "Resources/chip1.png"});
-    auto pMap   = std::make_unique<Dummy::Map>(1000, 1000, 42);
-    auto* floor = pMap->floorAt(0);
-    for (uint16_t x = 0; x < 1000; ++x)
-        for (uint16_t y = 0; y < 1000; ++y)
-            floor->graphicLayerAt(0).set({x, y}, {0, 0, 42});
+    const chip_id fkId     = 42;
+    const uint16_t mapSize = 30;
 
-    floor->graphicLayerAt(2).set({1, 1}, {3, 0, 42});
-    floor->graphicLayerAt(2).set({1, 2}, {3, 1, 42});
-    floor->graphicLayerAt(2).set({2, 1}, {1, 1, 42});
-    floor->graphicLayerAt(2).set({4, 4}, {0, 0, 42});
+    Game game;
+    game.m_chipsetPaths.insert({fkId, "Resources/chip1.png"});
+    auto pMap   = std::make_unique<Dummy::Map>(mapSize, mapSize, fkId);
+    auto* floor = pMap->floorAt(0);
+    for (uint16_t x = 0; x < mapSize; ++x)
+        for (uint16_t y = 0; y < mapSize; ++y)
+            floor->graphicLayerAt(0).set({x, y}, {0, 0, fkId});
+
+    floor->graphicLayerAt(2).set({1, 1}, {3, 0, fkId});
+    floor->graphicLayerAt(2).set({1, 2}, {3, 1, fkId});
+    floor->graphicLayerAt(2).set({1, 3}, {3, 1, fkId});
+    floor->graphicLayerAt(2).set({1, 4}, {3, 1, fkId});
+    floor->graphicLayerAt(2).set({1, 5}, {3, 1, fkId});
+    floor->graphicLayerAt(2).set({1, 6}, {3, 1, fkId});
+    floor->graphicLayerAt(2).set({1, 7}, {3, 1, fkId});
+    floor->graphicLayerAt(2).set({1, 8}, {3, 1, fkId});
+    floor->graphicLayerAt(2).set({2, 1}, {1, 1, fkId});
+    floor->graphicLayerAt(2).set({4, 4}, {0, 0, fkId});
 
     game.m_maps.insert(std::make_pair(0, std::move(pMap)));
     return game;
