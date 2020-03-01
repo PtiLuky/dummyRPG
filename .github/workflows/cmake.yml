@@ -37,11 +37,8 @@ jobs:
       run: |
         mkdir libs
         cd libs
-        curl -o SFML-2.5.1.zip libs/SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
+        curl -o SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
         unzip SFML-2.5.1.zip -d .
-        ls .
-        ls ..
-        ls SFML-2.5.1
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -110,7 +107,7 @@ jobs:
     - name: Run tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: ./main_tests -r junit > output-tests.txt
+      run: ./dummyRPG/main_tests -r junit > output-tests.txt
 
     - name: Sonar scanner
       env:
