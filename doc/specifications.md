@@ -13,7 +13,7 @@
 * parentage de cartes possible 
 * Une carte contient : 
   * 255 (uint8) étages max. Chaque étage est un étage d'interactivité avec le joueur. Quand le joueur est sur un étage, seulement cet étage et les étages inférieurs sont montrés à l'écran.
-  * 8 palettes max
+  * 4 palettes max
 * Un étage contient :
   * *des zones d'apparition*
   * *des événements*
@@ -22,21 +22,21 @@
   * 2 couches graphiques inférieures (sous le joueur)
   * 6 couches graphiques supérieures max (2 par défaut) (devant le joueur)
 * Une couche graphique contient :
-  * 2'000 lignes max ~~65'535 (uint16) lignes max~~
-  * 2'000 colonnes max ~~65'535 (uint16) colonnes max~~
+  * 1'024 lignes max ~~65'535 (uint16) lignes max~~
+  * 1'024 colonnes max ~~65'535 (uint16) colonnes max~~
   * x (uint8) colonne de la tuile sur la palette originale
   * y (uint8) ligne de la tuile sur la palette originale
-  * id (0 <= id < 8) de la palette originale dans la map
+  * id (0 <= id < 4) de la palette originale dans la map
 * La palette originale :
   * 254 (uint8 - 1) tuiles max par ligne/colonnes **(= 4064 MAX sur la largeur et la hauteur des palette pour des tuiles de 16px !!!)** 
  
 **Taille d'une carte en RAM :**  
 Par tuile : 3 * uint8 = 3 bytes  
-Nb Tuiles max : 65'535 * 65'535 = 4'294'836'225  (sans restriction à 2'000 lignes/colonnes)  
+Nb Tuiles max : 65'535 * 65'535 = 4'294'836'225  (sans restriction à 1'024 lignes/colonnes)  
 Taille par étages : 4'294'836'225 * (8 * 3 (visibles) + 1 (blocking)) = 107'370'905'625‬  
 **Aux tailles maximales un étage fait 107 Go...**
 
-Avec la restriction à 2000, taille max par étage : 100Mo
+Avec la restriction à 1024, taille max par étage : 26Mo
   
 ## Zones d'apparition
 * rectangle de la carte

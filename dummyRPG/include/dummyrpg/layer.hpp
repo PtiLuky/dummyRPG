@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DUMMYRPG_LAYER
+#define DUMMYRPG_LAYER
 
 #include <vector>
 
@@ -92,3 +93,5 @@ using BlockingLayer = Layer<bool>;
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace Dummy
+
+#endif // DUMMYRPG_LAYER

@@ -22,6 +22,24 @@ uint16_t Map::height() const
     return m_floors[0]->height();
 }
 
+Floor* Map::addFloor()
+{
+    if (m_floors.size() >= MAX_FLOORS_COUNT)
+        return nullptr;
+
+    m_floors.push_back(std::make_unique<Floor>(width(), height()));
+    return m_floors.back().get();
+}
+
+bool Map::removeFloorAt(uint8_t idx)
+{
+    if (m_floors.size() == 1 || idx >= m_floors.size())
+        return false;
+
+    m_floors.erase(m_floors.begin() + idx);
+    return true;
+}
+
 bool Map::registerChipset(chip_id idx)
 {
     if (m_chipsets.size() >= MAX_CHIPS_COUNT)

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DUMMYRPG_FLOOR
+#define DUMMYRPG_FLOOR
 
 #include "dummyrpg/layer.hpp"
 
@@ -22,6 +23,9 @@ public:
     const BlockingLayer& blockingLayer() const { return m_blockingLayer; }
     const std::vector<GraphicLayer>& graphicLayers() const { return m_layers; }
 
+    // Getter
+    GraphicLayer& graphicLayerAt(uint8_t idx) { return m_layers[idx]; }
+
     // Modif methods
     bool addLayerAbove();        ///< add a new top layer, in the limit of MAX_LAYERS_COUNT
     bool removeLayerAbove();     ///< remove the top layer. Cannot remove a inf layer
@@ -38,3 +42,5 @@ private:
 };
 
 } // namespace Dummy
+
+#endif // DUMMYRPG_FLOOR
