@@ -38,9 +38,8 @@ jobs:
 
     - name: wget SFML
       uses: wei/wget@v1
-      working-directory: ${{runner.workspace}}/libs
       with:
-        args: -O SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
+        args: -O libs/SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
 
     - name: Setup Lib Environment
       shell: bash
