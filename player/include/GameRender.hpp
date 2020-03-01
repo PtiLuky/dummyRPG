@@ -8,7 +8,7 @@ namespace DummyPlayer {
 class GameRender
 {
 public:
-    GameRender(sf::RenderWindow& window);
+    explicit GameRender(sf::RenderWindow& window);
     void setMap(const Dummy::Map&, const Dummy::Game&);
     void renderingThread();
 

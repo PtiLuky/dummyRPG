@@ -62,7 +62,7 @@ bool Map::unregisterChipset(chip_id idx)
         return false;
 
     m_chipsets.erase(chipIte);
-    for (auto& pFloor : m_floors)
+    for (const auto& pFloor : m_floors)
         pFloor->removeChipRef(idx);
 
     return true;

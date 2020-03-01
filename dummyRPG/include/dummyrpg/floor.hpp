@@ -32,8 +32,8 @@ public:
     void removeChipRef(chip_id); ///< unset all tiles from this chip
 
     // Consts
-    const uint8_t MAX_LAYERS_COUNT = 6; ///< total layers at most
-    const uint8_t INF_LAYERS_COUNT = 2; ///< number of inferior layers
+    static const uint8_t MAX_LAYERS_COUNT = 6; ///< total layers at most
+    static const uint8_t INF_LAYERS_COUNT = 2; ///< number of inferior layers
 
 private:
     // Layers

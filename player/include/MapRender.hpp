@@ -2,12 +2,25 @@
 #define DUMMYRPG_MAPRENDER
 
 #include <SFML/Graphics.hpp>
+#include <stdexcept>
 #include <vector>
 
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/layer.hpp"
 
 namespace DummyPlayer {
+
+///////////////////////////////////////////////////////////////////////////////
+
+class MapRenderError : public std::runtime_error
+{
+public:
+    MapRenderError(const std::string& msg)
+        : std::runtime_error(msg)
+    {}
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 class MapRender
 {

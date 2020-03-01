@@ -5,8 +5,16 @@
 #include "dummyrpg/game.hpp"
 
 using Dummy::Game;
+static const int WIN_WIDTH  = 600;
+static const int WIN_HEIGHT = 600;
+static const int WIN_FPS    = 30;
 
-Game createFakeGame()
+///////////////////////////////////////////////////////////////////////////////
+// This method is to be deleted later, so yes it's dirty, and no I don't want to see all
+// related warnings about tuple casting loose of precision
+#pragma warning(push)
+#pragma warning(disable : 4244)
+static Game createFakeGame()
 {
     Game game;
     game.m_chipsetPaths.insert({42, "Resources/chip1.png"});
@@ -24,13 +32,17 @@ Game createFakeGame()
     game.m_maps.insert(std::make_pair(0, std::move(pMap)));
     return game;
 }
+#pragma warning(pop)
+///////////////////////////////////////////////////////////////////////////////
+
+
 
 int main()
 {
     Game game = createFakeGame();
 
-    sf::RenderWindow window(sf::VideoMode(600, 600), "My super game");
-    window.setFramerateLimit(30);
+    sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "My super game");
+    window.setFramerateLimit(WIN_FPS);
 
     DummyPlayer::GameRender renderer(window);
     renderer.setMap(*game.m_maps[0], game);
@@ -49,7 +61,7 @@ int main()
                 window.close();
             } else if (event.type == sf::Event::Resized) {
                 // update the view to the new size of the window
-                sf::FloatRect visibleArea(0.f, 0.f, static_cast<float>(event.size.width),
+                sf::FloatRect visibleArea(0.F, 0.F, static_cast<float>(event.size.width),
                                           static_cast<float>(event.size.height));
                 window.setView(sf::View(visibleArea));
             }

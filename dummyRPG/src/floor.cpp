@@ -35,12 +35,17 @@ bool Floor::removeLayerAbove()
 
 void Floor::removeChipRef(chip_id idx)
 {
-    for (auto& layer : m_layers)
-        for (uint16_t y = 0; y < layer.height(); ++y)
-            for (uint16_t x = 0; x < layer.width(); ++x) {
+    for (auto& layer : m_layers) {
+        const uint16_t w = layer.width();
+        const uint16_t h = layer.height();
+
+        for (uint16_t y = 0; y < h; ++y) {
+            for (uint16_t x = 0; x < w; ++x) {
                 auto val = layer.at({x, y});
                 if (std::get<2>(val) == idx)
                     layer.set({x, y}, undefAspect);
             }
+        }
+    }
 }
 } // namespace Dummy

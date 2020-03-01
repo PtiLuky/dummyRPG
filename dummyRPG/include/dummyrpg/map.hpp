@@ -34,8 +34,8 @@ public:
     bool unregisterChipset(chip_id); ///< unregister chip and delete all tiles from this chip
 
     // Consts
-    const uint8_t MAX_FLOORS_COUNT = 255; ///< total floors at most
-    const uint8_t MAX_CHIPS_COUNT  = 4;   ///< total chipsets at most
+    static const uint8_t MAX_FLOORS_COUNT = 255; ///< total floors at most
+    static const uint8_t MAX_CHIPS_COUNT  = 4;   ///< total chipsets at most
 
 private:
     std::vector<std::unique_ptr<Floor>> m_floors; // Always contains at least 1 Floor
