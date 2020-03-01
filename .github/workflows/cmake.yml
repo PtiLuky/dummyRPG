@@ -4,9 +4,11 @@ on:
   push:
     paths:
     - '.github/workflows/cmake.yml'
-    - 'src/**'
-    - 'include/**'
-    - 'tests/**'
+    - 'dummyRPG/src/**'
+    - 'dummyRPG/include/**'
+    - 'dummyRPG/tests/**'
+    - 'player/src/**'
+    - 'player/include/**'
 
 # Env variables
 env:
