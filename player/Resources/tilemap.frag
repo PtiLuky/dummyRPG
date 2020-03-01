@@ -19,19 +19,18 @@ uniform int chipCount;
 
 void main()
 {
-  vec2 tilePos=gl_TexCoord[0].xy / tilemapSize * 16;
-
+  vec2 tilePos=gl_TexCoord[0].xy;
 
   // Map is encoded as following : r=chip_x ; g=chip_y ; b=chip_id (; a=255, ignore)
-  float chipX  = floor(texture2D(tilemap,tilePos).r * 255) * 16;
-  float chipY  = floor(texture2D(tilemap,tilePos).g * 255) * 16;
+  float chipX  = floor(texture2D(tilemap,tilePos).r * 255) * 16; // in px
+  float chipY  = floor(texture2D(tilemap,tilePos).g * 255) * 16; // in px
   float chipId = floor(texture2D(tilemap,tilePos).b * 255);
 
   // check out of map
   if (tilePos.x > 1 || tilePos.y > 1 || tilePos.x < 0 || tilePos.y < 0 || chipX == 255 || chipY == 255)
       discard;
 
-  vec2 chipTile = vec2(chipX, chipY);
+  vec2 chipTile = vec2(chipX, chipY); // in px
   vec2 chipSize = chip0PxSize;
   if (chipId == 1)
       chipSize = chip1PxSize;
@@ -44,9 +43,9 @@ void main()
   if (chipId >= chipCount || chipX >= chipSize.x || chipY >= chipSize.y)
       discard;
 
-  vec2 tileChipPos = chipTile / chipSize;
-  vec2 tileOffsetInPercent = mod(gl_TexCoord[0].xy * 16, 1);
-  vec2 tileOffset = tileOffsetInPercent / chipSize * 16;
+  vec2 tileChipPos = chipTile / chipSize; // [0 ; 1]
+  vec2 tileOffsetInPercent = mod(gl_TexCoord[0].xy * tilemapSize, 1); // [0; 1]
+  vec2 tileOffset = tileOffsetInPercent / (chipSize / 16);
 
   if (chipId == 0)
       gl_FragColor = texture2D(chip0Tiles, tileChipPos + tileOffset);

@@ -18,10 +18,10 @@ static Game createFakeGame()
 {
     Game game;
     game.m_chipsetPaths.insert({42, "Resources/chip1.png"});
-    auto pMap   = std::make_unique<Dummy::Map>(20, 20, 42);
+    auto pMap   = std::make_unique<Dummy::Map>(1000, 1000, 42);
     auto* floor = pMap->floorAt(0);
-    for (uint16_t x = 0; x < 20; ++x)
-        for (uint16_t y = 0; y < 20; ++y)
+    for (uint16_t x = 0; x < 1000; ++x)
+        for (uint16_t y = 0; y < 1000; ++y)
             floor->graphicLayerAt(0).set({x, y}, {0, 0, 42});
 
     floor->graphicLayerAt(2).set({1, 1}, {3, 0, 42});
