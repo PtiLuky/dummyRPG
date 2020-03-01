@@ -33,9 +33,10 @@ jobs:
           
     - name: setup SFML
       shell: bash
-      working-directory: ${{runner.workspace}}/libs
+      working-directory: ${{runner.workspace}}
       run: |
-        mkdir toto
+        mkdir libs
+        cd libs
         wget -O SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
         ll
         unzip SFML-2.5.1.zip
@@ -69,7 +70,6 @@ jobs:
 
     - name: setup SFML
       shell: bash
-      working-directory: ${{runner.workspace}}/libs
       run: |
         apt search libsfml-dev
         sudo apt install libsfml-dev
