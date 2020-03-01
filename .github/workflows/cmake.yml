@@ -31,17 +31,21 @@ jobs:
     steps:        
     - uses: actions/checkout@v2
           
-    - name: setup SFML
+    - name: Create Lib Environment
       shell: bash
       working-directory: ${{runner.workspace}}
-      run: |
-        mkdir libs
-        cd libs
-        wget -O SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
-        ll
-        unzip SFML-2.5.1.zip
-        ll
-        ll SFML-2.5.1
+      run: mkdir libs
+
+    - name: wget SFML
+      uses: wei/wget@v1
+      working-directory: ${{runner.workspace}}/libs
+      with:
+        args: -O SFML-2.5.1.zip ${{ matrix.config.sfmlbin }}
+
+    - name: Setup Lib Environment
+      shell: bash
+      working-directory: ${{runner.workspace}}/libs
+      run: unzip SFML-2.5.1.zip -d .
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -68,11 +72,14 @@ jobs:
     steps:        
     - uses: actions/checkout@v2
 
-    - name: setup SFML
+    - name: Create Lib Environment
       shell: bash
+      working-directory: ${{runner.workspace}}
       run: |
-        apt search libsfml-dev
-        sudo apt install libsfml-dev
+        mkdir libs
+        cd libs
+        wget -O SFML-2.5.1.zip "https://www.sfml-dev.org/files/SFML-2.5.1-linux-gcc-64-bit.tar.gz"
+        tar -xf SFML-2.5.1.zip
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -91,7 +98,10 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: cmake $GITHUB_WORKSPACE \
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+        -DSFML_DIR:PATH=${{runner.workspace}}/libs/SFML-2.5.1/lib/cmake/SFML \
+        -DSFML_ROOT:PATH=${{runner.workspace}}/libs/SFML-2.5.1
   
     - name: Build with sonar observer
       working-directory: ${{runner.workspace}}/build
