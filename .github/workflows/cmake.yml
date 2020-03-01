@@ -50,8 +50,8 @@ jobs:
         export LIBS_PATH=$(echo ${{runner.workspace}} | sed 's/\\/\//g')
         cmake $GITHUB_WORKSPACE
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-        -DSFML_DIR:PATH=${{LIBS_PATH}}/libs/SFML-2.5.1/lib/cmake/SFML
-        -DSFML_ROOT:PATH=${{LIBS_PATH}}/libs/SFML-2.5.1
+        -DSFML_DIR:PATH=$LIBS_PATH/libs/SFML-2.5.1/lib/cmake/SFML
+        -DSFML_ROOT:PATH=$LIBS_PATH/libs/SFML-2.5.1
   
     - name: Build
       working-directory: ${{runner.workspace}}/build
