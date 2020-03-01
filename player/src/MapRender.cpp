@@ -15,7 +15,7 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
     std::map<chip_id, uint8_t> chipIdToIdx;
 
     // Read chipsets, and keep the change of indices
-    const int nbChips = static_cast<int>(map.chipsetsUsed().size());
+    const uint8_t nbChips = static_cast<uint8_t>(map.chipsetsUsed().size());
     for (uint8_t i = 0; i < nbChips; ++i) {
         chip_id chipId = map.chipsetsUsed()[i];
         sf::Texture chipTex;
@@ -30,26 +30,14 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
 
     // Send chipset parameters to shader
     m_mapShader.setUniform("tilemapSize", sf::Glsl::Vec2(map.width(), map.height()));
-    m_mapShader.setUniform("chipCount", nbChips);
-    if (nbChips >= 1) {
-        m_mapShader.setUniform("chip0Tiles", m_chipsets[0]);
-        auto size = m_chipsets[0].getSize();
-        m_mapShader.setUniform("chip0PxSize", sf::Glsl::Vec2(size));
-    }
-    if (nbChips >= 2) {
-        m_mapShader.setUniform("chip1Tiles", m_chipsets[1]);
-        auto size = m_chipsets[1].getSize();
-        m_mapShader.setUniform("chip1PxSize", sf::Glsl::Vec2(size));
-    }
-    if (nbChips >= 3) {
-        m_mapShader.setUniform("chip2Tiles", m_chipsets[2]);
-        auto size = m_chipsets[2].getSize();
-        m_mapShader.setUniform("chip2PxSize", sf::Glsl::Vec2(size));
-    }
-    if (nbChips >= 4) {
-        m_mapShader.setUniform("chip3Tiles", m_chipsets[3]);
-        auto size = m_chipsets[3].getSize();
-        m_mapShader.setUniform("chip3PxSize", sf::Glsl::Vec2(size));
+    m_mapShader.setUniform("chipCount", static_cast<int>(nbChips));
+
+    for (uint8_t i = 0; i < nbChips; ++i) {
+        std::string strIdx = std::to_string(i);
+        sf::Vector2u size  = m_chipsets[i].getSize();
+
+        m_mapShader.setUniform("chip" + strIdx + "Tiles", m_chipsets[i]);
+        m_mapShader.setUniform("chip" + strIdx + "PxSize", sf::Glsl::Vec2(size));
     }
 
     // Decode each floor, layers below the player
@@ -67,8 +55,7 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
     }
 
     m_mapSprite.setTexture(m_floors[0]);
-    m_mapSprite.setScale(32, 32);
-    m_mapSprite.setTextureRect(sf::IntRect(0, 0, 600, 600));
+    m_mapSprite.setScale(TILE_SIZE * m_zoom, TILE_SIZE * m_zoom);
 }
 
 void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)

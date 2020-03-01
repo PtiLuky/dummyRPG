@@ -10,11 +10,15 @@ GameRender::GameRender(sf::RenderWindow& window)
 
 void GameRender::setMap(const Dummy::Map& map, const Dummy::Game& game)
 {
+    m_mutex.lock();
+
     try {
         m_mapRender = std::make_unique<MapRender>(map, game);
-    } catch (MapRenderError e) {
+    } catch (const MapRenderError& e) {
+        m_mutex.unlock();
         std::cerr << "Error : MapRender creation failed (" << e.what() << ")." << std::endl;
     }
+    m_mutex.unlock();
 }
 
 void GameRender::renderingThread()
@@ -35,6 +39,8 @@ void GameRender::renderingThread()
     // the rendering loop
     while (m_window.isOpen()) {
 
+        m_mutex.lock();
+
         uint8_t playerFloor = 0;
 
         m_window.clear();
@@ -48,6 +54,8 @@ void GameRender::renderingThread()
             m_mapRender->renderAbove(m_window, playerFloor);
 
         m_window.display();
+
+        m_mutex.unlock();
     }
 }
 } // namespace DummyPlayer

@@ -8,14 +8,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 namespace Dummy {
 
-const uint16_t MAX_LAYER_BORDER_SIZE = 2000;
+const uint16_t MAX_LAYER_BORDER_SIZE = 1024;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // Template class, must be fully defined in .hpp
 
 ///
-/// \brief A Layer is a simple wrapper around a vector
+/// \brief A Layer is a simple wrapper around a vector, with a <x,y> coordinates system
+/// With some constrains as 0 <= x <= MAX_LAYER_BORDER_SIZE (same for y)
 ///
 template <typename T> class Layer
 {

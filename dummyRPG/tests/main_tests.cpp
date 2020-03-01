@@ -48,18 +48,18 @@ TEST_CASE("Construct Layers", "[layer]")
 
     SECTION("Max size")
     {
-        Dummy::Layer<uint8_t> l(2000, 2000, 42);
-        REQUIRE(l.width() == 2000);
-        REQUIRE(l.height() == 2000);
-        REQUIRE(l.size() == 4'000'000);
+        Dummy::Layer<uint8_t> l(1024, 1024, 42);
+        REQUIRE(l.width() == 1024);
+        REQUIRE(l.height() == 1024);
+        REQUIRE(l.size() == 1024*1024);
     }
 
     SECTION("Overflow")
     {
         Dummy::Layer<uint8_t> l(1000, 2500, 42);
         REQUIRE(l.width() == 1000);
-        REQUIRE(l.height() == 2000);
-        REQUIRE(l.size() == 2'000'000);
+        REQUIRE(l.height() == 1024);
+        REQUIRE(l.size() == 1'024'000);
     }
 }
 
