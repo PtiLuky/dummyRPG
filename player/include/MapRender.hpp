@@ -50,17 +50,13 @@ public:
     void renderAbove(sf::RenderWindow&, uint8_t playerFloor);
 
 private:
-    void addLayer(const Dummy::GraphicLayer& layer, std::vector<sf::Texture>& floorList,
-                  const std::map<chip_id, uint8_t>& idMapping);
+    void layerToImage(const Dummy::GraphicLayer&, sf::Image&, const std::map<chip_id, uint8_t>&);
 
 private:
     float m_zoom = 2.F;
-    sf::Mutex m_mutex;
     sf::Shader m_mapShader;
     sf::Sprite m_mapSprite;
-    std::vector<sf::Texture> m_floors;
-    std::vector<uint16_t> m_abovePlayerIdx; ///< indices of each layer "above" the player, per floor
-    std::vector<uint16_t> m_firstLayerIdx;  ///< indices of the first layer of each floor
+    std::vector<sf::Texture> m_tilemaps; ///< Each floor has 2 textures : one below, one above
     std::vector<sf::Texture> m_chipsets;
 };
 

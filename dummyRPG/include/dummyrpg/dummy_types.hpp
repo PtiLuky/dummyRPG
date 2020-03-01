@@ -8,11 +8,16 @@
 /// Types definitions
 
 /// The id of a chipset. A game has 255 chipsets max.
-using chip_id    = uint8_t;
+using chip_id = uint8_t;
 /// tilecoords represents coordinates of a tile. As a pair of <x, y>
-using tilecoords = std::pair<uint16_t, uint16_t>;         // x, y
+using tilecoords = std::pair<uint16_t, uint16_t>; // x, y
 /// tilecoords represents coordinates of a chipset tile. As a tuple of <x, y, chipset_id>
-using tileaspect = std::tuple<uint8_t, uint8_t, chip_id>; // x, y, chipset_id
+struct tileaspect
+{
+    uint8_t x;
+    uint8_t y;
+    chip_id chipId;
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////

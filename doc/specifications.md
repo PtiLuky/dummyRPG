@@ -20,7 +20,7 @@
   * *des pnj*
   * une couche de blocage (blocking layer) : où le joueur peut marcher ou non
   * 2 couches graphiques inférieures (sous le joueur)
-  * 6 couches graphiques supérieures max (2 par défaut) (devant le joueur)
+  * 4 couches graphiques supérieures max (2 par défaut) (devant le joueur)
 * Une couche graphique contient :
   * 1'024 lignes max ~~65'535 (uint16) lignes max~~
   * 1'024 colonnes max ~~65'535 (uint16) colonnes max~~
@@ -33,10 +33,10 @@
 **Taille d'une carte en RAM :**  
 Par tuile : 3 * uint8 = 3 bytes  
 Nb Tuiles max : 65'535 * 65'535 = 4'294'836'225  (sans restriction à 1'024 lignes/colonnes)  
-Taille par étages : 4'294'836'225 * (8 * 3 (visibles) + 1 (blocking)) = 107'370'905'625‬  
-**Aux tailles maximales un étage fait 107 Go...**
+Taille par étages : 4'294'836'225 * (6 * 3 (visibles) + 1 (blocking)) = 81'6010'888'275
+**Aux tailles maximales un étage fait 81 Go...**
 
-Avec la restriction à 1024, taille max par étage : 26Mo
+Avec la restriction à 1024, taille max par étage : 20Mo
   
 ## Zones d'apparition
 * rectangle de la carte

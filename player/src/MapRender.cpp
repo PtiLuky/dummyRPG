@@ -4,6 +4,21 @@
 
 #include "dummyrpg/floor.hpp"
 
+///
+/// The global idea behind this class is to encode all floor visible data into textures
+/// those "data textures" are saved in m_tilemaps. They are encoded as following:
+///  - original data is <chip X, chip Y, chip Id>
+///  encoded to
+///  - color data color(r = chip X ; g = chip Y ; b = chip Id) (color alpha is 255)
+///
+/// Then to render a floor, we need to use the tilemap shader, and send:
+///  - the tilemap texture
+///  - the count of chipset textures
+///  - from 1 up to 4 chipset textures (the orginal chipset textures)
+///
+/// And the shader does the drawing stuff itself
+///
+
 namespace DummyPlayer {
 
 MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
@@ -40,90 +55,81 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
         m_mapShader.setUniform("chip" + strIdx + "PxSize", sf::Glsl::Vec2(size));
     }
 
-    // Decode each floor, layers below the player
-    uint16_t nbLayersDone = 0;
+
+    const uint16_t w = map.width();
+    const uint16_t h = map.height();
+    const sf::Color neutralColor(255, 255, 0);
+
+    // Create below/above textures
     for (auto& floor : map.floors()) {
+        sf::Image tileMapBelow;
+        sf::Image tileMapAbove;
+        tileMapBelow.create(w, h, neutralColor);
+        tileMapAbove.create(w, h, neutralColor);
         auto& layers = floor->graphicLayers();
-        m_firstLayerIdx.push_back(nbLayersDone);
-        m_abovePlayerIdx.push_back(nbLayersDone + Dummy::Floor::INF_LAYERS_COUNT);
 
         const uint8_t nbLayers = static_cast<uint8_t>(layers.size());
         for (uint8_t i = 0; i < nbLayers; ++i) {
-            addLayer(layers[i], m_floors, chipIdToIdx);
+            if (i < Dummy::Floor::INF_LAYERS_COUNT)
+                layerToImage(layers[i], tileMapBelow, chipIdToIdx);
+            else
+                layerToImage(layers[i], tileMapAbove, chipIdToIdx);
         }
-        nbLayersDone += nbLayers;
+
+        sf::Texture texBelow;
+        sf::Texture texAbove;
+        texBelow.loadFromImage(tileMapBelow);
+        texAbove.loadFromImage(tileMapAbove);
+        m_tilemaps.push_back(texBelow);
+        m_tilemaps.push_back(texAbove);
     }
 
-    m_mapSprite.setTexture(m_floors[0]);
+    m_mapSprite.setTexture(m_tilemaps[0]);
     m_mapSprite.setScale(TILE_SIZE * m_zoom, TILE_SIZE * m_zoom);
 }
 
 void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)
 {
-    if (playerFloor >= m_abovePlayerIdx.size())
+    size_t nbTexturesBelow = playerFloor * 2 + 1;
+    if (nbTexturesBelow >= m_tilemaps.size())
         return;
 
-    m_mutex.lock();
-
-    const size_t nbLayersBelow = m_abovePlayerIdx[playerFloor];
-
-    for (size_t fIdx = 0; fIdx < nbLayersBelow; ++fIdx) {
-        m_mapShader.setUniform("tilemap", m_floors[fIdx]);
+    for (size_t fIdx = 0; fIdx < nbTexturesBelow; ++fIdx) {
+        m_mapShader.setUniform("tilemap", m_tilemaps[fIdx]);
         renderWindow.draw(m_mapSprite, &m_mapShader);
     }
-    m_mutex.unlock();
 }
 
 void MapRender::renderAbove(sf::RenderWindow& renderWindow, uint8_t playerFloor)
 {
-    if (playerFloor >= m_abovePlayerIdx.size())
+    size_t nbTexturesBelow = playerFloor * 2 + 1;
+    if (nbTexturesBelow >= m_tilemaps.size())
         return;
 
-    m_mutex.lock();
-
-    const size_t nbLayersBelow = m_abovePlayerIdx[playerFloor];
-    uint16_t nextFloor         = playerFloor;
-    ++nextFloor;
-    const size_t nextFloorLayer =
-        (nextFloor >= m_firstLayerIdx.size()) ? m_floors.size() : m_firstLayerIdx[nextFloor];
-
-    for (size_t fIdx = nbLayersBelow; fIdx < nextFloorLayer; ++fIdx) {
-        m_mapShader.setUniform("tilemap", m_floors[fIdx]);
-        renderWindow.draw(m_mapSprite, &m_mapShader);
-    }
-    m_mutex.unlock();
+    m_mapShader.setUniform("tilemap", m_tilemaps[nbTexturesBelow]);
+    renderWindow.draw(m_mapSprite, &m_mapShader);
 }
 
-void MapRender::addLayer(const Dummy::GraphicLayer& layer, std::vector<sf::Texture>& floorList,
-                         const std::map<chip_id, uint8_t>& idMapping)
+void MapRender::layerToImage(const Dummy::GraphicLayer& lay, sf::Image& img,
+                             const std::map<chip_id, uint8_t>& idMap)
 {
-    m_mutex.lock();
+    const uint16_t w = lay.width();
+    const uint16_t h = lay.height();
 
-    uint16_t w = layer.width();
-    uint16_t h = layer.height();
-
-    sf::Image tileMapImage;
-    tileMapImage.create(w, h);
     for (uint16_t y = 0; y < h; ++y) {
         for (uint16_t x = 0; x < w; ++x) {
-            tileaspect val = layer.at({x, y});
-            uint8_t chipx  = std::get<0>(val);
-            uint8_t chipy  = std::get<1>(val);
+            tileaspect val = lay.at({x, y});
+            if (val.x == undefAspect.x || val.y == undefAspect.y)
+                continue;
 
-            uint8_t chipId       = std::get<2>(val);
-            uint8_t chipLocalIdx = 0;
-            if (idMapping.find(chipId) != idMapping.end())
-                chipLocalIdx = idMapping.at(std::get<2>(val));
+            if (idMap.find(val.chipId) == idMap.end())
+                continue;
 
-            sf::Color tileIndex(chipx, chipy, chipLocalIdx);
-            tileMapImage.setPixel(x, y, tileIndex);
+            uint8_t chipLocalIdx = idMap.at(val.chipId);
+            sf::Color tileIndex(val.x, val.y, chipLocalIdx);
+            img.setPixel(x, y, tileIndex);
         }
     }
-
-    sf::Texture textu;
-    textu.loadFromImage(tileMapImage);
-    floorList.push_back(textu);
-    m_mutex.unlock();
 }
 
 } // namespace DummyPlayer
