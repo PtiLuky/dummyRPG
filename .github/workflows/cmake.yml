@@ -46,10 +46,12 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE
+      run: |
+        export LIBS_PATH=$(echo ${{runner.workspace}} | sed 's/\\/\//g')
+        cmake $GITHUB_WORKSPACE
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-        -DSFML_DIR:PATH=${{runner.workspace}}/libs/SFML-2.5.1/lib/cmake/SFML
-        -DSFML_ROOT:PATH=${{runner.workspace}}/libs/SFML-2.5.1
+        -DSFML_DIR:PATH=${{LIBS_PATH}}/libs/SFML-2.5.1/lib/cmake/SFML
+        -DSFML_ROOT:PATH=${{LIBS_PATH}}/libs/SFML-2.5.1
   
     - name: Build
       working-directory: ${{runner.workspace}}/build
@@ -73,9 +75,6 @@ jobs:
         cd libs
         wget -O SFML-2.5.1.zip "https://www.sfml-dev.org/files/SFML-2.5.1-linux-gcc-64-bit.tar.gz"
         tar -xf SFML-2.5.1.zip
-        ls .
-        ls ..
-        ls SFML-2.5.1
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
