@@ -109,6 +109,11 @@ jobs:
       shell: bash
       run: ./dummyRPG/main_tests -r junit > output-tests.txt
 
+    - name: Coverage
+      working-directory: ${{runner.workspace}}/build
+      shel: bash
+      run: make gcov > gcov.txt
+
     - name: Sonar scanner
       env:
         SONAR_SCANNER_OPTS: -server
