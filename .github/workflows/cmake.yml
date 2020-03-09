@@ -111,7 +111,7 @@ jobs:
 
     - name: Coverage
       working-directory: ${{runner.workspace}}/build
-      shel: bash
+      shell: bash
       run: make gcov > gcov.txt
 
     - name: Sonar scanner
