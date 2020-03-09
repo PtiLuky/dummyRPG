@@ -38,9 +38,6 @@ add_executable(main_tests
 )
 target_link_libraries(main_tests dummyrpg)
 
-# Create the executable
-add_executable(tests tests/main_tests.cpp)
-
 # Create the gcov target. Run coverage tests with 'make gcov'
 add_custom_target(gcov
     COMMAND mkdir -p coverage
@@ -53,7 +50,7 @@ add_custom_command(TARGET gcov
     COMMAND echo "-- Coverage files have been output to ${CMAKE_BINARY_DIR}/coverage"
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/coverage
     )
-add_dependencies(gcov tests)
+add_dependencies(gcov main_tests)
 
 # Testing
 enable_testing()
