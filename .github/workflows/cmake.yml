@@ -104,7 +104,7 @@ jobs:
     - name: Install gcov
       shell: bash
       working-directory: ${{runner.workspace}}
-      run: apt-get install -y gcovr
+      run: sudo apt-get install -y gcovr
 
 
     - name: Build with sonar observer
