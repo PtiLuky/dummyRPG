@@ -100,7 +100,13 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSFML_DIR:PATH=${{runner.workspace}}/libs/SFML-2.5.1/lib/cmake/SFML -DSFML_ROOT:PATH=${{runner.workspace}}/libs/SFML-2.5.1
-  
+ 
+    - name: Install gcov
+      shell: bash
+      working-directory: ${{runner.workspace}}
+      run: apt-get install -y gcovr
+
+
     - name: Build with sonar observer
       working-directory: ${{runner.workspace}}/build
       shell: bash
