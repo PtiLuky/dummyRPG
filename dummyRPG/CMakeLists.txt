@@ -3,8 +3,6 @@ project(dummy)
 
 # Specify C++ version
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
-set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
 ###############################################################################
 # Library files
@@ -27,7 +25,7 @@ target_include_directories(dummyrpg PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
 if(MSVC)
   target_compile_options(dummyrpg PRIVATE /W4 /w14640)
 else()
-  target_compile_options(dummyrpg PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic)
+  target_compile_options(dummyrpg PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -fprofile-arcs -ftest-coverage)
 endif()
 
 ###############################################################################
@@ -38,10 +36,9 @@ add_executable(main_tests
 )
 target_link_libraries(main_tests dummyrpg)
 
-# Create the executable
-add_executable(cov_tests tests/main_tests.cpp)
-target_link_libraries(cov_tests dummyrpg)
 
+###############################################################################
+# Coverage
 
 # Create the gcov target. Run coverage tests with 'make gcov'
 add_custom_target(gcov
@@ -55,7 +52,19 @@ add_custom_command(TARGET gcov
     COMMAND echo "-- Coverage files have been output to ${CMAKE_BINARY_DIR}/coverage"
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/coverage
     )
-add_dependencies(gcov cov_tests)
+add_dependencies(gcov main_tests)
+
+#Make sure to clean up the coverage folder
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES coverage)
+
+# Create the gcov-clean target. This cleans the build as well as generated
+# .gcda and .gcno files.
+add_custom_target(scrub
+    COMMAND ${CMAKE_MAKE_PROGRAM} clean
+    COMMAND rm -f ${OBJECT_DIR}/*.gcno
+    COMMAND rm -f ${OBJECT_DIR}/*.gcda
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 
 # Testing
 enable_testing()
