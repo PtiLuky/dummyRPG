@@ -48,8 +48,10 @@ add_custom_target(gcov
     )
 add_custom_command(TARGET gcov
     COMMAND echo "=================== GCOV ===================="
-    COMMAND find -name "*.gcno"
-    COMMAND find -name "*.gcna"
+    COMMAND find -name "*.gcno" > gcn.txt
+    COMMAND cat gcn.txt
+    COMMAND find -name "*.gcna" > gcn.txt
+    COMMAND cat gcn.txt
     #COMMAND gcov --branch-probabilities ${CMAKE_SOURCE_DIR}/*.cpp --object_directory DIR ${OBJECT_DIR}
     COMMAND echo "-- Coverage files have been output to ${CMAKE_BINARY_DIR}/coverage"
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/coverage
