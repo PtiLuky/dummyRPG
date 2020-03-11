@@ -106,10 +106,15 @@ jobs:
       working-directory: ${{runner.workspace}}
       run: sudo apt-get install -y gcovr
 
-    - name: Run tests
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: ./dummyRPG/main_tests -r junit > output-tests.txt
+#    - name: Build with sonar observer
+#      working-directory: ${{runner.workspace}}/build
+#      shell: bash
+#      run: $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output cmake --build . --config $BUILD_TYPE
+
+#    - name: Run tests
+#      working-directory: ${{runner.workspace}}/build
+#      shell: bash
+#      run: ./dummyRPG/main_tests -r junit > output-tests.txt
 
     - name: Coverage
       working-directory: ${{runner.workspace}}/build
