@@ -3,8 +3,6 @@ project(dummy)
 
 # Specify C++ version
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
-set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
 ###############################################################################
 # Library files
@@ -27,7 +25,7 @@ target_include_directories(dummyrpg PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
 if(MSVC)
   target_compile_options(dummyrpg PRIVATE /W4 /w14640)
 else()
-  target_compile_options(dummyrpg PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic)
+  target_compile_options(dummyrpg PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -fprofile-arcs -ftest-coverage)
 endif()
 
 ###############################################################################
