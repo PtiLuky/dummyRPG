@@ -43,7 +43,7 @@ target_link_libraries(main_tests dummyrpg)
 # Create the gcov target. Run coverage tests with 'make gcov'
 add_custom_target(gcov
     COMMAND mkdir -p coverage
-    COMMAND ${CMAKE_MAKE_PROGRAM} test
+    COMMAND ${CMAKE_MAKE_PROGRAM} main_tests
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 add_custom_command(TARGET gcov
