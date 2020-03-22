@@ -1,10 +1,11 @@
-#ifndef DUMMYRPG_MAPRENDER
-#define DUMMYRPG_MAPRENDER
+#ifndef DUMMYRPG_MAPRENDER_HPP
+#define DUMMYRPG_MAPRENDER_HPP
 
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
 #include <vector>
 
+#include "dummyrpg/dummy_types.hpp"
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/layer.hpp"
 
@@ -39,18 +40,19 @@ class MapRender
 public:
     ///
     /// \brief MapRender objects construction needs a Map and the Game where it belongs
-    ///
     MapRender(const Dummy::Map&, const Dummy::Game&);
+
     /// \brief renderBelow Render all the floor below the playerFloor, and only layers
     /// below the player for the current floor
     /// \param playerFloor the index of the current floor
     void renderBelow(sf::RenderWindow&, uint8_t playerFloor);
+
     /// \brief renderBelow Render only layers above the player for the current floor
     /// \param playerFloor the index of the current floor
     void renderAbove(sf::RenderWindow&, uint8_t playerFloor);
 
 private:
-    void layerToImage(const Dummy::GraphicLayer&, sf::Image&, const std::map<chip_id, uint8_t>&);
+    void layerToImage(const Dummy::GraphicLayer&, sf::Image&, const std::map<Dummy::chip_id, uint8_t>&);
 
 private:
     float m_zoom = 2.F;
@@ -63,4 +65,4 @@ private:
 
 } // namespace DummyPlayer
 
-#endif // DUMMYRPG_MAPRENDER
+#endif // DUMMYRPG_MAPRENDER_HPP

@@ -27,14 +27,14 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
     if (! m_mapShader.loadFromFile("Resources/tilemap.vert", "Resources/tilemap.frag"))
         throw MapRenderError("Could not load shader programs");
 
-    std::map<chip_id, uint8_t> chipIdToIdx;
+    std::map<Dummy::chip_id, uint8_t> chipIdToIdx;
 
     // Read chipsets, and keep the change of indices
     const uint8_t nbChips = static_cast<uint8_t>(map.chipsetsUsed().size());
     for (uint8_t i = 0; i < nbChips; ++i) {
-        chip_id chipId = map.chipsetsUsed()[i];
+        Dummy::chip_id chipId = map.chipsetsUsed()[i];
         sf::Texture chipTex;
-        std::string path = game.m_chipsetPaths.at(chipId);
+        std::string path = game.chipsetPaths.at(chipId);
         if (! chipTex.loadFromFile(path))
             throw MapRenderError("Could not load a chipset texture: " + path);
 
@@ -82,7 +82,7 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
     }
 
     m_mapSprite.setTexture(m_tilemaps[0]);
-    m_mapSprite.setScale(TILE_SIZE * m_zoom, TILE_SIZE * m_zoom);
+    m_mapSprite.setScale(Dummy::TILE_SIZE * m_zoom, Dummy::TILE_SIZE * m_zoom);
 }
 
 void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)
@@ -120,22 +120,22 @@ void MapRender::renderAbove(sf::RenderWindow& renderWindow, uint8_t playerFloor)
 }
 
 void MapRender::layerToImage(const Dummy::GraphicLayer& lay, sf::Image& img,
-                             const std::map<chip_id, uint8_t>& idMap)
+                             const std::map<Dummy::chip_id, uint8_t>& idMap)
 {
     const uint16_t w = lay.width();
     const uint16_t h = lay.height();
 
     for (uint16_t y = 0; y < h; ++y) {
         for (uint16_t x = 0; x < w; ++x) {
-            Tileaspect val = lay.at({x, y});
-            if (val.m_x == undefAspect.m_x || val.m_y == undefAspect.m_y)
+            Dummy::Tileaspect val = lay.at({x, y});
+            if (val.x == Dummy::undefAspect.x || val.y == Dummy::undefAspect.y)
                 continue;
 
-            if (idMap.find(val.m_chipId) == idMap.end())
+            if (idMap.find(val.chipId) == idMap.end())
                 continue;
 
-            uint8_t chipLocalIdx = idMap.at(val.m_chipId);
-            sf::Color tileIndex(val.m_x, val.m_y, chipLocalIdx);
+            uint8_t chipLocalIdx = idMap.at(val.chipId);
+            sf::Color tileIndex(val.x, val.y, chipLocalIdx);
             img.setPixel(x, y, tileIndex);
         }
     }

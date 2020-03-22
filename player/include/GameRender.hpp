@@ -1,5 +1,5 @@
-#ifndef DUMMYRPG_GAMERENDER
-#define DUMMYRPG_GAMERENDER
+#ifndef DUMMYRPG_GAMERENDER_HPP
+#define DUMMYRPG_GAMERENDER_HPP
 
 #include "MapRender.hpp"
 
@@ -38,4 +38,4 @@ private:
 
 } // namespace DummyPlayer
 
-#endif // DUMMYRPG_GAMERENDER
+#endif // DUMMYRPG_GAMERENDER_HPP

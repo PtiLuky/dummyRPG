@@ -51,7 +51,7 @@ TEST_CASE("Construct Layers", "[layer]")
         Dummy::Layer<uint8_t> l(1024, 1024, 42);
         REQUIRE(l.width() == 1024);
         REQUIRE(l.height() == 1024);
-        REQUIRE(l.size() == 1024*1024);
+        REQUIRE(l.size() == 1024 * 1024);
     }
 
     SECTION("Overflow")
@@ -75,7 +75,7 @@ TEST_CASE("Layers set", "[layer")
         REQUIRE_FALSE(l.areCoordValid({0, 10}));
         REQUIRE_FALSE(l.areCoordValid({10, 0}));
         REQUIRE_FALSE(l.areCoordValid({10, 10}));
-        REQUIRE_FALSE(l.areCoordValid({-1, 0}));
+        REQUIRE_FALSE(l.areCoordValid({static_cast<uint16_t>(-1), 0}));
     }
 
     SECTION("Set")

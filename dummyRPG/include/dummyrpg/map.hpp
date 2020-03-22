@@ -1,5 +1,5 @@
-#ifndef DUMMYRPG_MAP
-#define DUMMYRPG_MAP
+#ifndef DUMMYRPG_MAP_HPP
+#define DUMMYRPG_MAP_HPP
 
 #include <memory>
 #include <vector>
@@ -59,4 +59,4 @@ private:
 
 } // namespace Dummy
 
-#endif // DUMMYRPG_MAP
+#endif // DUMMYRPG_MAP_HPP

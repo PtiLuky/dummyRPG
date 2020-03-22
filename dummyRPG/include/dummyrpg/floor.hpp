@@ -1,5 +1,5 @@
-#ifndef DUMMYRPG_FLOOR
-#define DUMMYRPG_FLOOR
+#ifndef DUMMYRPG_FLOOR_HPP
+#define DUMMYRPG_FLOOR_HPP
 
 #include "dummyrpg/layer.hpp"
 
@@ -65,4 +65,4 @@ private:
 
 } // namespace Dummy
 
-#endif // DUMMYRPG_FLOOR
+#endif // DUMMYRPG_FLOOR_HPP

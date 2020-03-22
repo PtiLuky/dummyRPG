@@ -1,5 +1,5 @@
-#ifndef DUMMYRPG_LAYER
-#define DUMMYRPG_LAYER
+#ifndef DUMMYRPG_LAYER_HPP
+#define DUMMYRPG_LAYER_HPP
 
 #include <vector>
 
@@ -55,29 +55,29 @@ public:
     /// \param coords Coordinates where to read value. Must be valid.
     /// \return value read
     ///
-    T at(tilecoords coords) const
+    T at(Tilecoords coords) const
     {
-        uint32_t rowIdx = coords.second; // use uint32_t to avoid uint16 overflow
-        return m_content[coords.first + rowIdx * m_width];
+        uint32_t rowIdx = coords.y; // use uint32_t to avoid uint16 overflow
+        return m_content[coords.x + rowIdx * m_width];
     }
     ///
     /// \brief set Set value at coordinates
     /// \param coords Coordinates where to write value. Must be valid.
     /// \param val Value to write.
     ///
-    void set(tilecoords coords, T val)
+    void set(Tilecoords coords, T val)
     {
-        uint32_t rowIdx                            = coords.second;
-        m_content[coords.first + rowIdx * m_width] = val;
+        uint32_t rowIdx                          = coords.y;
+        m_content[coords.x + rowIdx * m_width] = val;
     }
     ///
     /// \brief areCoordValid check if coordinates are valid
     /// \param coords coords to check
     /// \return true if valid
     ///
-    bool areCoordValid(tilecoords coords)
+    bool areCoordValid(Tilecoords coords)
     {
-        return (coords.first < m_width && coords.second < m_height);
+        return (coords.x < m_width && coords.y < m_height);
     }
 
 private:
@@ -95,4 +95,4 @@ using BlockingLayer = Layer<bool>;
 
 } // namespace Dummy
 
-#endif // DUMMYRPG_LAYER
+#endif // DUMMYRPG_LAYER_HPP

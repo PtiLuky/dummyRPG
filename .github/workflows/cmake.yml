@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: "Windows"
+          - name: "Windows (build)"
             os: windows-latest
             sfmlbin: "https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip"
             archvieName: "SFML-2.5.1.zip"
@@ -65,7 +65,7 @@ jobs:
       
   # Build for windows and mac (without sonar scanner)
   build-linux:
-    name: "Build linux and Sonar scan"
+    name: " Linux (build) and Sonar scan"
     runs-on: [ubuntu-latest]
       
     steps:        

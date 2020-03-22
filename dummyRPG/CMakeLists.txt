@@ -8,15 +8,17 @@ set(CMAKE_CXX_STANDARD 17)
 # Library files
 
 add_library(dummyrpg STATIC
+    include/dummyrpg/character.hpp
     include/dummyrpg/dummy_types.hpp
     include/dummyrpg/floor.hpp
+    include/dummyrpg/item.hpp
     include/dummyrpg/layer.hpp
     include/dummyrpg/map.hpp
     include/dummyrpg/game.hpp
+    include/dummyrpg/sprite.hpp
 
     src/floor.cpp
     src/map.cpp
-    src/game.cpp
 )
 
 target_include_directories(dummyrpg PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

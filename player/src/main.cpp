@@ -11,16 +11,16 @@ static const int WIN_FPS    = 30;
 
 ///////////////////////////////////////////////////////////////////////////////
 // This method is to be deleted later, so yes it's dirty, and no I don't want to see all
-// related warnings about tuple casting loose of precision
+// related warnings about tuple casting loose of precision (msvc 4244)
 #pragma warning(push)
 #pragma warning(disable : 4244)
 static Game createFakeGame()
 {
-    const chip_id fkId     = 42;
+    const Dummy::chip_id fkId     = 42;
     const uint16_t mapSize = 30;
 
     Game game;
-    game.m_chipsetPaths.insert({fkId, "Resources/chip1.png"});
+    game.chipsetPaths.insert({fkId, "Resources/chip1.png"});
     auto pMap   = std::make_unique<Dummy::Map>(mapSize, mapSize, fkId);
     auto* floor = pMap->floorAt(0);
     for (uint16_t x = 0; x < mapSize; ++x)
@@ -38,7 +38,7 @@ static Game createFakeGame()
     floor->graphicLayerAt(2).set({2, 1}, {1, 1, fkId});
     floor->graphicLayerAt(2).set({4, 4}, {0, 0, fkId});
 
-    game.m_maps.insert(std::make_pair(0, std::move(pMap)));
+    game.maps.insert(std::make_pair(0, std::move(pMap)));
     return game;
 }
 #pragma warning(pop)
@@ -54,7 +54,7 @@ int main()
     window.setFramerateLimit(WIN_FPS);
 
     DummyPlayer::GameRender renderer(window);
-    renderer.setMap(*game.m_maps[0], game);
+    renderer.setMap(*game.maps[0], game);
 
     // deactivate its OpenGL context
     window.setActive(false);
