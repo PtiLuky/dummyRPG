@@ -4,6 +4,7 @@
 #include "utils.hpp"
 
 namespace Dummy {
+Map::Map() {}
 Map::Map(uint16_t w, uint16_t h, chip_id firstChip)
     : m_chipsets({firstChip})
 {
@@ -11,6 +12,13 @@ Map::Map(uint16_t w, uint16_t h, chip_id firstChip)
 }
 
 Map::~Map() {}
+
+void Map::reset(uint16_t w, uint16_t h, chip_id firstChip)
+{
+    m_chipsets = {firstChip};
+    m_floors.clear();
+    m_floors.push_back(std::make_unique<Floor>(w, h));
+}
 
 uint16_t Map::width() const
 {

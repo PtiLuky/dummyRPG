@@ -25,10 +25,16 @@ class Floor;
 ///
 class Map
 {
+    friend class Serializer;
+
 public:
+    Map();
     Map(uint16_t w, uint16_t h, chip_id firstChip);
     Map(const Map&) = delete;
+    Map(Map&&)      = default;
     ~Map();
+
+    void reset(uint16_t w, uint16_t h, chip_id firstChip);
 
     /////////////////////////////////////
     // const Getters

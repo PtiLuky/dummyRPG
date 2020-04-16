@@ -1,29 +1,40 @@
 #ifndef DUMMYRPG_CHARACTER_HPP
 #define DUMMYRPG_CHARACTER_HPP
 
-#include "dummyrpg/dummy_types.hpp"
-
 #include <string>
+#include <map>
+
+#include "dummyrpg/dummy_types.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace Dummy {
 
-enum class Direction
-{
-    Top = 0,
-    Right,
-    Bottom,
-    Left
-};
-
 ///////////////////////////////////////////////////////////////////////////////
 
 struct Character
 {
-    Tilecoords pos;
-    Direction dir;
+    std::string name;
     sprite_id spriteSheetId;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+struct CharacterInstance
+{
+    char_id charId;
+    xy pos;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+struct PlayerInstance
+{
+    std::string name;
+    sprite_id spriteId;
+    xy pos;
+
+    std::map<item_id, uint16_t> bag;
 };
 
 } // namespace Dummy

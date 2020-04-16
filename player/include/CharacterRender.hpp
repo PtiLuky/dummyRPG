@@ -2,19 +2,41 @@
 #define DUMMYRPG_CHARACTERRENDER_HPP
 
 #include <SFML/Graphics.hpp>
+#include <stdexcept>
 
-#include "dummyrpg/character.hpp"
+#include "dummyrpg/game.hpp"
 
-namespace DummyPlayer {}
-class CharacterRender
+namespace DummyPlayer {
+class GameRender;
+///////////////////////////////////////////////////////////////////////////////
+
+/// \brief MapRenderError: some error related to the MapRendering
+class CharacterRenderError : public std::runtime_error
 {
 public:
-    explicit CharacterRender(const Dummy::Character&);
+    explicit CharacterRenderError(const std::string& msg)
+        : std::runtime_error(msg)
+    {}
+};
 
-    void updatePosDir(const Dummy::Character&); ///< update position and direction
+///////////////////////////////////////////////////////////////////////////////
+
+class PlayerRender
+{
+public:
+    explicit PlayerRender(const Dummy::PlayerInstance&, const GameRender&);
 
     void render(sf::RenderWindow&);
+
+private:
+    const Dummy::PlayerInstance& m_playerRef;
+    const Dummy::AnimatedSprite& m_spriteRef;
+
+    const GameRender& m_gameRender;
+
+    sf::Texture m_texture;
+    sf::Sprite m_sprite;
 };
-}
+} // namespace DummyPlayer
 
 #endif // DUMMYRPG_CHARACTERRENDER_HPP

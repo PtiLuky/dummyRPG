@@ -14,11 +14,14 @@ add_library(dummyrpg STATIC
     include/dummyrpg/item.hpp
     include/dummyrpg/layer.hpp
     include/dummyrpg/map.hpp
+    include/dummyrpg/monster.hpp
     include/dummyrpg/game.hpp
+    include/dummyrpg/serialize.hpp
     include/dummyrpg/sprite.hpp
 
     src/floor.cpp
     src/map.cpp
+    src/serialize.cpp
 )
 
 target_include_directories(dummyrpg PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

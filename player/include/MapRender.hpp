@@ -5,12 +5,11 @@
 #include <stdexcept>
 #include <vector>
 
-#include "dummyrpg/dummy_types.hpp"
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/layer.hpp"
 
 namespace DummyPlayer {
-
+class GameRender;
 ///////////////////////////////////////////////////////////////////////////////
 
 /// \brief MapRenderError: some error related to the MapRendering
@@ -40,7 +39,7 @@ class MapRender
 public:
     ///
     /// \brief MapRender objects construction needs a Map and the Game where it belongs
-    MapRender(const Dummy::Map&, const Dummy::Game&);
+    MapRender(const Dummy::Map&, const GameRender&);
 
     /// \brief renderBelow Render all the floor below the playerFloor, and only layers
     /// below the player for the current floor
@@ -55,7 +54,8 @@ private:
     void layerToImage(const Dummy::GraphicLayer&, sf::Image&, const std::map<Dummy::chip_id, uint8_t>&);
 
 private:
-    float m_zoom = 2.F;
+    const GameRender& m_gameRender;
+
     sf::Shader m_mapShader;
     sf::Sprite m_mapSprite;
     std::vector<sf::Texture> m_tilemaps; ///< Each floor has up to 6 textures,

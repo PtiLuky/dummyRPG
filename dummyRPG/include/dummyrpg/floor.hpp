@@ -23,6 +23,8 @@ namespace Dummy {
 ///
 class Floor
 {
+    friend class Serializer;
+
 public:
     ///
     /// \brief Floor create a floor with by default :

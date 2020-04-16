@@ -1,28 +1,34 @@
 #include "MapRender.hpp"
 
+#include <fstream>
+
 #include "GameRender.hpp"
 #include "dummyrpg/floor.hpp"
 #include "dummyrpg/game.hpp"
+#include "dummyrpg/serialize.hpp"
 
-using Dummy::Game;
+using Dummy::GameInstanceData;
+using Dummy::GameStaticData;
 static const int WIN_WIDTH  = 600;
 static const int WIN_HEIGHT = 600;
-static const int WIN_FPS    = 30;
+static const int WIN_FPS    = 12;
 
 ///////////////////////////////////////////////////////////////////////////////
 // This method is to be deleted later, so yes it's dirty, and no I don't want to see all
 // related warnings about tuple casting loose of precision (msvc 4244)
 #pragma warning(push)
 #pragma warning(disable : 4244)
-static Game createFakeGame()
+static GameStaticData createFakeGame()
 {
-    const Dummy::chip_id fkId     = 42;
-    const uint16_t mapSize = 30;
+    const Dummy::chip_id fkId = 0;
+    const uint16_t mapSize    = 30;
 
-    Game game;
-    game.chipsetPaths.insert({fkId, "Resources/chip1.png"});
-    auto pMap   = std::make_unique<Dummy::Map>(mapSize, mapSize, fkId);
-    auto* floor = pMap->floorAt(0);
+    GameStaticData game;
+
+    // Create a map :)
+    game.chipsetPaths.push_back("Resources/chip1.png");
+    Dummy::Map map(mapSize, mapSize, fkId);
+    auto* floor = map.floorAt(0);
     for (uint16_t x = 0; x < mapSize; ++x)
         for (uint16_t y = 0; y < mapSize; ++y)
             floor->graphicLayerAt(0).set({x, y}, {0, 0, fkId});
@@ -38,8 +44,26 @@ static Game createFakeGame()
     floor->graphicLayerAt(2).set({2, 1}, {1, 1, fkId});
     floor->graphicLayerAt(2).set({4, 4}, {0, 0, fkId});
 
-    game.maps.insert(std::make_pair(0, std::move(pMap)));
+    game.maps.push_back(std::move(map));
+
+    // Create sprite
+    Dummy::AnimatedSprite perso1;
+    perso1.imgPath  = "Resources/bluewarrior.png";
+    perso1.width    = 24;
+    perso1.height   = 32;
+    perso1.nbFrames = 3;
+    game.sprites.push_back(perso1);
+
     return game;
+}
+static GameInstanceData createFakeGameInstance()
+{
+    GameInstanceData gameInstance;
+    gameInstance.player.name     = "Toto";
+    gameInstance.player.pos      = {5, 5};
+    gameInstance.player.spriteId = 0;
+
+    return gameInstance;
 }
 #pragma warning(pop)
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,15 +72,16 @@ static Game createFakeGame()
 
 int main()
 {
-    Game game = createFakeGame();
+    GameStaticData game           = createFakeGame();
+    GameInstanceData gameInstance = createFakeGameInstance();
 
     sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "My super game");
     window.setFramerateLimit(WIN_FPS);
 
-    DummyPlayer::GameRender renderer(window);
-    renderer.setMap(*game.maps[0], game);
+    DummyPlayer::GameRender renderer(game, gameInstance, window);
+    renderer.setMap(game.maps[0]);
 
-    // deactivate its OpenGL context
+    // deactivate its OpenGL context to give it to the rendering thread
     window.setActive(false);
 
     // launch the rendering thread

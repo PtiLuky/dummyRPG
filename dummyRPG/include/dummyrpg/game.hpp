@@ -4,7 +4,9 @@
 #include <map>
 
 #include "dummyrpg/character.hpp"
+#include "dummyrpg/item.hpp"
 #include "dummyrpg/map.hpp"
+#include "dummyrpg/monster.hpp"
 #include "dummyrpg/sprite.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,13 +14,28 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct Game
+struct GameStaticData
 {
-    std::map<uint16_t, std::unique_ptr<Map>> maps;
-    std::map<char_id, Character> characters;
+    uint64_t version;
+    std::string name;
+    std::vector<Map> maps;
 
-    std::map<chip_id, std::string> chipsetPaths;
-    std::map<sprite_id, AnimatedSprite> spriteSheetPaths;
+    std::vector<Item> items;
+
+    std::vector<Character> characters;
+    std::vector<Monster> monsters;
+
+    std::vector<std::string> chipsetPaths;
+    std::vector<AnimatedSprite> sprites;
+
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+struct GameInstanceData
+{
+    PlayerInstance player;
 };
 
 } // namespace Dummy

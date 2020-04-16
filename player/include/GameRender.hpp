@@ -1,6 +1,7 @@
 #ifndef DUMMYRPG_GAMERENDER_HPP
 #define DUMMYRPG_GAMERENDER_HPP
 
+#include "CharacterRender.hpp"
 #include "MapRender.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,15 +26,28 @@ public:
     /// \param window the current rendering windows. Must have a longer
     /// lifespan than this object.
     ///
-    explicit GameRender(sf::RenderWindow& window);
+    explicit GameRender(const Dummy::GameStaticData&, const Dummy::GameInstanceData&,
+                        sf::RenderWindow& window);
 
-    void setMap(const Dummy::Map&, const Dummy::Game&); ///< set the current map
-    void renderingThread();                             ///< method to call in the rendering thread
+    const Dummy::GameStaticData& game() const { return m_game; }
+    const float zoom() const { return m_zoom; }
+    const sf::Vector2i offset() const { return m_mapOffset; }
+
+    void setMap(const Dummy::Map&); ///< set the current map
+    void renderingThread();         ///< method to call in the rendering thread
 
 private:
     sf::Mutex m_mutex;
+    sf::Clock m_clock;
     sf::RenderWindow& m_window;
     std::unique_ptr<MapRender> m_mapRender;
+    std::unique_ptr<PlayerRender> m_playerRender;
+
+    const Dummy::GameStaticData& m_game;
+    const Dummy::GameInstanceData& m_gameInstance;
+
+    float m_zoom = 2.F;
+    sf::Vector2i m_mapOffset;
 };
 
 } // namespace DummyPlayer

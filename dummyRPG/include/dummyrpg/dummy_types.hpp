@@ -13,6 +13,8 @@ using chip_id = uint8_t;
 using sprite_id = uint16_t;
 /// The id of an item. A game has 65'535 items max.
 using item_id = uint16_t;
+/// The id of a monster. A game has 65'535 monsters max.
+using monster_id = uint16_t;
 /// The id of an character. A game has 4'294'967'295 charaters max.
 using char_id = uint32_t;
 /// The id of an event. A game has 4'294'967'295 events max.
@@ -20,7 +22,7 @@ using event_id = uint32_t;
 
 
 /// tilecoords represents coordinates of a tile. As a pair of <x, y>
-struct Tilecoords
+struct xy
 {
     uint16_t x;
     uint16_t y;
@@ -32,6 +34,24 @@ struct Tileaspect
     uint8_t x;
     uint8_t y;
     chip_id chipId;
+};
+
+/// Attack curve, def curve, etc. This is a simplification with a 4-segments "curve"
+struct Curve
+{
+    uint8_t p0 = 0;
+    uint8_t p1 = 0;
+    uint8_t p2 = 0;
+    uint8_t p3 = 0;
+    uint8_t p4 = 0;
+};
+
+enum class Direction
+{
+    Top = 0,
+    Right,
+    Bottom,
+    Left
 };
 
 ///////////////////////////////////////////////////////////////////////////////

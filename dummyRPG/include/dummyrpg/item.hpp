@@ -10,8 +10,8 @@ namespace Dummy {
 
 struct Item
 {
-    sprite_id spriteSheetId;
     std::string name;
+    sprite_id spriteSheetId;
 };
 
 } // namespace Dummy

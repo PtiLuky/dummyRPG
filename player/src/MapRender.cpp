@@ -2,6 +2,7 @@
 
 #include <map>
 
+#include "GameRender.hpp"
 #include "dummyrpg/floor.hpp"
 
 ///
@@ -21,7 +22,8 @@
 
 namespace DummyPlayer {
 
-MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
+MapRender::MapRender(const Dummy::Map& map, const GameRender& gameRender)
+    : m_gameRender(gameRender)
 {
     // Load shader
     if (! m_mapShader.loadFromFile("Resources/tilemap.vert", "Resources/tilemap.frag"))
@@ -34,7 +36,7 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
     for (uint8_t i = 0; i < nbChips; ++i) {
         Dummy::chip_id chipId = map.chipsetsUsed()[i];
         sf::Texture chipTex;
-        std::string path = game.chipsetPaths.at(chipId);
+        std::string path = gameRender.game().chipsetPaths.at(chipId);
         if (! chipTex.loadFromFile(path))
             throw MapRenderError("Could not load a chipset texture: " + path);
 
@@ -82,7 +84,8 @@ MapRender::MapRender(const Dummy::Map& map, const Dummy::Game& game)
     }
 
     m_mapSprite.setTexture(m_tilemaps[0]);
-    m_mapSprite.setScale(Dummy::TILE_SIZE * m_zoom, Dummy::TILE_SIZE * m_zoom);
+    m_mapSprite.setScale(Dummy::TILE_SIZE * gameRender.zoom(),
+                         Dummy::TILE_SIZE * gameRender.zoom());
 }
 
 void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)
@@ -93,6 +96,9 @@ void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)
     size_t nbTexturesBelow = m_firstTexsIdx[playerFloor] + 2;
     if (nbTexturesBelow >= m_tilemaps.size())
         return; // Data corrupted ? Should not happen...
+
+    auto offset = m_gameRender.offset();
+    m_mapSprite.setPosition(offset.x, offset.y);
 
     for (size_t fIdx = 0; fIdx < nbTexturesBelow; ++fIdx) {
         m_mapShader.setUniform("tilemap", m_tilemaps[fIdx]);
@@ -108,6 +114,9 @@ void MapRender::renderAbove(sf::RenderWindow& renderWindow, uint8_t playerFloor)
     size_t nbTexturesBelow = m_firstTexsIdx[playerFloor] + 2;
     if (nbTexturesBelow >= m_tilemaps.size())
         return; // Data corrupted ? Should not happen...
+
+    auto offset = m_gameRender.offset();
+    m_mapSprite.setPosition(offset.x, offset.y);
 
     size_t nextFloorLayersIdx = m_tilemaps.size();
     if (playerFloor + 1 < m_firstTexsIdx.size())

@@ -20,6 +20,8 @@ const uint16_t MAX_LAYER_BORDER_SIZE = 1024;
 ///
 template <typename T> class Layer
 {
+    friend class Serializer;
+
 public:
     Layer() {}
 
@@ -49,13 +51,14 @@ public:
     uint16_t width() const { return m_width; }
     uint16_t height() const { return m_height; }
     size_t size() const { return m_content.size(); }
+    const char* data() const { return reinterpret_cast<const char*>(m_content.data()); }
 
     ///
     /// \brief at Get value at coordinates
     /// \param coords Coordinates where to read value. Must be valid.
     /// \return value read
     ///
-    T at(Tilecoords coords) const
+    T at(xy coords) const
     {
         uint32_t rowIdx = coords.y; // use uint32_t to avoid uint16 overflow
         return m_content[coords.x + rowIdx * m_width];
@@ -65,9 +68,9 @@ public:
     /// \param coords Coordinates where to write value. Must be valid.
     /// \param val Value to write.
     ///
-    void set(Tilecoords coords, T val)
+    void set(xy coords, T val)
     {
-        uint32_t rowIdx                          = coords.y;
+        uint32_t rowIdx                        = coords.y;
         m_content[coords.x + rowIdx * m_width] = val;
     }
     ///
@@ -75,10 +78,7 @@ public:
     /// \param coords coords to check
     /// \return true if valid
     ///
-    bool areCoordValid(Tilecoords coords)
-    {
-        return (coords.x < m_width && coords.y < m_height);
-    }
+    bool areCoordValid(xy coords) { return (coords.x < m_width && coords.y < m_height); }
 
 private:
     std::vector<T> m_content;
@@ -89,7 +89,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 using GraphicLayer  = Layer<Tileaspect>;
-using BlockingLayer = Layer<bool>;
+using BlockingLayer = Layer<uint8_t>;
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -11,6 +11,7 @@ find_package(SFML COMPONENTS graphics audio REQUIRED)
 # Package some resources
 set(RESOURCE_FILES
     temp_resources/chip1.png
+    temp_resources/bluewarrior.png
     Resources/tilemap.frag
     Resources/tilemap.vert
 )
