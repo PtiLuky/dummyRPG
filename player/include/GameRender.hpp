@@ -30,8 +30,8 @@ public:
                         sf::RenderWindow& window);
 
     const Dummy::GameStaticData& game() const { return m_game; }
-    const float zoom() const { return m_zoom; }
-    const sf::Vector2i offset() const { return m_mapOffset; }
+    const sf::Vector2i& offset() const { return m_mapOffset; }
+    float zoom() const { return m_zoom; }
 
     void setMap(const Dummy::Map&); ///< set the current map
     void renderingThread();         ///< method to call in the rendering thread

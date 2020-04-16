@@ -23,7 +23,6 @@ static const uint16_t TAG_CHARACTER_COUNT      = 0xdd05;
 static const uint16_t TAG_MONSTER_COUNT        = 0xdd06;
 static const uint16_t TAG_EVENT_COUNT          = 0xdd07;
 static const uint16_t TAG_CHIPSET_COUNT        = 0xdd08;
-static const uint16_t TAG_STATIC_SPRITE_COUNT  = 0xdd09;
 static const uint16_t TAG_DYNAMIC_SPRITE_COUNT = 0xdd0a;
 
 static const uint16_t TAG_END_OF_CONTENT = 0xddee;
@@ -157,8 +156,7 @@ std::string Serializer::readStr(std::istream& in)
 }
 template <typename T> void Serializer::readLayer(std::istream& in, Layer<T>& layer)
 {
-    in.read(const_cast<char*>(layer.data()),
-            static_cast<std::streamsize>(layer.size() * sizeof(T)));
+    in.read(layer.data(), static_cast<std::streamsize>(layer.size() * sizeof(T)));
 }
 
 bool Serializer::readMap(std::istream& in, Map& map)

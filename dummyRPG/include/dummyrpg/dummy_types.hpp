@@ -22,7 +22,7 @@ using event_id = uint32_t;
 
 
 /// tilecoords represents coordinates of a tile. As a pair of <x, y>
-struct xy
+struct Coord
 {
     uint16_t x;
     uint16_t y;

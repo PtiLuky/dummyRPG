@@ -23,7 +23,7 @@ struct Character
 struct CharacterInstance
 {
     char_id charId;
-    xy pos;
+    Coord pos;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ struct PlayerInstance
 {
     std::string name;
     sprite_id spriteId;
-    xy pos;
+    Coord pos;
 
     std::map<item_id, uint16_t> bag;
 };

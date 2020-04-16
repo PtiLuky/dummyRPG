@@ -52,13 +52,14 @@ public:
     uint16_t height() const { return m_height; }
     size_t size() const { return m_content.size(); }
     const char* data() const { return reinterpret_cast<const char*>(m_content.data()); }
+    char* data() { return reinterpret_cast<char*>(m_content.data()); }
 
     ///
     /// \brief at Get value at coordinates
     /// \param coords Coordinates where to read value. Must be valid.
     /// \return value read
     ///
-    T at(xy coords) const
+    T at(Coord coords) const
     {
         uint32_t rowIdx = coords.y; // use uint32_t to avoid uint16 overflow
         return m_content[coords.x + rowIdx * m_width];
@@ -68,7 +69,7 @@ public:
     /// \param coords Coordinates where to write value. Must be valid.
     /// \param val Value to write.
     ///
-    void set(xy coords, T val)
+    void set(Coord coords, T val)
     {
         uint32_t rowIdx                        = coords.y;
         m_content[coords.x + rowIdx * m_width] = val;
@@ -78,7 +79,7 @@ public:
     /// \param coords coords to check
     /// \return true if valid
     ///
-    bool areCoordValid(xy coords) { return (coords.x < m_width && coords.y < m_height); }
+    bool areCoordValid(Coord coords) { return (coords.x < m_width && coords.y < m_height); }
 
 private:
     std::vector<T> m_content;
