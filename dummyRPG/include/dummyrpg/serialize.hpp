@@ -24,12 +24,12 @@ public:
     static bool ParseSaveFromFile(std::istream&, GameInstanceData&);
 
 private:
-    static uint8_t Serializer::read1B(std::istream& in);
-    static uint16_t Serializer::read2B(std::istream& in);
-    static uint32_t Serializer::read4B(std::istream& in);
-    static uint64_t Serializer::read8B(std::istream& in);
-    static Curve Serializer::readCurve(std::istream& in);
-    static std::string Serializer::readStr(std::istream& in);
+    static uint8_t read1B(std::istream& in);
+    static uint16_t read2B(std::istream& in);
+    static uint32_t read4B(std::istream& in);
+    static uint64_t read8B(std::istream& in);
+    static Curve readCurve(std::istream& in);
+    static std::string readStr(std::istream& in);
     static bool readMap(std::istream& in, Map&);
     template <typename T> static void readLayer(std::istream& in, Layer<T>& layer);
 
