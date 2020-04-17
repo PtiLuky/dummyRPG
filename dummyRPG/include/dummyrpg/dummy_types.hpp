@@ -54,6 +54,14 @@ enum class Direction
     Left
 };
 
+enum class CharState
+{
+    Idle = 0,
+    Walking,
+    Attack,
+    Dead,
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 /// CONST definitions
 

@@ -37,8 +37,7 @@ struct PlayerInstance
     uint16_t mapId  = 0;
     uint8_t floorId = 0;
     Direction dir   = Direction::Bottom;
-
-    bool isMoving = false; // TODO replace this with a state enum
+    CharState state = CharState::Idle;
 
     std::map<item_id, uint16_t> bag;
 };

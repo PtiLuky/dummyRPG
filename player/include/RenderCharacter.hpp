@@ -36,6 +36,9 @@ private:
 
     sf::Texture m_texture;
     sf::Sprite m_sprite;
+
+    Dummy::CharState m_lastState = Dummy::CharState::Idle;
+    uint8_t m_lastFrame          = 0;
 };
 } // namespace DummyPlayer
 
