@@ -18,8 +18,8 @@ struct AnimatedSprite
     uint16_t height = 0; ///< height (px) of the sprite
 
     // Animation 1 (uses m_x and m_y)
-    uint16_t x = 0; ///< pos x (in px) of top-left corner
-    uint16_t y = 0; ///< pos y (in px) of top-left corner
+    uint16_t x       = 0; ///< pos x (in px) of top-left corner
+    uint16_t y       = 0; ///< pos y (in px) of top-left corner
     uint8_t nbFrames = 1;
 
     // Animation 2

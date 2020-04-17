@@ -1,8 +1,8 @@
 #ifndef DUMMYRPG_CHARACTER_HPP
 #define DUMMYRPG_CHARACTER_HPP
 
-#include <string>
 #include <map>
+#include <string>
 
 #include "dummyrpg/dummy_types.hpp"
 
@@ -15,15 +15,15 @@ namespace Dummy {
 struct Character
 {
     std::string name;
-    sprite_id spriteSheetId;
+    sprite_id spriteSheetId = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 struct CharacterInstance
 {
-    char_id charId;
-    Coord pos;
+    char_id charId = 0;
+    Coord pos      = {0, 0};
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,8 +31,14 @@ struct CharacterInstance
 struct PlayerInstance
 {
     std::string name;
-    sprite_id spriteId;
-    Coord pos;
+    sprite_id spriteId = 0;
+
+    Coord pos       = {0, 0};
+    uint16_t mapId  = 0;
+    uint8_t floorId = 0;
+    Direction dir   = Direction::Bottom;
+
+    bool isMoving = false; // TODO replace this with a state enum
 
     std::map<item_id, uint16_t> bag;
 };

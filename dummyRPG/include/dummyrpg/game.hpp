@@ -16,7 +16,7 @@ namespace Dummy {
 
 struct GameStaticData
 {
-    uint64_t version;
+    uint64_t version = 0;
     std::string name;
     std::vector<Map> maps;
 

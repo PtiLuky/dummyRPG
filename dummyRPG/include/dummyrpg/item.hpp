@@ -11,7 +11,7 @@ namespace Dummy {
 struct Item
 {
     std::string name;
-    sprite_id spriteSheetId;
+    sprite_id spriteSheetId = 0;
 };
 
 } // namespace Dummy

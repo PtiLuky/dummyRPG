@@ -1,16 +1,19 @@
 #include <fstream>
 
-#include "RenderGame.hpp"
-#include "RenderMap.hpp"
 #include "dummyrpg/floor.hpp"
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/serialize.hpp"
+
+#include "ControlPlayer.hpp"
+#include "Keymap.hpp"
+#include "RenderGame.hpp"
+#include "RenderMap.hpp"
 
 using Dummy::GameInstanceData;
 using Dummy::GameStaticData;
 static const int WIN_WIDTH  = 600;
 static const int WIN_HEIGHT = 600;
-static const int WIN_FPS    = 12;
+static const int WIN_FPS    = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
 // This method is to be deleted later, so yes it's dirty, and no I don't want to see all
@@ -73,19 +76,16 @@ int main()
 {
     GameStaticData game           = createFakeGame();
     GameInstanceData gameInstance = createFakeGameInstance();
+    DummyPlayer::Keymap keymap;
 
-    sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "My super game");
+    sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), game.name);
     window.setFramerateLimit(WIN_FPS);
 
     DummyPlayer::GameRender renderer(game, gameInstance, window);
-    renderer.setMap(game.maps[0]);
+    renderer.setMap(game.maps[gameInstance.player.mapId]);
 
-    sf::Clock c;
     while (window.isOpen()) {
         sf::Event event;
-
-        std::cout <<c.getElapsedTime().asMilliseconds() << std::endl;
-        c.restart();
 
         // Process events
         while (window.pollEvent(event)) {
@@ -98,6 +98,13 @@ int main()
                 window.setView(sf::View(visibleArea));
             }
         }
+
+        // Process pressed-states (events will only give the pressed moment)
+        auto* floor = game.maps[gameInstance.player.mapId].floorAt(gameInstance.player.floorId);
+        if (floor == nullptr)
+            return 1; // corrupted data ???
+        DummyPlayer::PlayerControl::ApplyMovement(gameInstance.player, keymap, *floor);
+
 
         // Render game
         renderer.render();

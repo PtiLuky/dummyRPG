@@ -26,6 +26,7 @@ void PlayerRender::render(sf::RenderWindow& renderWindow)
     spritePos.x += (Dummy::TILE_SIZE - m_spriteRef.width) * m_gameRender.zoom() / 2;
     spritePos.y += -m_spriteRef.height * m_gameRender.zoom() / 2;
 
+
     m_sprite.setPosition(spritePos);
     renderWindow.draw(m_sprite);
 }

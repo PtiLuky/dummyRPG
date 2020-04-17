@@ -17,11 +17,14 @@ set(RESOURCE_FILES
 )
 
 add_executable(player
+    include/ControlPlayer.hpp
+    include/Keymap.hpp
     include/RenderCharacter.hpp
     include/RenderGame.hpp
     include/RenderMap.hpp
 
     src/main.cpp
+    src/ControlPlayer.cpp
     src/RenderCharacter.cpp
     src/RenderGame.cpp
     src/RenderMap.cpp

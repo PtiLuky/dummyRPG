@@ -28,9 +28,6 @@ void GameRender::setMap(const Dummy::Map& map)
 
 void GameRender::render()
 {
-    // Update offset and player pos
-    const uint8_t playerFloor = 0;
-
     m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2
                                      - m_gameInstance.player.pos.x * m_zoom * Dummy::TILE_SIZE);
     m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2
@@ -39,13 +36,13 @@ void GameRender::render()
     m_window.clear();
 
     if (m_mapRender)
-        m_mapRender->renderBelow(m_window, playerFloor);
+        m_mapRender->renderBelow(m_window, m_gameInstance.player.floorId);
 
     if (m_playerRender)
         m_playerRender->render(m_window);
 
     if (m_mapRender)
-        m_mapRender->renderAbove(m_window, playerFloor);
+        m_mapRender->renderAbove(m_window, m_gameInstance.player.floorId);
 
     m_window.display();
 }

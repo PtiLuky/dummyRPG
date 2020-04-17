@@ -14,8 +14,9 @@ struct Curve;
 struct GameStaticData;
 struct GameInstanceData;
 struct Item;
-struct Map;
 struct Monster;
+
+class Map;
 
 ///////////////////////////////////////////////////////////////////////////////
 

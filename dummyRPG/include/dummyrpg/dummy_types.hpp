@@ -24,16 +24,16 @@ using event_id = uint32_t;
 /// tilecoords represents coordinates of a tile. As a pair of <x, y>
 struct Coord
 {
-    uint16_t x;
-    uint16_t y;
+    uint16_t x = 0;
+    uint16_t y = 0;
 };
 
 /// tilecoords represents coordinates of a chipset tile. As a tuple of <x, y, chipset_id>
 struct Tileaspect
 {
-    uint8_t x;
-    uint8_t y;
-    chip_id chipId;
+    uint8_t x      = 0;
+    uint8_t y      = 0;
+    chip_id chipId = 0;
 };
 
 /// Attack curve, def curve, etc. This is a simplification with a 4-segments "curve"
