@@ -13,60 +13,41 @@ GameRender::GameRender(const Dummy::GameStaticData& game, const Dummy::GameInsta
 
 void GameRender::setMap(const Dummy::Map& map)
 {
-    m_mutex.lock();
-
     try {
         m_playerRender = std::make_unique<PlayerRender>(m_gameInstance.player, *this);
     } catch (const MapRenderError& e) {
-        m_mutex.unlock();
         std::cerr << "Error : PlayerRender creation failed (" << e.what() << ")." << std::endl;
     }
 
     try {
         m_mapRender = std::make_unique<MapRender>(map, *this);
     } catch (const MapRenderError& e) {
-        m_mutex.unlock();
         std::cerr << "Error : MapRender creation failed (" << e.what() << ")." << std::endl;
     }
-    m_mutex.unlock();
 }
 
-void GameRender::renderingThread()
+void GameRender::render()
 {
-    // activate the window's context
-    m_window.setActive(true);
+    // Update offset and player pos
+    const uint8_t playerFloor = 0;
 
+    m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2
+                                     - m_gameInstance.player.pos.x * m_zoom * Dummy::TILE_SIZE);
+    m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2
+                                     - m_gameInstance.player.pos.y * m_zoom * Dummy::TILE_SIZE);
 
-    // the rendering loop
-    while (m_window.isOpen()) {
+    m_window.clear();
 
-        m_mutex.lock();
+    if (m_mapRender)
+        m_mapRender->renderBelow(m_window, playerFloor);
 
-        // Update offset and player pos
-        const uint8_t playerFloor = 0;
+    if (m_playerRender)
+        m_playerRender->render(m_window);
 
-        m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2
-                                         - m_gameInstance.player.pos.x * m_zoom * Dummy::TILE_SIZE);
-        m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2
-                                         - m_gameInstance.player.pos.y * m_zoom * Dummy::TILE_SIZE);
+    if (m_mapRender)
+        m_mapRender->renderAbove(m_window, playerFloor);
 
-        m_window.clear();
-
-        if (m_mapRender)
-            m_mapRender->renderBelow(m_window, playerFloor);
-
-        if (m_playerRender)
-            m_playerRender->render(m_window);
-
-        // player and chars
-
-        if (m_mapRender)
-            m_mapRender->renderAbove(m_window, playerFloor);
-
-        m_window.display();
-
-        m_mutex.unlock();
-    }
+    m_window.display();
 }
 
 sf::Vector2f GameRender::itemPxPos(Dummy::Coord pos) const

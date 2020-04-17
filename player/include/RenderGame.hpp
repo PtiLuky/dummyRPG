@@ -35,10 +35,9 @@ public:
     float zoom() const { return m_zoom; }
 
     void setMap(const Dummy::Map&); ///< set the current map
-    void renderingThread();         ///< method to call in the rendering thread
+    void render();                  ///< method to call in the rendering thread
 
 private:
-    sf::Mutex m_mutex;
     sf::Clock m_clock;
     sf::RenderWindow& m_window;
     std::unique_ptr<MapRender> m_mapRender;

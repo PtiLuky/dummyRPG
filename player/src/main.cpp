@@ -80,15 +80,14 @@ int main()
     DummyPlayer::GameRender renderer(game, gameInstance, window);
     renderer.setMap(game.maps[0]);
 
-    // deactivate its OpenGL context to give it to the rendering thread
-    window.setActive(false);
-
-    // launch the rendering thread
-    sf::Thread thread(&DummyPlayer::GameRender::renderingThread, &renderer);
-    thread.launch();
-
+    sf::Clock c;
     while (window.isOpen()) {
         sf::Event event;
+
+        std::cout <<c.getElapsedTime().asMilliseconds() << std::endl;
+        c.restart();
+
+        // Process events
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
@@ -99,6 +98,9 @@ int main()
                 window.setView(sf::View(visibleArea));
             }
         }
+
+        // Render game
+        renderer.render();
     }
 
     return 0;
