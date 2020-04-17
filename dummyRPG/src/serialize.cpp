@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "dummyrpg/floor.hpp"
 #include "dummyrpg/game.hpp"
 
 /// You can find a more detailled explanation in the file /doc/file-format.md
@@ -53,22 +54,89 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool Serializer::SerializeGameToFile(const GameStaticData& game, std::ostream& out)
+{
+    // TODO return an error value to have details on the failure
+    if (! out.good())
+        return false;
+
+    // Header
+    write4B(out, FILE_SIGNATURE_GDUMMY);
+    writeHeader(game, out);
+
+    // Chipsets
+    write2B(out, TAG_CHIPSETS);
+    for (auto& chipPath : game.chipsetPaths)
+        writeChipset(out, chipPath);
+
+    // Maps
+    write2B(out, TAG_MAPS);
+    for (auto& map : game.maps)
+        writeMap(out, map);
+
+    // Items
+    write2B(out, TAG_ITEMS);
+    for (auto& item : game.items)
+        writeItem(out, item);
+
+    // Characters
+    write2B(out, TAG_CHARACTERS);
+    for (auto& charac : game.characters)
+        writeCharacter(out, charac);
+
+    // Monsters
+    write2B(out, TAG_MONSTERS);
+    for (auto& monster : game.monsters)
+        writeMonster(out, monster);
+
+    // Sprites
+    write2B(out, TAG_DYNAMIC_SPRITES);
+    for (auto& sprite : game.sprites)
+        writeSprite(out, sprite);
+
+    // File end of content tag
+    write2B(out, TAG_END_OF_CONTENT);
+
+    // File signature
+    write4B(out, FILE_SIGNATURE_GDUMMY);
+
+    return out.good();
+}
+
+bool Serializer::SerializeSaveToFile(const GameInstanceData& sav, std::ostream& out)
+{
+    // TODO return an error value to have details on the failure
+    if (! out.good())
+        return false;
+
+    // Header
+    write4B(out, FILE_SIGNATURE_SDUMMY);
+
+    return out.good();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void Serializer::write1B(std::ostream& out, uint8_t val)
 {
     out.write(reinterpret_cast<char*>(&val), sizeof(val));
 }
+
 void Serializer::write2B(std::ostream& out, uint16_t val)
 {
     out.write(reinterpret_cast<char*>(&val), sizeof(val));
 }
+
 void Serializer::write4B(std::ostream& out, uint32_t val)
 {
     out.write(reinterpret_cast<char*>(&val), sizeof(val));
 }
+
 void Serializer::write8B(std::ostream& out, uint64_t val)
 {
     out.write(reinterpret_cast<char*>(&val), sizeof(val));
 }
+
 void Serializer::writeCurve(std::ostream& out, const Curve& val)
 {
     write1B(out, val.p0);
@@ -77,6 +145,7 @@ void Serializer::writeCurve(std::ostream& out, const Curve& val)
     write1B(out, val.p3);
     write1B(out, val.p4);
 }
+
 void Serializer::writeStr(std::ostream& out, const std::string& val)
 {
     size_t maxLength = std::numeric_limits<uint32_t>::max();
@@ -84,6 +153,41 @@ void Serializer::writeStr(std::ostream& out, const std::string& val)
     write4B(out, size);
     out.write(val.data(), size);
 }
+
+template <typename T> void Serializer::writeLayer(std::ostream& out, const Layer<T>& layer)
+{
+    out.write(layer.data(), static_cast<std::streamsize>(layer.size() * sizeof(T)));
+}
+
+void Serializer::writeHeader(const GameStaticData& game, std::ostream& out)
+{
+    write2B(out, TAG_NAME);
+    writeStr(out, game.name);
+    write2B(out, TAG_VERSION);
+    write8B(out, game.version);
+    write2B(out, TAG_MAP_COUNT);
+    write2B(out, static_cast<uint16_t>(game.maps.size()));
+    write2B(out, TAG_ITEM_COUNT);
+    write2B(out, static_cast<uint16_t>(game.items.size()));
+    write2B(out, TAG_CHARACTER_COUNT);
+    write4B(out, static_cast<uint32_t>(game.characters.size()));
+    write2B(out, TAG_MONSTER_COUNT);
+    write4B(out, static_cast<uint32_t>(game.monsters.size()));
+    // write2B(out, TAG_EVENT_COUNT);
+    // write4B(out, static_cast<uint32_t>(game.monsters.size()));
+    write2B(out, TAG_CHIPSET_COUNT);
+    write1B(out, static_cast<uint8_t>(game.chipsetPaths.size()));
+    write2B(out, TAG_DYNAMIC_SPRITE_COUNT);
+    write2B(out, static_cast<uint16_t>(game.sprites.size()));
+    write2B(out, TAG_END_OF_HEADER);
+}
+
+void Serializer::writeChipset(std::ostream& out, const std::string& chip)
+{
+    write2B(out, TAG_CHIPSET);
+    writeStr(out, chip);
+}
+
 void Serializer::writeMap(std::ostream& out, const Map& map)
 {
     write2B(out, TAG_MAP);
@@ -106,10 +210,120 @@ void Serializer::writeMap(std::ostream& out, const Map& map)
             writeLayer(out, layer);
     }
 }
-template <typename T> void Serializer::writeLayer(std::ostream& out, const Layer<T>& layer)
+
+void Serializer::writeItem(std::ostream& out, const Item& item)
 {
-    out.write(layer.data(), static_cast<std::streamsize>(layer.size() * sizeof(T)));
+    write2B(out, TAG_ITEM);
+    writeStr(out, item.name);
+    write2B(out, item.spriteSheetId);
 }
+
+void Serializer::writeCharacter(std::ostream& out, const Character& character)
+{
+    write2B(out, TAG_CHARACTER);
+    writeStr(out, character.name);
+    write2B(out, character.spriteSheetId);
+}
+
+void Serializer::writeMonster(std::ostream& out, const Monster& monster)
+{
+    write2B(out, TAG_MONSTER);
+    writeStr(out, monster.name);
+    write2B(out, monster.spriteSheetId);
+    writeCurve(out, monster.attacks);
+    writeCurve(out, monster.defense);
+    writeCurve(out, monster.hp);
+}
+
+void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
+{
+    write2B(out, TAG_DYNAMIC_SPRITE);
+    writeStr(out, sprite.imgPath);
+    write2B(out, sprite.x);
+    write2B(out, sprite.y);
+    write2B(out, sprite.width);
+    write2B(out, sprite.height);
+    write1B(out, sprite.nbFrames);
+
+    write2B(out, sprite.x2);
+    write2B(out, sprite.y2);
+    write1B(out, sprite.nbFrames2);
+
+    write2B(out, sprite.x3);
+    write2B(out, sprite.y3);
+    write1B(out, sprite.nbFrames3);
+
+    write2B(out, sprite.x4);
+    write2B(out, sprite.y4);
+    write1B(out, sprite.nbFrames4);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Serializer::ParseGameFromFile(std::istream& in, GameStaticData& game)
+{
+    // TODO return an error value to have details on the failure
+    if (! in.good())
+        return false;
+
+    // Header
+    if (! readHeader(in, game))
+        return false;
+
+    // Content
+    while (in.good()) {
+        uint16_t temp2B = read2B(in);
+        switch (temp2B) {
+
+        case TAG_END_OF_CONTENT:
+            break;
+
+        case TAG_CHIPSETS:
+            if (! readChipsets(in, game.chipsetPaths))
+                return false;
+            break;
+
+        case TAG_MAPS:
+            if (! readMaps(in, game.maps))
+                return false;
+            break;
+
+        case TAG_ITEMS:
+            if (! readItems(in, game.items))
+                return false;
+            break;
+
+        case TAG_CHARACTERS:
+            if (! readCharacters(in, game.characters))
+                return false;
+            break;
+
+        case TAG_MONSTERS:
+            if (! readMonsters(in, game.monsters))
+                return false;
+            break;
+
+        case TAG_DYNAMIC_SPRITES:
+            if (! readSprites(in, game.sprites))
+                return false;
+            break;
+
+        default:
+            return false;
+        }
+    }
+
+    if (read4B(in) != FILE_SIGNATURE_GDUMMY)
+        return false;
+
+    return true;
+}
+
+bool Serializer::ParseSaveFromFile(std::istream& in, GameInstanceData& sav)
+{
+    return false;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 uint8_t Serializer::read1B(std::istream& in)
@@ -118,24 +332,28 @@ uint8_t Serializer::read1B(std::istream& in)
     in.read(reinterpret_cast<char*>(&val), sizeof(val));
     return val;
 }
+
 uint16_t Serializer::read2B(std::istream& in)
 {
     uint16_t val = 0;
     in.read(reinterpret_cast<char*>(&val), sizeof(val));
     return val;
 }
+
 uint32_t Serializer::read4B(std::istream& in)
 {
     uint32_t val = 0;
     in.read(reinterpret_cast<char*>(&val), sizeof(val));
     return val;
 }
+
 uint64_t Serializer::read8B(std::istream& in)
 {
     uint64_t val = 0;
     in.read(reinterpret_cast<char*>(&val), sizeof(val));
     return val;
 }
+
 Curve Serializer::readCurve(std::istream& in)
 {
     Curve val;
@@ -146,6 +364,7 @@ Curve Serializer::readCurve(std::istream& in)
     val.p4 = read1B(in);
     return val;
 }
+
 std::string Serializer::readStr(std::istream& in)
 {
     size_t length = read4B(in);
@@ -154,164 +373,18 @@ std::string Serializer::readStr(std::istream& in)
     in.read(&val[0], static_cast<std::streamsize>(length));
     return val;
 }
+
 template <typename T> void Serializer::readLayer(std::istream& in, Layer<T>& layer)
 {
     in.read(layer.data(), static_cast<std::streamsize>(layer.size() * sizeof(T)));
 }
 
-bool Serializer::readMap(std::istream& in, Map& map)
+bool Serializer::readHeader(std::istream& in, GameStaticData& game)
 {
-    if (read2B(in) != TAG_MAP)
-        return false;
-
-    uint16_t w = read2B(in);
-    uint16_t h = read2B(in);
-
-    map.reset(w, h, 0);
-
-    map.m_chipsets.resize(read1B(in));
-    for (auto& chipId : map.m_chipsets)
-        chipId = read1B(in);
-
-    map.m_floors.resize(read1B(in));
-    for (auto& pFloor : map.m_floors) {
-        if (read2B(in) != TAG_MAP)
-            return false;
-
-        pFloor.reset(new Floor(w, h));
-        readLayer(in, pFloor->m_blockingLayer);
-
-        uint8_t nbGraphLayers = read1B(in);
-        for (size_t i = 0; i < nbGraphLayers; ++i) {
-            if (i >= pFloor->m_layers.size())
-                pFloor->addLayerAbove();
-            readLayer(in, pFloor->m_layers[i]);
-        }
-    }
-    return true;
-}
-///////////////////////////////////////////////////////////////////////////////
-
-
-bool Serializer::SerializeGameToFile(const GameStaticData& game, std::ostream& out)
-{
-    // TODO return an error value to have details on the failure
-    if (! out.good())
-        return false;
-
-    // Header
-    write4B(out, FILE_SIGNATURE_GDUMMY);
-
-    write2B(out, TAG_NAME);
-    writeStr(out, game.name);
-    write2B(out, TAG_VERSION);
-    write8B(out, game.version);
-    write2B(out, TAG_MAP_COUNT);
-    write2B(out, static_cast<uint16_t>(game.maps.size()));
-    write2B(out, TAG_ITEM_COUNT);
-    write2B(out, static_cast<uint16_t>(game.items.size()));
-    write2B(out, TAG_CHARACTER_COUNT);
-    write4B(out, static_cast<uint32_t>(game.characters.size()));
-    write2B(out, TAG_MONSTER_COUNT);
-    write4B(out, static_cast<uint32_t>(game.monsters.size()));
-    // write2B(out, TAG_EVENT_COUNT);
-    // write4B(out, static_cast<uint32_t>(game.monsters.size()));
-    write2B(out, TAG_CHIPSET_COUNT);
-    write1B(out, static_cast<uint8_t>(game.chipsetPaths.size()));
-    write2B(out, TAG_DYNAMIC_SPRITE_COUNT);
-    write2B(out, static_cast<uint16_t>(game.sprites.size()));
-    write2B(out, TAG_END_OF_HEADER);
-
-    // Chipsets
-    write2B(out, TAG_CHIPSETS);
-    for (auto& chipPath : game.chipsetPaths) {
-        write2B(out, TAG_CHIPSET);
-        writeStr(out, chipPath);
-    }
-
-    // Maps
-    write2B(out, TAG_MAPS);
-    for (auto& map : game.maps)
-        writeMap(out, map);
-
-    // Items
-    write2B(out, TAG_ITEMS);
-    for (auto& item : game.items) {
-        write2B(out, TAG_ITEM);
-        writeStr(out, item.name);
-        write2B(out, item.spriteSheetId);
-    }
-
-    // Characters
-    write2B(out, TAG_CHARACTERS);
-    for (auto& charac : game.characters) {
-        write2B(out, TAG_CHARACTER);
-        writeStr(out, charac.name);
-        write2B(out, charac.spriteSheetId);
-    }
-
-    // Monsters
-    write2B(out, TAG_MONSTERS);
-    for (auto& monster : game.monsters) {
-        write2B(out, TAG_MONSTER);
-        writeStr(out, monster.name);
-        write2B(out, monster.spriteSheetId);
-        writeCurve(out, monster.attacks);
-        writeCurve(out, monster.defense);
-        writeCurve(out, monster.hp);
-    }
-
-    // Sprites
-    write2B(out, TAG_DYNAMIC_SPRITES);
-    for (auto& sprite : game.sprites) {
-        write2B(out, TAG_DYNAMIC_SPRITE);
-        writeStr(out, sprite.imgPath);
-        write2B(out, sprite.x);
-        write2B(out, sprite.y);
-        write2B(out, sprite.width);
-        write2B(out, sprite.height);
-        write1B(out, sprite.nbFrames);
-
-        write2B(out, sprite.x2);
-        write2B(out, sprite.y2);
-        write1B(out, sprite.nbFrames2);
-
-        write2B(out, sprite.x3);
-        write2B(out, sprite.y3);
-        write1B(out, sprite.nbFrames3);
-
-        write2B(out, sprite.x4);
-        write2B(out, sprite.y4);
-        write1B(out, sprite.nbFrames4);
-    }
-
-    // File end of content tag
-    write2B(out, TAG_END_OF_CONTENT);
-
-    // File signature
-    write4B(out, FILE_SIGNATURE_GDUMMY);
-
-    return out.good();
-}
-
-bool Serializer::SerializeSaveToFile(const GameInstanceData& sav, std::ostream& out)
-{
-    return out.good();
-}
-
-
-bool Serializer::ParseGameFromFile(std::istream& in, GameStaticData& game)
-{
-    // TODO return an error value to have details on the failure
-    if (! in.good())
-        return false;
-
-    // Header
-    bool headerDone = false;
     if (read4B(in) != FILE_SIGNATURE_GDUMMY)
         return false;
 
-    while (in.good() && ! headerDone) {
+    while (in.good()) {
         uint16_t temp2B = read2B(in);
         switch (temp2B) {
         case TAG_NAME:
@@ -341,99 +414,120 @@ bool Serializer::ParseGameFromFile(std::istream& in, GameStaticData& game)
             game.sprites.resize(read2B(in));
             break;
         case TAG_END_OF_HEADER:
-            headerDone = true;
-            break;
+            return true;
         default:
             return false;
         }
     }
 
-    // Content
-    bool contentDone = false;
-    while (in.good() && ! contentDone) {
-        uint16_t temp2B = read2B(in);
-        switch (temp2B) {
-        case TAG_END_OF_CONTENT:
-            contentDone = true;
-            break;
-        case TAG_CHIPSETS:
-            for (auto& chip : game.chipsetPaths) {
-                if (read2B(in) != TAG_CHIPSET)
-                    return false;
-                chip = readStr(in);
-            }
-            break;
-        case TAG_MAPS:
-            for (auto& map : game.maps) {
-                if (! readMap(in, map))
-                    return false;
-            }
-            break;
-        case TAG_ITEMS:
-            for (auto& item : game.items) {
-                if (read2B(in) != TAG_ITEM)
-                    return false;
-                item.name          = readStr(in);
-                item.spriteSheetId = read2B(in);
-            }
-            break;
-        case TAG_CHARACTERS:
-            for (auto& charac : game.characters) {
-                if (read2B(in) != TAG_CHARACTER)
-                    return false;
-                charac.name          = readStr(in);
-                charac.spriteSheetId = read2B(in);
-            }
-            break;
-        case TAG_MONSTERS:
-            for (auto& monster : game.monsters) {
-                if (read2B(in) != TAG_MONSTER)
-                    return false;
-                monster.name          = readStr(in);
-                monster.spriteSheetId = read2B(in);
-                monster.attacks       = readCurve(in);
-                monster.defense       = readCurve(in);
-                monster.hp            = readCurve(in);
-            }
-            break;
-        case TAG_DYNAMIC_SPRITES:
-            for (auto& sprite : game.sprites) {
-                if (read2B(in) != TAG_DYNAMIC_SPRITE)
-                    return false;
-                sprite.imgPath  = readStr(in);
-                sprite.x        = read2B(in);
-                sprite.y        = read2B(in);
-                sprite.width    = read2B(in);
-                sprite.height   = read2B(in);
-                sprite.nbFrames = read1B(in);
-
-                sprite.x2        = read2B(in);
-                sprite.y2        = read2B(in);
-                sprite.nbFrames2 = read1B(in);
-
-                sprite.x3        = read2B(in);
-                sprite.y3        = read2B(in);
-                sprite.nbFrames3 = read1B(in);
-
-                sprite.x4        = read2B(in);
-                sprite.y4        = read2B(in);
-                sprite.nbFrames4 = read1B(in);
-            }
-            break;
-        default:
-            return false;
-        }
-    }
-
-    if (read4B(in) != FILE_SIGNATURE_GDUMMY)
-        return false;
-
-    return contentDone && headerDone;
+    return false; // exited because of !in.good() without having TAG_END_OF_HEADER
 }
 
-bool Serializer::ParseSaveFromFile(std::istream& in, GameInstanceData& sav)
+bool Serializer::readChipsets(std::istream& in, std::vector<std::string>& chips)
 {
-    return false;
+    for (auto& chip : chips) {
+        if (read2B(in) != TAG_CHIPSET)
+            return false;
+        chip = readStr(in);
+    }
+    return true;
+}
+
+bool Serializer::readMaps(std::istream& in, std::vector<Map>& maps)
+{
+    for (auto& map : maps) {
+        if (read2B(in) != TAG_MAP)
+            return false;
+
+        uint16_t w = read2B(in);
+        uint16_t h = read2B(in);
+
+        map.reset(w, h, 0);
+
+        map.m_chipsets.resize(read1B(in));
+        for (auto& chipId : map.m_chipsets)
+            chipId = read1B(in);
+
+        map.m_floors.resize(read1B(in));
+        for (auto& pFloor : map.m_floors) {
+            if (read2B(in) != TAG_MAP)
+                return false;
+
+            pFloor.reset(new Floor(w, h));
+            readLayer(in, pFloor->m_blockingLayer);
+
+            uint8_t nbGraphLayers = read1B(in);
+            for (size_t i = 0; i < nbGraphLayers; ++i) {
+                if (i >= pFloor->m_layers.size())
+                    pFloor->addLayerAbove();
+                readLayer(in, pFloor->m_layers[i]);
+            }
+        }
+    }
+    return true;
+}
+
+bool Serializer::readItems(std::istream& in, std::vector<Item>& items)
+{
+    for (auto& item : items) {
+        if (read2B(in) != TAG_ITEM)
+            return false;
+        item.name          = readStr(in);
+        item.spriteSheetId = read2B(in);
+    }
+    return true;
+}
+
+bool Serializer::readCharacters(std::istream& in, std::vector<Character>& characs)
+{
+    for (auto& charac : characs) {
+        if (read2B(in) != TAG_CHARACTER)
+            return false;
+        charac.name          = readStr(in);
+        charac.spriteSheetId = read2B(in);
+    }
+    return true;
+}
+
+bool Serializer::readMonsters(std::istream& in, std::vector<Monster>& monsters)
+{
+    for (auto& monster : monsters) {
+        if (read2B(in) != TAG_MONSTER)
+            return false;
+        monster.name          = readStr(in);
+        monster.spriteSheetId = read2B(in);
+        monster.attacks       = readCurve(in);
+        monster.defense       = readCurve(in);
+        monster.hp            = readCurve(in);
+    }
+    return true;
+}
+
+bool Serializer::readSprites(std::istream& in, std::vector<AnimatedSprite>& sprites)
+{
+    for (auto& sprite : sprites) {
+        if (read2B(in) != TAG_DYNAMIC_SPRITE)
+            return false;
+        sprite.imgPath  = readStr(in);
+        sprite.x        = read2B(in);
+        sprite.y        = read2B(in);
+        sprite.width    = read2B(in);
+        sprite.height   = read2B(in);
+        sprite.nbFrames = read1B(in);
+
+        sprite.x2        = read2B(in);
+        sprite.y2        = read2B(in);
+        sprite.nbFrames2 = read1B(in);
+
+        sprite.x3        = read2B(in);
+        sprite.y3        = read2B(in);
+        sprite.nbFrames3 = read1B(in);
+
+        sprite.x4        = read2B(in);
+        sprite.y4        = read2B(in);
+        sprite.nbFrames4 = read1B(in);
+    }
+    return true;
 }
 
 } // namespace Dummy
