@@ -17,14 +17,14 @@ set(RESOURCE_FILES
 )
 
 add_executable(player
-    include/CharacterRender.hpp
-    include/GameRender.hpp
-    include/MapRender.hpp
+    include/RenderCharacter.hpp
+    include/RenderGame.hpp
+    include/RenderMap.hpp
 
     src/main.cpp
-    src/CharacterRender.cpp
-    src/GameRender.cpp
-    src/MapRender.cpp
+    src/RenderCharacter.cpp
+    src/RenderGame.cpp
+    src/RenderMap.cpp
     "${RESOURCE_FILES}"
 )
 

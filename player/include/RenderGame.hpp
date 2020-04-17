@@ -1,8 +1,8 @@
 #ifndef DUMMYRPG_GAMERENDER_HPP
 #define DUMMYRPG_GAMERENDER_HPP
 
-#include "CharacterRender.hpp"
-#include "MapRender.hpp"
+#include "RenderCharacter.hpp"
+#include "RenderMap.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -31,6 +31,7 @@ public:
 
     const Dummy::GameStaticData& game() const { return m_game; }
     const sf::Vector2i& offset() const { return m_mapOffset; }
+    sf::Vector2f itemPxPos(Dummy::Coord pos) const;
     float zoom() const { return m_zoom; }
 
     void setMap(const Dummy::Map&); ///< set the current map

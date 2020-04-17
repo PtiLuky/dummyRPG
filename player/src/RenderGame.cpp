@@ -1,4 +1,4 @@
-#include "GameRender.hpp"
+#include "RenderGame.hpp"
 
 #include <iostream>
 
@@ -44,8 +44,11 @@ void GameRender::renderingThread()
 
         // Update offset and player pos
         const uint8_t playerFloor = 0;
-        m_mapOffset.x             = static_cast<int>(m_window.getSize().x) / 2 - m_gameInstance.player.pos.x;
-        m_mapOffset.y             = static_cast<int>(m_window.getSize().y) / 2 - m_gameInstance.player.pos.y;
+
+        m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2
+                                         - m_gameInstance.player.pos.x * m_zoom * Dummy::TILE_SIZE);
+        m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2
+                                         - m_gameInstance.player.pos.y * m_zoom * Dummy::TILE_SIZE);
 
         m_window.clear();
 
@@ -64,5 +67,13 @@ void GameRender::renderingThread()
 
         m_mutex.unlock();
     }
+}
+
+sf::Vector2f GameRender::itemPxPos(Dummy::Coord pos) const
+{
+    return {
+        m_mapOffset.x + pos.x * Dummy::TILE_SIZE * m_zoom,
+        m_mapOffset.y + pos.y * Dummy::TILE_SIZE * m_zoom,
+    };
 }
 } // namespace DummyPlayer

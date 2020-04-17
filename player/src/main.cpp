@@ -1,8 +1,7 @@
-#include "MapRender.hpp"
-
 #include <fstream>
 
-#include "GameRender.hpp"
+#include "RenderGame.hpp"
+#include "RenderMap.hpp"
 #include "dummyrpg/floor.hpp"
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/serialize.hpp"

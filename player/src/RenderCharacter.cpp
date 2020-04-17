@@ -1,6 +1,6 @@
-#include "CharacterRender.hpp"
+#include "RenderCharacter.hpp"
 
-#include "GameRender.hpp"
+#include "RenderGame.hpp"
 
 namespace DummyPlayer {
 
@@ -20,16 +20,13 @@ PlayerRender::PlayerRender(const Dummy::PlayerInstance& player, const GameRender
 
 void PlayerRender::render(sf::RenderWindow& renderWindow)
 {
-    auto offset = m_gameRender.offset();
-    sf::Vector2f spriteOffset;
     // real player offset
-    spriteOffset.x = offset.x + m_playerRef.pos.x * Dummy::TILE_SIZE * m_gameRender.zoom();
-    spriteOffset.y = offset.y + m_playerRef.pos.y * Dummy::TILE_SIZE * m_gameRender.zoom();
+    sf::Vector2f spritePos = m_gameRender.itemPxPos(m_playerRef.pos);
     // moving the sprite to have feet in the cell
-    spriteOffset.x += (Dummy::TILE_SIZE - m_spriteRef.width) * m_gameRender.zoom() / 2;
-    spriteOffset.y += -m_spriteRef.height * m_gameRender.zoom() / 2;
+    spritePos.x += (Dummy::TILE_SIZE - m_spriteRef.width) * m_gameRender.zoom() / 2;
+    spritePos.y += -m_spriteRef.height * m_gameRender.zoom() / 2;
 
-    m_sprite.setPosition(spriteOffset);
+    m_sprite.setPosition(spritePos);
     renderWindow.draw(m_sprite);
 }
 

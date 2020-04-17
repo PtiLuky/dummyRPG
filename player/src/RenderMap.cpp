@@ -1,8 +1,8 @@
-#include "MapRender.hpp"
+#include "RenderMap.hpp"
 
 #include <map>
 
-#include "GameRender.hpp"
+#include "RenderGame.hpp"
 #include "dummyrpg/floor.hpp"
 
 ///
