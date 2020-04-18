@@ -21,15 +21,17 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class PlayerRender
+class CharacterRender
 {
 public:
-    explicit PlayerRender(const Dummy::PlayerInstance&, const GameRender&);
+    explicit CharacterRender(const Dummy::AnimatedSprite&, const Dummy::PositionChar&,
+                             const GameRender&);
+
+    const Dummy::PositionChar& Pos() const;
 
     void render(sf::RenderWindow&);
-
 private:
-    const Dummy::PlayerInstance& m_playerRef;
+    const Dummy::PositionChar& m_posRef;
     const Dummy::AnimatedSprite& m_spriteRef;
 
     const GameRender& m_gameRender;
@@ -40,6 +42,7 @@ private:
     Dummy::CharState m_lastState = Dummy::CharState::Idle;
     uint8_t m_lastFrame          = 0;
 };
+
 } // namespace DummyPlayer
 
 #endif // DUMMYRPG_CHARACTERRENDER_HPP

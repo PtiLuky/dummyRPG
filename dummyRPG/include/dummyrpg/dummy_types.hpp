@@ -26,6 +26,8 @@ struct Coord
 {
     uint16_t x = 0;
     uint16_t y = 0;
+
+    bool operator==(const Coord& c2) const { return x == c2.x && y == c2.y; }
 };
 
 enum class Direction

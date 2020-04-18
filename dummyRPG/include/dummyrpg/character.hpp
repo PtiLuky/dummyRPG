@@ -32,7 +32,10 @@ private:
 class CharacterInstance
 {
 public:
-    CharacterInstance(char_id id, const PositionChar&& position);
+    CharacterInstance(char_id id, const PositionChar& position);
+
+    char_id characterId() const;
+    const PositionChar& Pos() const;
 
 private:
     char_id m_charId = 0;
@@ -46,10 +49,10 @@ class PlayerInstance
     friend class GameInstance;
 
 public:
-    PlayerInstance(const std::string&& name, sprite_id spriteId, const PositionChar&& position);
+    PlayerInstance(const std::string&& name, sprite_id spriteId, const PositionChar& position);
 
-    const PositionChar& Pos() const;
     sprite_id SpriteId() const;
+    const PositionChar& Pos() const;
 
 private:
     std::string m_name;

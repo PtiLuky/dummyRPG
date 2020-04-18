@@ -15,6 +15,52 @@ Floor::Floor(uint16_t w, uint16_t h)
     addLayerAbove(); // above player
 }
 
+uint16_t Floor::width() const
+{
+    return m_blockingLayer.width();
+}
+
+uint16_t Floor::height() const
+{
+    return m_blockingLayer.height();
+}
+
+const BlockingLayer& Floor::blockingLayer() const
+{
+    return m_blockingLayer;
+}
+
+BlockingLayer& Floor::blockingLayer()
+{
+    return m_blockingLayer;
+}
+
+bool Floor::isWalkable(Coord coord) const
+{
+    if (m_blockingLayer.at(coord) == true)
+        return false;
+
+    for (auto& npc : m_npcs)
+        if (npc.Pos().coord == coord)
+            return false;
+
+    return true;
+}
+
+const std::vector<GraphicLayer>& Floor::graphicLayers() const
+{
+    return m_layers;
+}
+GraphicLayer& Floor::graphicLayerAt(uint8_t idx)
+{
+    return m_layers[idx];
+}
+
+const std::vector<CharacterInstance>& Floor::npcs() const
+{
+    return m_npcs;
+}
+
 bool Floor::addLayerAbove()
 {
     if (m_layers.size() >= MAX_LAYERS_COUNT)
@@ -47,5 +93,10 @@ void Floor::removeChipRef(chip_id idx)
             }
         }
     }
+}
+
+void Floor::registerNPC(char_id id, const PositionChar& pos)
+{
+    m_npcs.push_back(CharacterInstance(id, pos));
 }
 } // namespace Dummy

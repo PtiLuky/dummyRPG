@@ -44,18 +44,45 @@ static GameStatic createFakeGame()
     floor->graphicLayerAt(2).set({1, 6}, {3, 1, fkId});
     floor->graphicLayerAt(2).set({1, 7}, {3, 1, fkId});
     floor->graphicLayerAt(2).set({1, 8}, {3, 1, fkId});
+    floor->blockingLayer().set({1, 8}, true);
     floor->graphicLayerAt(2).set({2, 1}, {1, 1, fkId});
-    floor->graphicLayerAt(2).set({4, 4}, {0, 0, fkId});
+    floor->blockingLayer().set({2, 1}, true);
 
     game.maps.push_back(std::move(map));
 
     // Create sprite
-    Dummy::AnimatedSprite perso1;
-    perso1.imgPath  = "Resources/bluewarrior.png";
-    perso1.width    = 24;
-    perso1.height   = 32;
-    perso1.nbFrames = 3;
-    game.sprites.push_back(perso1);
+    Dummy::AnimatedSprite sprite1;
+    sprite1.imgPath  = "Resources/bluewarrior.png";
+    sprite1.width    = 24;
+    sprite1.height   = 32;
+    sprite1.nbFrames = 3;
+    game.sprites.push_back(sprite1);
+
+    Dummy::AnimatedSprite sprite2;
+    sprite2.imgPath  = "Resources/WhiteScale.png";
+    sprite2.width    = 24;
+    sprite2.height   = 32;
+    sprite2.nbFrames = 3;
+    game.sprites.push_back(sprite2);
+
+    Dummy::Character perso1("Whity", 1);
+    game.characters.push_back(perso1);
+
+    Dummy::PositionChar pos1;
+    pos1.coord   = {3, 3};
+    pos1.mapId   = 0;
+    pos1.floorId = 0;
+    game.RegisterNPC(0, pos1);
+
+    Dummy::PositionChar pos2 = pos1;
+    pos2.coord               = {4, 3};
+    pos2.dir                 = Dummy::Direction::Left;
+    game.RegisterNPC(0, pos2);
+
+    Dummy::PositionChar pos3 = pos1;
+    pos3.coord               = {3, 5};
+    pos3.dir                 = Dummy::Direction::Right;
+    game.RegisterNPC(0, pos3);
 
     return game;
 }

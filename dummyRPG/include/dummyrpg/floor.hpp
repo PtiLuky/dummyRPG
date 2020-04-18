@@ -36,14 +36,17 @@ public:
     /// \param h height of the floor. 1024 max.
     Floor(uint16_t w, uint16_t h);
 
-    uint16_t width() const { return m_blockingLayer.width(); }
-    uint16_t height() const { return m_blockingLayer.height(); }
+    uint16_t width() const;
+    uint16_t height() const;
 
-    const BlockingLayer& blockingLayer() const { return m_blockingLayer; }
-    BlockingLayer& blockingLayer() { return m_blockingLayer; }
+    const BlockingLayer& blockingLayer() const;
+    BlockingLayer& blockingLayer();
+    bool isWalkable(Coord) const;
 
-    const std::vector<GraphicLayer>& graphicLayers() const { return m_layers; }
-    GraphicLayer& graphicLayerAt(uint8_t idx) { return m_layers[idx]; }
+    const std::vector<GraphicLayer>& graphicLayers() const;
+    GraphicLayer& graphicLayerAt(uint8_t idx);
+
+    const std::vector<CharacterInstance>& npcs() const;
 
     bool addLayerAbove();    ///< add a new top layer, in the limit of MAX_LAYERS_COUNT
     bool removeLayerAbove(); ///< remove the top layer. Cannot remove a inf layer
@@ -52,6 +55,8 @@ public:
     /// layers' references to any old chipset still in use
     void removeChipRef(chip_id);
 
+    void registerNPC(char_id id, const PositionChar& pos);
+
     // Consts
     static const uint8_t MAX_LAYERS_COUNT = 6; ///< total layers at most
     static const uint8_t INF_LAYERS_COUNT = 2; ///< number of inferior layers
@@ -59,8 +64,8 @@ public:
 private:
     // Layers
     BlockingLayer m_blockingLayer;
-    std::vector<GraphicLayer> m_layers;   // MAX_LAYERS_COUNT max
-    std::vector<CharacterInstance> m_npc; // non playable characters
+    std::vector<GraphicLayer> m_layers;    // MAX_LAYERS_COUNT max
+    std::vector<CharacterInstance> m_npcs; // non playable characters
 };
 
 } // namespace Dummy

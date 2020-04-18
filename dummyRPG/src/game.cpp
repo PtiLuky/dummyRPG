@@ -3,11 +3,30 @@
 #include "dummyrpg/floor.hpp"
 
 namespace Dummy {
+
+bool GameStatic::RegisterNPC(char_id id, const PositionChar& pos)
+{
+    if (id >= characters.size())
+        return false;
+
+    if (pos.mapId >= maps.size())
+        return false;
+
+    auto* floor = maps[pos.mapId].floorAt(pos.floorId);
+    if (floor == nullptr)
+        return false;
+
+    floor->registerNPC(id, pos);
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 GameInstance::GameInstance(const GameStatic& game)
     : m_game(game)
 {}
 
-bool GameInstance::RegisterPlayer(const PlayerInstance&& player)
+bool GameInstance::RegisterPlayer(const PlayerInstance& player)
 {
     m_player = player;
     // Some check to do to return false sometimes ?
@@ -65,7 +84,7 @@ void GameInstance::MovePlayer(Direction dir)
 
     if (m_player.m_pos.dir != dir)
         m_player.m_pos.dir = dir;
-    else if (floor->blockingLayer().at(newCoord) == false)
+    else if (floor->isWalkable(newCoord))
         m_player.m_pos.coord = newCoord;
 }
 
@@ -74,4 +93,5 @@ void GameInstance::StopPlayer()
     if (m_player.m_pos.state == Dummy::CharState::Walking)
         m_player.m_pos.state = Dummy::CharState::Idle;
 }
+
 } // namespace Dummy

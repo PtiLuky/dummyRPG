@@ -12,9 +12,12 @@ static const uint8_t LINE_LEFT_VIEW   = 3;
 
 namespace DummyPlayer {
 
-PlayerRender::PlayerRender(const Dummy::PlayerInstance& player, const GameRender& gameRender)
-    : m_playerRef(player)
-    , m_spriteRef(gameRender.game().sprites[player.SpriteId()])
+
+
+CharacterRender::CharacterRender(const Dummy::AnimatedSprite& spriteRef,
+                                 const Dummy::PositionChar& posRef, const GameRender& gameRender)
+    : m_posRef(posRef)
+    , m_spriteRef(spriteRef)
     , m_gameRender(gameRender)
 {
     if (! m_texture.loadFromFile(m_spriteRef.imgPath))
@@ -26,11 +29,16 @@ PlayerRender::PlayerRender(const Dummy::PlayerInstance& player, const GameRender
     m_sprite.setTextureRect(rect);
 }
 
-void PlayerRender::render(sf::RenderWindow& renderWindow)
+const Dummy::PositionChar& CharacterRender::Pos() const
+{
+    return m_posRef;
+}
+
+void CharacterRender::render(sf::RenderWindow& renderWindow)
 {
     // Update Position
     // real player offset
-    sf::Vector2f spritePos = m_gameRender.itemPxPos(m_playerRef.Pos().coord);
+    sf::Vector2f spritePos = m_gameRender.itemPxPos(m_posRef.coord);
     // moving the sprite to have feet in the cell
     spritePos.x += (Dummy::TILE_SIZE - m_spriteRef.width) * m_gameRender.zoom() / 2;
     spritePos.y += -m_spriteRef.height * m_gameRender.zoom() / 2;
@@ -38,8 +46,8 @@ void PlayerRender::render(sf::RenderWindow& renderWindow)
 
 
     // Update State and animation
-    auto& currState = m_playerRef.Pos().state;
-    auto& currDir   = m_playerRef.Pos().dir;
+    auto& currState = m_posRef.state;
+    auto& currDir   = m_posRef.dir;
 
     ++m_lastFrame;
     if (currState != m_lastState) {

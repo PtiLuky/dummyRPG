@@ -16,6 +16,8 @@ namespace Dummy {
 
 struct GameStatic
 {
+    bool RegisterNPC(char_id id, const PositionChar& pos);
+
     uint64_t version = 0;
     std::string name;
     std::vector<Map> maps;
@@ -36,7 +38,7 @@ class GameInstance
 public:
     explicit GameInstance(const GameStatic& game);
 
-    bool RegisterPlayer(const PlayerInstance&& player);
+    bool RegisterPlayer(const PlayerInstance& player);
     void MovePlayer(Direction);
     void StopPlayer();
 

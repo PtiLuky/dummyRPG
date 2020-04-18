@@ -21,15 +21,25 @@ sprite_id Character::spriteId() const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-CharacterInstance::CharacterInstance(char_id id, const PositionChar&& position)
+CharacterInstance::CharacterInstance(char_id id, const PositionChar& position)
     : m_charId(id)
     , m_pos(position)
 {}
 
+char_id CharacterInstance::characterId() const
+{
+    return m_charId;
+}
+
+const PositionChar& CharacterInstance::Pos() const
+{
+    return m_pos;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 PlayerInstance::PlayerInstance(const std::string&& name, sprite_id spriteId,
-                               const PositionChar&& position)
+                               const PositionChar& position)
     : m_name(name)
     , m_spriteId(spriteId)
     , m_pos(position)
