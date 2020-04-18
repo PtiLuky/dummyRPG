@@ -53,7 +53,7 @@ struct Position
 };
 
 /// Position of a character/item on a
-struct PositionChar : public Position
+struct PositionChar : Position
 {
     Direction dir   = Direction::Bottom;
     CharState state = CharState::Idle;

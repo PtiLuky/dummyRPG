@@ -34,7 +34,7 @@ struct GameStatic
 class GameInstance
 {
 public:
-    GameInstance(const GameStatic& game);
+    explicit GameInstance(const GameStatic& game);
 
     bool RegisterPlayer(const PlayerInstance&& player);
     void MovePlayer(Direction);
@@ -46,7 +46,7 @@ public:
 
 private:
     const GameStatic& m_game;
-    PlayerInstance m_player;
+    PlayerInstance m_player = {"Unnamed", 0, PositionChar()};
 };
 
 } // namespace Dummy

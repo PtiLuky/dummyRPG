@@ -5,7 +5,6 @@
 namespace Dummy {
 GameInstance::GameInstance(const GameStatic& game)
     : m_game(game)
-    , m_player("Unnamed", 0, {0, 0})
 {}
 
 bool GameInstance::RegisterPlayer(const PlayerInstance&& player)

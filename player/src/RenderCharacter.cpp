@@ -5,6 +5,11 @@
 using Dummy::CharState;
 using Dummy::Direction;
 
+static const uint8_t LINE_TOP_VIEW    = 0;
+static const uint8_t LINE_RIGHT_VIEW  = 1;
+static const uint8_t LINE_BOTTOM_VIEW = 2;
+static const uint8_t LINE_LEFT_VIEW   = 3;
+
 namespace DummyPlayer {
 
 PlayerRender::PlayerRender(const Dummy::PlayerInstance& player, const GameRender& gameRender)
@@ -62,13 +67,13 @@ void PlayerRender::render(sf::RenderWindow& renderWindow)
     }
 
     // Offset depending of the direction
-    uint8_t lineIdx = 0;
+    uint8_t lineIdx = LINE_TOP_VIEW;
     if (currDir == Direction::Right)
-        lineIdx = 1;
+        lineIdx = LINE_RIGHT_VIEW;
     else if (currDir == Direction::Bottom)
-        lineIdx = 2;
+        lineIdx = LINE_BOTTOM_VIEW;
     else if (currDir == Direction::Left)
-        lineIdx = 3;
+        lineIdx = LINE_LEFT_VIEW;
 
     // Offset depending of the frame
     spriteOffsetX += m_lastFrame * m_spriteRef.width;

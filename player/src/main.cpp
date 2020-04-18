@@ -62,7 +62,9 @@ static GameStatic createFakeGame()
 static GameInstance createFakeGameInstance(const GameStatic& game)
 {
     GameInstance gameInstance(game);
-    Dummy::PlayerInstance player("Toto", 0, {5, 5});
+    Dummy::PositionChar pos;
+    pos.coord = {5, 5};
+    Dummy::PlayerInstance player("Toto", 0, std::move(pos));
     gameInstance.RegisterPlayer(std::move(player));
 
     return gameInstance;

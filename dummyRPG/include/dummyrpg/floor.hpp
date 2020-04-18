@@ -36,20 +36,15 @@ public:
     /// \param h height of the floor. 1024 max.
     Floor(uint16_t w, uint16_t h);
 
-    /////////////////////////////////////
-    // Const getters
     uint16_t width() const { return m_blockingLayer.width(); }
     uint16_t height() const { return m_blockingLayer.height(); }
-    const BlockingLayer& blockingLayer() const { return m_blockingLayer; }
-    const std::vector<GraphicLayer>& graphicLayers() const { return m_layers; }
 
-    /////////////////////////////////////
-    // Editable ref getters
-    GraphicLayer& graphicLayerAt(uint8_t idx) { return m_layers[idx]; }
+    const BlockingLayer& blockingLayer() const { return m_blockingLayer; }
     BlockingLayer& blockingLayer() { return m_blockingLayer; }
 
-    /////////////////////////////////////
-    // Edition methods
+    const std::vector<GraphicLayer>& graphicLayers() const { return m_layers; }
+    GraphicLayer& graphicLayerAt(uint8_t idx) { return m_layers[idx]; }
+
     bool addLayerAbove();    ///< add a new top layer, in the limit of MAX_LAYERS_COUNT
     bool removeLayerAbove(); ///< remove the top layer. Cannot remove a inf layer
 
