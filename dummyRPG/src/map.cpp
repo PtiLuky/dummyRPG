@@ -20,6 +20,21 @@ void Map::reset(uint16_t w, uint16_t h, chip_id firstChip)
     m_floors.push_back(std::make_unique<Floor>(w, h));
 }
 
+const std::vector<std::unique_ptr<Floor>>& Map::floors() const
+{
+    return m_floors;
+}
+
+Floor* Map::floorAt(uint8_t floorIdx) const
+{
+    return m_floors[floorIdx].get();
+}
+
+const std::vector<chip_id>& Map::chipsetsUsed() const
+{
+    return m_chipsets;
+}
+
 uint16_t Map::width() const
 {
     return m_floors[0]->width();

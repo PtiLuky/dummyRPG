@@ -214,8 +214,8 @@ void Serializer::writeMap(std::ostream& out, const Map& map)
 void Serializer::writeItem(std::ostream& out, const Item& item)
 {
     write2B(out, TAG_ITEM);
-    writeStr(out, item.name);
-    write2B(out, item.spriteSheetId);
+    writeStr(out, item.m_name);
+    write2B(out, item.m_spriteId);
 }
 
 void Serializer::writeCharacter(std::ostream& out, const Character& character)
@@ -228,11 +228,11 @@ void Serializer::writeCharacter(std::ostream& out, const Character& character)
 void Serializer::writeMonster(std::ostream& out, const Monster& monster)
 {
     write2B(out, TAG_MONSTER);
-    writeStr(out, monster.name);
-    write2B(out, monster.spriteSheetId);
-    writeCurve(out, monster.attacks);
-    writeCurve(out, monster.defense);
-    writeCurve(out, monster.hp);
+    writeStr(out, monster.m_name);
+    write2B(out, monster.m_spriteId);
+    writeCurve(out, monster.m_attacks);
+    writeCurve(out, monster.m_defense);
+    writeCurve(out, monster.m_hp);
 }
 
 void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
@@ -384,6 +384,7 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
     if (read4B(in) != FILE_SIGNATURE_GDUMMY)
         return false;
 
+    // Resize uses default value that should be overwritten with real values
     while (in.good()) {
         uint16_t temp2B = read2B(in);
         switch (temp2B) {
@@ -397,13 +398,13 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
             game.maps.resize(read2B(in));
             break;
         case TAG_ITEM_COUNT:
-            game.items.resize(read2B(in));
+            game.items.resize(read2B(in), Item("error", 0));
             break;
         case TAG_CHARACTER_COUNT:
-            game.characters.resize(read4B(in), Character("temp", 0));
+            game.characters.resize(read4B(in), Character("error", 0));
             break;
         case TAG_MONSTER_COUNT:
-            game.monsters.resize(read4B(in));
+            game.monsters.resize(read4B(in), Monster("error", 0));
             break;
         // write2B(out, TAG_EVENT_COUNT);
         // read4B(out, static_cast<uint32_t>(game.monsters.size()));
@@ -472,8 +473,8 @@ bool Serializer::readItems(std::istream& in, std::vector<Item>& items)
     for (auto& item : items) {
         if (read2B(in) != TAG_ITEM)
             return false;
-        item.name          = readStr(in);
-        item.spriteSheetId = read2B(in);
+        item.m_name     = readStr(in);
+        item.m_spriteId = read2B(in);
     }
     return true;
 }
@@ -494,11 +495,11 @@ bool Serializer::readMonsters(std::istream& in, std::vector<Monster>& monsters)
     for (auto& monster : monsters) {
         if (read2B(in) != TAG_MONSTER)
             return false;
-        monster.name          = readStr(in);
-        monster.spriteSheetId = read2B(in);
-        monster.attacks       = readCurve(in);
-        monster.defense       = readCurve(in);
-        monster.hp            = readCurve(in);
+        monster.m_name     = readStr(in);
+        monster.m_spriteId = read2B(in);
+        monster.m_attacks  = readCurve(in);
+        monster.m_defense  = readCurve(in);
+        monster.m_hp       = readCurve(in);
     }
     return true;
 }

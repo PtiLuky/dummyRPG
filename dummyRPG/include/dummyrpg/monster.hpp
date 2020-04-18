@@ -11,19 +11,31 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct Monster
+class Monster
 {
-    std::string name;
-    sprite_id spriteSheetId = 0;
-    Curve attacks;
-    Curve defense;
-    Curve hp;
+    friend class Serializer;
+
+public:
+    Monster(const std::string&& name, sprite_id spriteId);
+
+private:
+    std::string m_name;
+    sprite_id m_spriteId = 0;
+    Curve m_attacks;
+    Curve m_defense;
+    Curve m_hp;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct MonsterInstance
+class MonsterInstance
 {
+    friend class GameInstance;
+
+public:
+    MonsterInstance();
+
+private:
     monster_id monsterId = 0;
     uint8_t level        = 0;
     uint8_t curMissingHp = 0;

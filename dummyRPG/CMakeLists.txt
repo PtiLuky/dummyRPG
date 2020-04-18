@@ -22,12 +22,10 @@ add_library(dummyrpg STATIC
     src/character.cpp
     src/floor.cpp
     src/item.cpp
-    src/layer.cpp
     src/map.cpp
     src/monster.cpp
     src/game.cpp
     src/serialize.cpp
-    src/sprite.cpp
 )
 
 target_include_directories(dummyrpg PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

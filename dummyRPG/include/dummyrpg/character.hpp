@@ -19,8 +19,8 @@ class Character
 public:
     Character(const std::string&& name, sprite_id spriteId);
 
-    const std::string name() const { return m_name; }
-    sprite_id spriteId() const { return m_spriteId; }
+    const std::string& name() const;
+    sprite_id spriteId() const;
 
 private:
     std::string m_name;
@@ -48,8 +48,8 @@ class PlayerInstance
 public:
     PlayerInstance(const std::string&& name, sprite_id spriteId, const PositionChar&& position);
 
-    const PositionChar& Pos() const { return m_pos; }
-    sprite_id SpriteId() const { return m_spriteId; }
+    const PositionChar& Pos() const;
+    sprite_id SpriteId() const;
 
 private:
     std::string m_name;

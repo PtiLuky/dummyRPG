@@ -38,9 +38,9 @@ public:
 
     /////////////////////////////////////
     // const Getters
-    const std::vector<std::unique_ptr<Floor>>& floors() const { return m_floors; }
-    Floor* floorAt(uint8_t floorIdx) const { return m_floors[floorIdx].get(); }
-    const std::vector<chip_id>& chipsetsUsed() const { return m_chipsets; }
+    const std::vector<std::unique_ptr<Floor>>& floors() const;
+    Floor* floorAt(uint8_t floorIdx) const;
+    const std::vector<chip_id>& chipsetsUsed() const;
     uint16_t width() const;
     uint16_t height() const;
 

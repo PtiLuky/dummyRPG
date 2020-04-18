@@ -47,7 +47,7 @@ enum class CharState
 /// Position of a character/item on a
 struct Position
 {
-    Coord coord       = {0, 0};
+    Coord coord     = {0, 0};
     uint16_t mapId  = 0;
     uint8_t floorId = 0;
 };

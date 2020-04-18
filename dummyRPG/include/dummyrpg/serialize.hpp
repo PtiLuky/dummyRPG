@@ -9,14 +9,14 @@
 namespace Dummy {
 
 struct AnimatedSprite;
-struct Character;
 struct Curve;
 struct GameStatic;
-struct GameInstance;
-struct Item;
-struct Monster;
 
+class Character;
+class GameInstance;
+class Item;
 class Map;
+class Monster;
 
 ///////////////////////////////////////////////////////////////////////////////
 

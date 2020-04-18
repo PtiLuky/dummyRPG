@@ -8,10 +8,16 @@
 
 namespace Dummy {
 
-struct Item
+class Item
 {
-    std::string name;
-    sprite_id spriteSheetId = 0;
+    friend class Serializer;
+
+public:
+    Item(const std::string&& m_name, sprite_id spriteId);
+
+private:
+    std::string m_name;
+    sprite_id m_spriteId = 0;
 };
 
 } // namespace Dummy
