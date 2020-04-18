@@ -21,11 +21,42 @@ using char_id = uint32_t;
 using event_id = uint32_t;
 
 
-/// tilecoords represents coordinates of a tile. As a pair of <x, y>
+/// Coord represents coordinates of a tile. As a pair of <x, y>
 struct Coord
 {
     uint16_t x = 0;
     uint16_t y = 0;
+};
+
+enum class Direction
+{
+    Top = 0,
+    Right,
+    Bottom,
+    Left
+};
+
+enum class CharState
+{
+    Idle = 0,
+    Walking,
+    Attack,
+    Dead,
+};
+
+/// Position of a character/item on a
+struct Position
+{
+    Coord coord       = {0, 0};
+    uint16_t mapId  = 0;
+    uint8_t floorId = 0;
+};
+
+/// Position of a character/item on a
+struct PositionChar : public Position
+{
+    Direction dir   = Direction::Bottom;
+    CharState state = CharState::Idle;
 };
 
 /// tilecoords represents coordinates of a chipset tile. As a tuple of <x, y, chipset_id>
@@ -44,22 +75,6 @@ struct Curve
     uint8_t p2 = 0;
     uint8_t p3 = 0;
     uint8_t p4 = 0;
-};
-
-enum class Direction
-{
-    Top = 0,
-    Right,
-    Bottom,
-    Left
-};
-
-enum class CharState
-{
-    Idle = 0,
-    Walking,
-    Attack,
-    Dead,
 };
 
 ///////////////////////////////////////////////////////////////////////////////

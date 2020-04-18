@@ -14,7 +14,7 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct GameStaticData
+struct GameStatic
 {
     uint64_t version = 0;
     std::string name;
@@ -27,15 +27,26 @@ struct GameStaticData
 
     std::vector<std::string> chipsetPaths;
     std::vector<AnimatedSprite> sprites;
-
-
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct GameInstanceData
+class GameInstance
 {
-    PlayerInstance player;
+public:
+    GameInstance(const GameStatic& game);
+
+    bool RegisterPlayer(const PlayerInstance&& player);
+    void MovePlayer(Direction);
+    void StopPlayer();
+
+    const PlayerInstance& Player() const { return m_player; }
+    const Dummy::Map* CurrentMap() const;
+    const Dummy::Floor* CurrentFloor() const;
+
+private:
+    const GameStatic& m_game;
+    PlayerInstance m_player;
 };
 
 } // namespace Dummy

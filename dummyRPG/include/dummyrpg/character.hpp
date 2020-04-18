@@ -12,34 +12,51 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct Character
+class Character
 {
-    std::string name;
-    sprite_id spriteSheetId = 0;
+    friend class Serializer;
+
+public:
+    Character(const std::string&& name, sprite_id spriteId);
+
+    const std::string name() const { return m_name; }
+    sprite_id spriteId() const { return m_spriteId; }
+
+private:
+    std::string m_name;
+    sprite_id m_spriteId = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct CharacterInstance
+class CharacterInstance
 {
-    char_id charId = 0;
-    Coord pos      = {0, 0};
+public:
+    CharacterInstance(char_id id, const PositionChar&& position);
+
+private:
+    char_id m_charId = 0;
+    PositionChar m_pos;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct PlayerInstance
+class PlayerInstance
 {
-    std::string name;
-    sprite_id spriteId = 0;
+    friend class GameInstance;
 
-    Coord pos       = {0, 0};
-    uint16_t mapId  = 0;
-    uint8_t floorId = 0;
-    Direction dir   = Direction::Bottom;
-    CharState state = CharState::Idle;
+public:
+    PlayerInstance(const std::string&& name, sprite_id spriteId, const PositionChar&& position);
 
-    std::map<item_id, uint16_t> bag;
+    const PositionChar& Pos() const { return m_pos; }
+    sprite_id SpriteId() const { return m_spriteId; }
+
+private:
+    std::string m_name;
+    sprite_id m_spriteId = 0;
+    PositionChar m_pos;
+
+    std::map<item_id, uint16_t> m_bag;
 };
 
 } // namespace Dummy

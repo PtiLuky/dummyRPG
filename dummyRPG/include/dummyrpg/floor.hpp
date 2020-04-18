@@ -1,6 +1,7 @@
 #ifndef DUMMYRPG_FLOOR_HPP
 #define DUMMYRPG_FLOOR_HPP
 
+#include "dummyrpg/character.hpp"
 #include "dummyrpg/layer.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,6 +46,7 @@ public:
     /////////////////////////////////////
     // Editable ref getters
     GraphicLayer& graphicLayerAt(uint8_t idx) { return m_layers[idx]; }
+    BlockingLayer& blockingLayer() { return m_blockingLayer; }
 
     /////////////////////////////////////
     // Edition methods
@@ -62,7 +64,8 @@ public:
 private:
     // Layers
     BlockingLayer m_blockingLayer;
-    std::vector<GraphicLayer> m_layers; // MAX_LAYERS_COUNT max
+    std::vector<GraphicLayer> m_layers;   // MAX_LAYERS_COUNT max
+    std::vector<CharacterInstance> m_npc; // non playable characters
 };
 
 } // namespace Dummy

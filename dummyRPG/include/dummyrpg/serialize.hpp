@@ -11,8 +11,8 @@ namespace Dummy {
 struct AnimatedSprite;
 struct Character;
 struct Curve;
-struct GameStaticData;
-struct GameInstanceData;
+struct GameStatic;
+struct GameInstance;
 struct Item;
 struct Monster;
 
@@ -23,11 +23,11 @@ class Map;
 class Serializer
 {
 public:
-    static bool SerializeGameToFile(const GameStaticData&, std::ostream&);
-    static bool SerializeSaveToFile(const GameInstanceData&, std::ostream&);
+    static bool SerializeGameToFile(const GameStatic&, std::ostream&);
+    static bool SerializeSaveToFile(const GameInstance&, std::ostream&);
 
-    static bool ParseGameFromFile(std::istream&, GameStaticData&);
-    static bool ParseSaveFromFile(std::istream&, GameInstanceData&);
+    static bool ParseGameFromFile(std::istream&, GameStatic&);
+    static bool ParseSaveFromFile(std::istream&, GameInstance&);
 
 private:
     // Read and return simple types
@@ -39,7 +39,7 @@ private:
     static std::string readStr(std::istream&);
     // Read and complete complexe types
     template <typename T> static void readLayer(std::istream&, Layer<T>&);
-    static bool readHeader(std::istream&, GameStaticData&);
+    static bool readHeader(std::istream&, GameStatic&);
     static bool readChipsets(std::istream&, std::vector<std::string>&);
     static bool readMaps(std::istream&, std::vector<Map>&);
     static bool readItems(std::istream&, std::vector<Item>&);
@@ -56,7 +56,7 @@ private:
     static void writeStr(std::ostream&, const std::string&);
     // Write complexe types
     template <typename T> static void writeLayer(std::ostream&, const Layer<T>&);
-    static void writeHeader(const GameStaticData&, std::ostream&);
+    static void writeHeader(const GameStatic&, std::ostream&);
     static void writeChipset(std::ostream&, const std::string&);
     static void writeMap(std::ostream&, const Map&);
     static void writeItem(std::ostream&, const Item&);

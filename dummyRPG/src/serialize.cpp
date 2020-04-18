@@ -54,7 +54,7 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Serializer::SerializeGameToFile(const GameStaticData& game, std::ostream& out)
+bool Serializer::SerializeGameToFile(const GameStatic& game, std::ostream& out)
 {
     // TODO return an error value to have details on the failure
     if (! out.good())
@@ -103,7 +103,7 @@ bool Serializer::SerializeGameToFile(const GameStaticData& game, std::ostream& o
     return out.good();
 }
 
-bool Serializer::SerializeSaveToFile(const GameInstanceData& sav, std::ostream& out)
+bool Serializer::SerializeSaveToFile(const GameInstance& sav, std::ostream& out)
 {
     // TODO return an error value to have details on the failure
     if (! out.good())
@@ -159,7 +159,7 @@ template <typename T> void Serializer::writeLayer(std::ostream& out, const Layer
     out.write(layer.data(), static_cast<std::streamsize>(layer.size() * sizeof(T)));
 }
 
-void Serializer::writeHeader(const GameStaticData& game, std::ostream& out)
+void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
 {
     write2B(out, TAG_NAME);
     writeStr(out, game.name);
@@ -221,8 +221,8 @@ void Serializer::writeItem(std::ostream& out, const Item& item)
 void Serializer::writeCharacter(std::ostream& out, const Character& character)
 {
     write2B(out, TAG_CHARACTER);
-    writeStr(out, character.name);
-    write2B(out, character.spriteSheetId);
+    writeStr(out, character.m_name);
+    write2B(out, character.m_spriteId);
 }
 
 void Serializer::writeMonster(std::ostream& out, const Monster& monster)
@@ -260,7 +260,7 @@ void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Serializer::ParseGameFromFile(std::istream& in, GameStaticData& game)
+bool Serializer::ParseGameFromFile(std::istream& in, GameStatic& game)
 {
     // TODO return an error value to have details on the failure
     if (! in.good())
@@ -319,7 +319,7 @@ bool Serializer::ParseGameFromFile(std::istream& in, GameStaticData& game)
     return true;
 }
 
-bool Serializer::ParseSaveFromFile(std::istream& in, GameInstanceData& sav)
+bool Serializer::ParseSaveFromFile(std::istream& in, GameInstance& sav)
 {
     return false;
 }
@@ -379,7 +379,7 @@ template <typename T> void Serializer::readLayer(std::istream& in, Layer<T>& lay
     in.read(layer.data(), static_cast<std::streamsize>(layer.size() * sizeof(T)));
 }
 
-bool Serializer::readHeader(std::istream& in, GameStaticData& game)
+bool Serializer::readHeader(std::istream& in, GameStatic& game)
 {
     if (read4B(in) != FILE_SIGNATURE_GDUMMY)
         return false;
@@ -400,7 +400,7 @@ bool Serializer::readHeader(std::istream& in, GameStaticData& game)
             game.items.resize(read2B(in));
             break;
         case TAG_CHARACTER_COUNT:
-            game.characters.resize(read4B(in));
+            game.characters.resize(read4B(in), Character("temp", 0));
             break;
         case TAG_MONSTER_COUNT:
             game.monsters.resize(read4B(in));
@@ -483,8 +483,8 @@ bool Serializer::readCharacters(std::istream& in, std::vector<Character>& charac
     for (auto& charac : characs) {
         if (read2B(in) != TAG_CHARACTER)
             return false;
-        charac.name          = readStr(in);
-        charac.spriteSheetId = read2B(in);
+        charac.m_name     = readStr(in);
+        charac.m_spriteId = read2B(in);
     }
     return true;
 }

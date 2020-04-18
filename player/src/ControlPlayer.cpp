@@ -2,40 +2,19 @@
 
 namespace DummyPlayer {
 namespace PlayerControl {
-void ApplyMovement(Dummy::PlayerInstance& player, const Keymap& km, const Dummy::Floor& floor)
+void ApplyMovement(Dummy::GameInstance& gi, const Keymap& km)
 {
-    if (player.state == Dummy::CharState::Walking)
-        player.state = Dummy::CharState::Idle;
-
-    auto newPos = player.pos;
-
     if (sf::Keyboard::isKeyPressed(km.moveUp)) {
-        if (newPos.y > 0)
-            --newPos.y;
-        player.dir   = Dummy::Direction::Top;
-        player.state = Dummy::CharState::Walking;
-
+        gi.MovePlayer(Dummy::Direction::Top);
     } else if (sf::Keyboard::isKeyPressed(km.moveLeft)) {
-        if (newPos.x > 0)
-            --newPos.x;
-        player.dir   = Dummy::Direction::Left;
-        player.state = Dummy::CharState::Walking;
-
+        gi.MovePlayer(Dummy::Direction::Left);
     } else if (sf::Keyboard::isKeyPressed(km.moveDown)) {
-        if (newPos.y < floor.height() - 1)
-            ++newPos.y;
-        player.dir   = Dummy::Direction::Bottom;
-        player.state = Dummy::CharState::Walking;
-
+        gi.MovePlayer(Dummy::Direction::Bottom);
     } else if (sf::Keyboard::isKeyPressed(km.moveRight)) {
-        if (newPos.x < floor.width() - 1)
-            ++newPos.x;
-        player.dir   = Dummy::Direction::Right;
-        player.state = Dummy::CharState::Walking;
+        gi.MovePlayer(Dummy::Direction::Right);
+    } else {
+        gi.StopPlayer();
     }
-
-    if (floor.blockingLayer().at(newPos) == false)
-        player.pos = newPos;
 }
 } // namespace PlayerControl
 } // namespace DummyPlayer

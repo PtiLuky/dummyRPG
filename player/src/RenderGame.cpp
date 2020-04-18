@@ -4,7 +4,7 @@
 
 namespace DummyPlayer {
 
-GameRender::GameRender(const Dummy::GameStaticData& game, const Dummy::GameInstanceData& instance,
+GameRender::GameRender(const Dummy::GameStatic& game, const Dummy::GameInstance& instance,
                        sf::RenderWindow& window)
     : m_window(window)
     , m_game(game)
@@ -14,7 +14,7 @@ GameRender::GameRender(const Dummy::GameStaticData& game, const Dummy::GameInsta
 void GameRender::setMap(const Dummy::Map& map)
 {
     try {
-        m_playerRender = std::make_unique<PlayerRender>(m_gameInstance.player, *this);
+        m_playerRender = std::make_unique<PlayerRender>(m_gameInstance.Player(), *this);
     } catch (const MapRenderError& e) {
         std::cerr << "Error : PlayerRender creation failed (" << e.what() << ")." << std::endl;
     }
@@ -28,21 +28,22 @@ void GameRender::setMap(const Dummy::Map& map)
 
 void GameRender::render()
 {
-    m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2
-                                     - m_gameInstance.player.pos.x * m_zoom * Dummy::TILE_SIZE);
-    m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2
-                                     - m_gameInstance.player.pos.y * m_zoom * Dummy::TILE_SIZE);
+    auto& playerPos = m_gameInstance.Player().Pos();
+    m_mapOffset.x =
+        static_cast<int>(m_window.getSize().x / 2 - playerPos.coord.x * m_zoom * Dummy::TILE_SIZE);
+    m_mapOffset.y =
+        static_cast<int>(m_window.getSize().y / 2 - playerPos.coord.y * m_zoom * Dummy::TILE_SIZE);
 
     m_window.clear();
 
     if (m_mapRender)
-        m_mapRender->renderBelow(m_window, m_gameInstance.player.floorId);
+        m_mapRender->renderBelow(m_window, playerPos.floorId);
 
     if (m_playerRender)
         m_playerRender->render(m_window);
 
     if (m_mapRender)
-        m_mapRender->renderAbove(m_window, m_gameInstance.player.floorId);
+        m_mapRender->renderAbove(m_window, playerPos.floorId);
 
     m_window.display();
 }

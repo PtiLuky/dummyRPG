@@ -9,8 +9,8 @@
 #include "RenderGame.hpp"
 #include "RenderMap.hpp"
 
-using Dummy::GameInstanceData;
-using Dummy::GameStaticData;
+using Dummy::GameInstance;
+using Dummy::GameStatic;
 static const int WIN_WIDTH  = 600;
 static const int WIN_HEIGHT = 600;
 static const int WIN_FPS    = 6;
@@ -20,12 +20,12 @@ static const int WIN_FPS    = 6;
 // related warnings about tuple casting loose of precision (msvc 4244)
 #pragma warning(push)
 #pragma warning(disable : 4244)
-static GameStaticData createFakeGame()
+static GameStatic createFakeGame()
 {
     const Dummy::chip_id fkId = 0;
     const uint16_t mapSize    = 30;
 
-    GameStaticData game;
+    GameStatic game;
 
     // Create a map :)
     game.chipsetPaths.push_back("Resources/chip1.png");
@@ -36,6 +36,7 @@ static GameStaticData createFakeGame()
             floor->graphicLayerAt(0).set({x, y}, {0, 0, fkId});
 
     floor->graphicLayerAt(2).set({1, 1}, {3, 0, fkId});
+    floor->blockingLayer().set({1, 1}, true);
     floor->graphicLayerAt(2).set({1, 2}, {3, 1, fkId});
     floor->graphicLayerAt(2).set({1, 3}, {3, 1, fkId});
     floor->graphicLayerAt(2).set({1, 4}, {3, 1, fkId});
@@ -58,12 +59,11 @@ static GameStaticData createFakeGame()
 
     return game;
 }
-static GameInstanceData createFakeGameInstance()
+static GameInstance createFakeGameInstance(const GameStatic& game)
 {
-    GameInstanceData gameInstance;
-    gameInstance.player.name     = "Toto";
-    gameInstance.player.pos      = {5, 5};
-    gameInstance.player.spriteId = 0;
+    GameInstance gameInstance(game);
+    Dummy::PlayerInstance player("Toto", 0, {5, 5});
+    gameInstance.RegisterPlayer(std::move(player));
 
     return gameInstance;
 }
@@ -74,15 +74,19 @@ static GameInstanceData createFakeGameInstance()
 
 int main()
 {
-    GameStaticData game           = createFakeGame();
-    GameInstanceData gameInstance = createFakeGameInstance();
+    GameStatic game           = createFakeGame();
+    GameInstance gameInstance = createFakeGameInstance(game);
     DummyPlayer::Keymap keymap;
+    bool gameHasFocus = true;
 
     sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), game.name);
     window.setFramerateLimit(WIN_FPS);
 
     DummyPlayer::GameRender renderer(game, gameInstance, window);
-    renderer.setMap(game.maps[gameInstance.player.mapId]);
+    auto* map = gameInstance.CurrentMap();
+    if (map == nullptr)
+        return 1; // corrupted data ???
+    renderer.setMap(*map);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -96,15 +100,17 @@ int main()
                 sf::FloatRect visibleArea(0.F, 0.F, static_cast<float>(event.size.width),
                                           static_cast<float>(event.size.height));
                 window.setView(sf::View(visibleArea));
+            } else if (event.type == sf::Event::GainedFocus) {
+                gameHasFocus = true;
+            } else if (event.type == sf::Event::LostFocus) {
+                gameHasFocus = false;
             }
         }
 
         // Process pressed-states (events will only give the pressed moment)
-        auto* floor = game.maps[gameInstance.player.mapId].floorAt(gameInstance.player.floorId);
-        if (floor == nullptr)
-            return 1; // corrupted data ???
-        DummyPlayer::PlayerControl::ApplyMovement(gameInstance.player, keymap, *floor);
-
+        if (gameHasFocus) {
+            DummyPlayer::PlayerControl::ApplyMovement(gameInstance, keymap);
+        }
 
         // Render game
         renderer.render();

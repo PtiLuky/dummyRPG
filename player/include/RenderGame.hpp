@@ -26,10 +26,10 @@ public:
     /// \param window the current rendering windows. Must have a longer
     /// lifespan than this object.
     ///
-    explicit GameRender(const Dummy::GameStaticData&, const Dummy::GameInstanceData&,
+    explicit GameRender(const Dummy::GameStatic&, const Dummy::GameInstance&,
                         sf::RenderWindow& window);
 
-    const Dummy::GameStaticData& game() const { return m_game; }
+    const Dummy::GameStatic& game() const { return m_game; }
     const sf::Vector2i& offset() const { return m_mapOffset; }
     sf::Vector2f itemPxPos(Dummy::Coord pos) const;
     float zoom() const { return m_zoom; }
@@ -43,8 +43,8 @@ private:
     std::unique_ptr<MapRender> m_mapRender;
     std::unique_ptr<PlayerRender> m_playerRender;
 
-    const Dummy::GameStaticData& m_game;
-    const Dummy::GameInstanceData& m_gameInstance;
+    const Dummy::GameStatic& m_game;
+    const Dummy::GameInstance& m_gameInstance;
 
     float m_zoom = 2.F;
     sf::Vector2i m_mapOffset;

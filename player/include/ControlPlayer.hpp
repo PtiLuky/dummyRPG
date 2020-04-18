@@ -1,14 +1,13 @@
 #ifndef DUMMYRPG_CONTROLPLAYER_HPP
 #define DUMMYRPG_CONTROLPLAYER_HPP
 
-#include "dummyrpg/character.hpp"
-#include "dummyrpg/floor.hpp"
+#include "dummyrpg/game.hpp"
 
 #include "Keymap.hpp"
 
 namespace DummyPlayer {
 namespace PlayerControl {
-void ApplyMovement(Dummy::PlayerInstance& player, const Keymap&, const Dummy::Floor&);
+void ApplyMovement(Dummy::GameInstance& player, const Keymap&);
 };
 } // namespace DummyPlayer
 

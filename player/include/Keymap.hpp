@@ -10,6 +10,8 @@ struct Keymap
     sf::Keyboard::Key moveRight = sf::Keyboard::Right;
     sf::Keyboard::Key moveUp    = sf::Keyboard::Up;
     sf::Keyboard::Key moveDown  = sf::Keyboard::Down;
+
+    sf::Keyboard::Key action = sf::Keyboard::Space;
 };
 } // namespace DummyPlayer
 #endif // DUMMYRPG_KEYMAP_HPP
