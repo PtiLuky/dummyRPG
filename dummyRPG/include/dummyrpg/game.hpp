@@ -40,13 +40,17 @@ class GameInstance
 public:
     explicit GameInstance(const GameStatic& game);
 
-    bool RegisterPlayer(const PlayerInstance& player);
-    void MovePlayer(Direction);
-    void StopPlayer();
+    bool registerPlayer(const PlayerInstance& player);
+    void movePlayer(Direction);
+    void stopPlayer();
+    void interractInFrontOfPlayer();
 
-    const PlayerInstance& Player() const { return m_player; }
-    const Dummy::Map* CurrentMap() const;
-    const Dummy::Floor* CurrentFloor() const;
+    const PlayerInstance& player() const;
+    const Dummy::Map* currentMap() const;
+    const Dummy::Floor* currentFloor() const;
+
+private:
+    Dummy::Floor* currentFloor();
 
 private:
     const GameStatic& m_game;

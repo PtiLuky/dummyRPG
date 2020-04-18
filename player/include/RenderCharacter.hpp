@@ -25,7 +25,7 @@ public:
     explicit CharacterRender(const Dummy::AnimatedSprite&, const Dummy::PositionChar&,
                              const GameRender&);
 
-    const Dummy::PositionChar& Pos() const;
+    const Dummy::PositionChar& pos() const;
 
     void render(sf::RenderWindow&);
 

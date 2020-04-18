@@ -7,7 +7,7 @@
 
 namespace DummyPlayer {
 namespace PlayerControl {
-void ApplyMovement(Dummy::GameInstance& player, const Keymap&);
+void applyMovement(Dummy::GameInstance& player, const Keymap&);
 };
 } // namespace DummyPlayer
 

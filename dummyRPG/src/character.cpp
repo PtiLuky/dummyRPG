@@ -31,7 +31,7 @@ char_id CharacterInstance::characterId() const
     return m_charId;
 }
 
-const PositionChar& CharacterInstance::Pos() const
+const PositionChar& CharacterInstance::pos() const
 {
     return m_pos;
 }
@@ -45,12 +45,12 @@ PlayerInstance::PlayerInstance(const std::string&& name, sprite_id spriteId,
     , m_pos(position)
 {}
 
-const PositionChar& PlayerInstance::Pos() const
+const PositionChar& PlayerInstance::pos() const
 {
     return m_pos;
 }
 
-sprite_id PlayerInstance::SpriteId() const
+sprite_id PlayerInstance::spriteId() const
 {
     return m_spriteId;
 }

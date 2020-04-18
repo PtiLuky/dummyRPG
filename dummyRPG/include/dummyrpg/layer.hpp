@@ -79,7 +79,7 @@ public:
     /// \param coords coords to check
     /// \return true if valid
     ///
-    bool areCoordValid(Coord coords) { return (coords.x < m_width && coords.y < m_height); }
+    bool areCoordValid(Coord coords) const { return (coords.x < m_width && coords.y < m_height); }
 
 private:
     std::vector<T> m_content;

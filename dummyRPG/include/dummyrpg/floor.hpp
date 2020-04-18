@@ -24,6 +24,7 @@ namespace Dummy {
 ///
 class Floor
 {
+    friend class GameInstance;
     friend class Serializer;
 
 public:
@@ -40,13 +41,13 @@ public:
     uint16_t height() const;
 
     const BlockingLayer& blockingLayer() const;
-    BlockingLayer& blockingLayer();
     bool isWalkable(Coord) const;
 
     const std::vector<GraphicLayer>& graphicLayers() const;
-    GraphicLayer& graphicLayerAt(uint8_t idx);
-
     const std::vector<CharacterInstance>& npcs() const;
+
+    void setBlockCell(Coord, bool);
+    void setGraphicCell(uint8_t layerIdx, Coord, Tileaspect);
 
     bool addLayerAbove();    ///< add a new top layer, in the limit of MAX_LAYERS_COUNT
     bool removeLayerAbove(); ///< remove the top layer. Cannot remove a inf layer

@@ -33,20 +33,20 @@ static GameStatic createFakeGame()
     auto* floor = map.floorAt(0);
     for (uint16_t x = 0; x < mapSize; ++x)
         for (uint16_t y = 0; y < mapSize; ++y)
-            floor->graphicLayerAt(0).set({x, y}, {0, 0, fkId});
+            floor->setGraphicCell(0, {x, y}, {0, 0, fkId});
 
-    floor->graphicLayerAt(2).set({1, 1}, {3, 0, fkId});
-    floor->blockingLayer().set({1, 1}, true);
-    floor->graphicLayerAt(2).set({1, 2}, {3, 1, fkId});
-    floor->graphicLayerAt(2).set({1, 3}, {3, 1, fkId});
-    floor->graphicLayerAt(2).set({1, 4}, {3, 1, fkId});
-    floor->graphicLayerAt(2).set({1, 5}, {3, 1, fkId});
-    floor->graphicLayerAt(2).set({1, 6}, {3, 1, fkId});
-    floor->graphicLayerAt(2).set({1, 7}, {3, 1, fkId});
-    floor->graphicLayerAt(2).set({1, 8}, {3, 1, fkId});
-    floor->blockingLayer().set({1, 8}, true);
-    floor->graphicLayerAt(2).set({2, 1}, {1, 1, fkId});
-    floor->blockingLayer().set({2, 1}, true);
+    floor->setGraphicCell(2, {1, 1}, {3, 0, fkId});
+    floor->setBlockCell({1, 1}, true);
+    floor->setGraphicCell(2, {1, 2}, {3, 1, fkId});
+    floor->setGraphicCell(2, {1, 3}, {3, 1, fkId});
+    floor->setGraphicCell(2, {1, 4}, {3, 1, fkId});
+    floor->setGraphicCell(2, {1, 5}, {3, 1, fkId});
+    floor->setGraphicCell(2, {1, 6}, {3, 1, fkId});
+    floor->setGraphicCell(2, {1, 7}, {3, 1, fkId});
+    floor->setGraphicCell(2, {1, 8}, {3, 1, fkId});
+    floor->setBlockCell({1, 8}, true);
+    floor->setGraphicCell(2, {2, 1}, {1, 1, fkId});
+    floor->setBlockCell({2, 1}, true);
 
     game.maps.push_back(std::move(map));
 
@@ -92,7 +92,7 @@ static GameInstance createFakeGameInstance(const GameStatic& game)
     Dummy::PositionChar pos;
     pos.coord = {5, 5};
     Dummy::PlayerInstance player("Toto", 0, std::move(pos));
-    gameInstance.RegisterPlayer(std::move(player));
+    gameInstance.registerPlayer(std::move(player));
 
     return gameInstance;
 }
@@ -112,7 +112,7 @@ int main()
     window.setFramerateLimit(WIN_FPS);
 
     DummyPlayer::GameRender renderer(game, gameInstance, window);
-    auto* map = gameInstance.CurrentMap();
+    auto* map = gameInstance.currentMap();
     if (map == nullptr)
         return 1; // corrupted data ???
     renderer.setMap(*map);
@@ -138,7 +138,7 @@ int main()
 
         // Process pressed-states (events will only give the pressed moment)
         if (gameHasFocus) {
-            DummyPlayer::PlayerControl::ApplyMovement(gameInstance, keymap);
+            DummyPlayer::PlayerControl::applyMovement(gameInstance, keymap);
         }
 
         // Render game

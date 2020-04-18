@@ -30,18 +30,13 @@ const BlockingLayer& Floor::blockingLayer() const
     return m_blockingLayer;
 }
 
-BlockingLayer& Floor::blockingLayer()
-{
-    return m_blockingLayer;
-}
-
 bool Floor::isWalkable(Coord coord) const
 {
-    if (m_blockingLayer.at(coord) == true)
+    if (m_blockingLayer.at(coord))
         return false;
 
     for (auto& npc : m_npcs)
-        if (npc.Pos().coord == coord)
+        if (npc.pos().coord == coord)
             return false;
 
     return true;
@@ -51,14 +46,20 @@ const std::vector<GraphicLayer>& Floor::graphicLayers() const
 {
     return m_layers;
 }
-GraphicLayer& Floor::graphicLayerAt(uint8_t idx)
-{
-    return m_layers[idx];
-}
 
 const std::vector<CharacterInstance>& Floor::npcs() const
 {
     return m_npcs;
+}
+
+void Floor::setBlockCell(Coord coord, bool val)
+{
+    m_blockingLayer.set(coord, val);
+}
+
+void Floor::setGraphicCell(uint8_t layerIdx, Coord coord, Tileaspect val)
+{
+    m_layers[layerIdx].set(coord, val);
 }
 
 bool Floor::addLayerAbove()

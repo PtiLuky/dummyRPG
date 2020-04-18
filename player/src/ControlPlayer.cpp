@@ -2,18 +2,22 @@
 
 namespace DummyPlayer {
 namespace PlayerControl {
-void ApplyMovement(Dummy::GameInstance& gi, const Keymap& km)
+void applyMovement(Dummy::GameInstance& gi, const Keymap& km)
 {
     if (sf::Keyboard::isKeyPressed(km.moveUp)) {
-        gi.MovePlayer(Dummy::Direction::Top);
+        gi.movePlayer(Dummy::Direction::Top);
     } else if (sf::Keyboard::isKeyPressed(km.moveLeft)) {
-        gi.MovePlayer(Dummy::Direction::Left);
+        gi.movePlayer(Dummy::Direction::Left);
     } else if (sf::Keyboard::isKeyPressed(km.moveDown)) {
-        gi.MovePlayer(Dummy::Direction::Bottom);
+        gi.movePlayer(Dummy::Direction::Bottom);
     } else if (sf::Keyboard::isKeyPressed(km.moveRight)) {
-        gi.MovePlayer(Dummy::Direction::Right);
+        gi.movePlayer(Dummy::Direction::Right);
     } else {
-        gi.StopPlayer();
+        gi.stopPlayer();
+    }
+
+    if (sf::Keyboard::isKeyPressed(km.action)) {
+        gi.interractInFrontOfPlayer();
     }
 }
 } // namespace PlayerControl

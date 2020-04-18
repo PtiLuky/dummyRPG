@@ -44,27 +44,27 @@ void GameRender::setMap(const Dummy::Map& map)
         std::cerr << "Error : MapRender creation failed (" << e.what() << ")." << std::endl;
     }
 
-    changeFloor(m_gameInstance.Player().Pos().floorId);
+    changeFloor(m_gameInstance.player().pos().floorId);
 }
 
 void GameRender::changeFloor(uint8_t floorId)
 {
-    const auto& playerPos = m_gameInstance.Player().Pos();
+    const auto& playerPos = m_gameInstance.player().pos();
     const auto* floor     = m_game.maps[playerPos.mapId].floorAt(floorId);
     if (floor == nullptr)
         return;
 
     try {
         // Player
-        auto& spriteP   = m_game.sprites[m_gameInstance.Player().SpriteId()];
-        auto& positionP = m_gameInstance.Player().Pos();
+        auto& spriteP   = m_game.sprites[m_gameInstance.player().spriteId()];
+        auto& positionP = m_gameInstance.player().pos();
         m_npcRenders.push_back(std::make_unique<CharacterRender>(spriteP, positionP, *this));
 
         // NPC
         for (auto& npc : floor->npcs()) {
             auto& charac   = m_game.characters[npc.characterId()];
             auto& sprite   = m_game.sprites[charac.spriteId()];
-            auto& position = npc.Pos();
+            auto& position = npc.pos();
             m_npcRenders.push_back(std::make_unique<CharacterRender>(sprite, position, *this));
         }
     } catch (const CharacterRenderError& e) {
@@ -74,7 +74,7 @@ void GameRender::changeFloor(uint8_t floorId)
 
 void GameRender::render()
 {
-    auto& playerPos       = m_gameInstance.Player().Pos();
+    auto& playerPos       = m_gameInstance.player().pos();
     const float tileToPix = m_zoom * Dummy::TILE_SIZE;
     m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2 - playerPos.coord.x * tileToPix);
     m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2 - playerPos.coord.y * tileToPix);
@@ -107,7 +107,7 @@ std::vector<uint32_t> GameRender::getCharacterDrawOrder()
     for (uint32_t i = 0; i < nbCharac; ++i) {
         uint32_t insertIdx = 0;
         for (insertIdx = 0; insertIdx < i; ++insertIdx)
-            if (m_npcRenders[i]->Pos().coord.y <= m_npcRenders[insertIdx]->Pos().coord.y)
+            if (m_npcRenders[i]->pos().coord.y <= m_npcRenders[insertIdx]->pos().coord.y)
                 break;
         order.insert(order.begin() + insertIdx, i);
     }

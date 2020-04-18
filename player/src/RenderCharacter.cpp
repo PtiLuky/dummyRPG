@@ -31,7 +31,7 @@ CharacterRender::CharacterRender(const Dummy::AnimatedSprite& spriteRef,
     m_sprite.setTextureRect(rect);
 }
 
-const Dummy::PositionChar& CharacterRender::Pos() const
+const Dummy::PositionChar& CharacterRender::pos() const
 {
     return m_posRef;
 }

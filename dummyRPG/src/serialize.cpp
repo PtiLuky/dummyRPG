@@ -54,7 +54,7 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Serializer::SerializeGameToFile(const GameStatic& game, std::ostream& out)
+bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
 {
     // TODO return an error value to have details on the failure
     if (! out.good())
@@ -103,7 +103,7 @@ bool Serializer::SerializeGameToFile(const GameStatic& game, std::ostream& out)
     return out.good();
 }
 
-bool Serializer::SerializeSaveToFile(const GameInstance& sav, std::ostream& out)
+bool Serializer::serializeSaveToFile(const GameInstance& sav, std::ostream& out)
 {
     // TODO return an error value to have details on the failure
     if (! out.good())
@@ -260,7 +260,7 @@ void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Serializer::ParseGameFromFile(std::istream& in, GameStatic& game)
+bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
 {
     // TODO return an error value to have details on the failure
     if (! in.good())
@@ -319,7 +319,7 @@ bool Serializer::ParseGameFromFile(std::istream& in, GameStatic& game)
     return true;
 }
 
-bool Serializer::ParseSaveFromFile(std::istream& in, GameInstance& sav)
+bool Serializer::parseSaveFromFile(std::istream& in, GameInstance& sav)
 {
     return false;
 }

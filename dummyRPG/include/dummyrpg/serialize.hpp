@@ -23,11 +23,11 @@ class Monster;
 class Serializer
 {
 public:
-    static bool SerializeGameToFile(const GameStatic&, std::ostream&);
-    static bool SerializeSaveToFile(const GameInstance&, std::ostream&);
+    static bool serializeGameToFile(const GameStatic&, std::ostream&);
+    static bool serializeSaveToFile(const GameInstance&, std::ostream&);
 
-    static bool ParseGameFromFile(std::istream&, GameStatic&);
-    static bool ParseSaveFromFile(std::istream&, GameInstance&);
+    static bool parseGameFromFile(std::istream&, GameStatic&);
+    static bool parseSaveFromFile(std::istream&, GameInstance&);
 
 private:
     // Read and return simple types
