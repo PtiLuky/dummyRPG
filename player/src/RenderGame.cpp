@@ -49,8 +49,8 @@ void GameRender::setMap(const Dummy::Map& map)
 
 void GameRender::changeFloor(uint8_t floorId)
 {
-    auto& playerPos = m_gameInstance.Player().Pos();
-    auto* floor     = m_game.maps[playerPos.mapId].floorAt(floorId);
+    const auto& playerPos = m_gameInstance.Player().Pos();
+    const auto* floor     = m_game.maps[playerPos.mapId].floorAt(floorId);
     if (floor == nullptr)
         return;
 
@@ -74,11 +74,10 @@ void GameRender::changeFloor(uint8_t floorId)
 
 void GameRender::render()
 {
-    auto& playerPos = m_gameInstance.Player().Pos();
-    m_mapOffset.x =
-        static_cast<int>(m_window.getSize().x / 2 - playerPos.coord.x * m_zoom * Dummy::TILE_SIZE);
-    m_mapOffset.y =
-        static_cast<int>(m_window.getSize().y / 2 - playerPos.coord.y * m_zoom * Dummy::TILE_SIZE);
+    auto& playerPos       = m_gameInstance.Player().Pos();
+    const float tileToPix = m_zoom * Dummy::TILE_SIZE;
+    m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2 - playerPos.coord.x * tileToPix);
+    m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2 - playerPos.coord.y * tileToPix);
 
     auto characOrder = getCharacterDrawOrder();
 
@@ -87,7 +86,7 @@ void GameRender::render()
     if (m_mapRender)
         m_mapRender->renderBelow(m_window, playerPos.floorId);
 
-    for (auto& characIdx : characOrder) {
+    for (const auto& characIdx : characOrder) {
         // Note: do we want to display NPC of inferior floors? If yes, we should handle that another
         // way
         m_npcRenders[characIdx]->render(m_window);
@@ -106,7 +105,7 @@ std::vector<uint32_t> GameRender::getCharacterDrawOrder()
 
     // Poor ordering complexity, can be optimized
     for (uint32_t i = 0; i < nbCharac; ++i) {
-        uint32_t insertIdx;
+        uint32_t insertIdx = 0;
         for (insertIdx = 0; insertIdx < i; ++insertIdx)
             if (m_npcRenders[i]->Pos().coord.y <= m_npcRenders[insertIdx]->Pos().coord.y)
                 break;

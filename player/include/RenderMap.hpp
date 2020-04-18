@@ -16,9 +16,7 @@ class GameRender;
 class MapRenderError : public std::runtime_error
 {
 public:
-    explicit MapRenderError(const std::string& msg)
-        : std::runtime_error(msg)
-    {}
+    explicit MapRenderError(const std::string& msg);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,7 +49,8 @@ public:
     void renderAbove(sf::RenderWindow&, uint8_t playerFloor);
 
 private:
-    void layerToImage(const Dummy::GraphicLayer&, sf::Image&, const std::map<Dummy::chip_id, uint8_t>&);
+    void layerToImage(const Dummy::GraphicLayer&, sf::Image&,
+                      const std::map<Dummy::chip_id, uint8_t>&);
 
 private:
     const GameRender& m_gameRender;

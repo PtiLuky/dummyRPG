@@ -22,6 +22,10 @@
 
 namespace DummyPlayer {
 
+MapRenderError::MapRenderError(const std::string& msg)
+    : std::runtime_error(msg)
+{}
+
 MapRender::MapRender(const Dummy::Map& map, const GameRender& gameRender)
     : m_gameRender(gameRender)
 {

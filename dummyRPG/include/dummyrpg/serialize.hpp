@@ -10,10 +10,10 @@ namespace Dummy {
 
 struct AnimatedSprite;
 struct Curve;
-struct GameStatic;
 
 class Character;
 class GameInstance;
+class GameStatic;
 class Item;
 class Map;
 class Monster;

@@ -14,9 +14,7 @@ class GameRender;
 class CharacterRenderError : public std::runtime_error
 {
 public:
-    explicit CharacterRenderError(const std::string& msg)
-        : std::runtime_error(msg)
-    {}
+    explicit CharacterRenderError(const std::string& msg);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +28,7 @@ public:
     const Dummy::PositionChar& Pos() const;
 
     void render(sf::RenderWindow&);
+
 private:
     const Dummy::PositionChar& m_posRef;
     const Dummy::AnimatedSprite& m_spriteRef;

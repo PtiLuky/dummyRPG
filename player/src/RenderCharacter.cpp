@@ -12,7 +12,9 @@ static const uint8_t LINE_LEFT_VIEW   = 3;
 
 namespace DummyPlayer {
 
-
+CharacterRenderError::CharacterRenderError(const std::string& msg)
+    : std::runtime_error(msg)
+{}
 
 CharacterRender::CharacterRender(const Dummy::AnimatedSprite& spriteRef,
                                  const Dummy::PositionChar& posRef, const GameRender& gameRender)

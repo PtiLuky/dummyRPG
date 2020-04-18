@@ -14,10 +14,12 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct GameStatic
+class GameStatic
 {
+public:
     bool RegisterNPC(char_id id, const PositionChar& pos);
 
+public:
     uint64_t version = 0;
     std::string name;
     std::vector<Map> maps;
