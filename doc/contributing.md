@@ -20,7 +20,7 @@ To express yourself please chat with us on Discord or open a new Issue ticket on
 *(EN or FR)*
 
 Help to manage a Discord server, keep people informed with new updates, chat with developers to
-make the link between the users, the community and the dev.
+make the link between the users, the community and the dev.  
 And make the community grow!
 
 
@@ -44,16 +44,16 @@ So many things to do here :)
 
 Please get in touch with us if any of the following point is not clear enough.
 
-First make sure you understand [the specifications page (french)](doc/specifications.md).
+First make sure you understand [the specifications page (french)](doc/specifications.md).  
 Then [Install the project](doc/install.md).
 
 
 #### Coding Style
 
-Modern C++ (no new, delete and C-like casts).
+Modern C++ (no new, delete and C-like casts).  
 Most important is to fit in the current document coding-style.
 
-Setup your IDE to use the **.clang-format** file to automatically apply the right formatting style.
+Setup your IDE to use the **.clang-format** file to automatically apply the right formatting style.  
 clang-format should be installed and the added to your IDE (exists as QtCreator and Visual Studio addons).
 
 
