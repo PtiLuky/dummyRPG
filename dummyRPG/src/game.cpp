@@ -35,7 +35,7 @@ bool GameInstance::registerPlayer(const PlayerInstance& player)
 
 void GameInstance::movePlayer(Direction dir)
 {
-    auto* floor = currentFloor();
+    const auto* floor = currentFloor();
     if (floor == nullptr)
         return;
 

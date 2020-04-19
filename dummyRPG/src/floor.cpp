@@ -32,7 +32,7 @@ const BlockingLayer& Floor::blockingLayer() const
 
 bool Floor::isWalkable(Coord coord) const
 {
-    if (m_blockingLayer.at(coord))
+    if (m_blockingLayer.at(coord) > 0) // 0 is false but encoded on uint8... can be improved
         return false;
 
     for (auto& npc : m_npcs)

@@ -6,6 +6,19 @@ Core library for a 2D RPG game engine.
 
 ## Actual state
 
+**Library** (code in /dummyRPG/) and **player** (code in /player/) are progressing at the same time.
+[x] Load a map, a floor
+[x] Display the character of the player
+[x] Display the Non-player characters
+[x] Move in the map
+[ ] Chat with NPC
+[ ] Spawn monsters
+[ ] Fights monsters
+[ ] Items management
+[ ] Events system
+
+**Editor** is not up to date yet and cannot be used to generate games with the new library.
+
 `¯\_(ツ)_/¯`
 
 ## Installation
