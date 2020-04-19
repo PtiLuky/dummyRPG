@@ -1,6 +1,7 @@
 #ifndef DUMMYRPG_GAME_HPP
 #define DUMMYRPG_GAME_HPP
 
+#include <deque>
 #include <map>
 
 #include "dummyrpg/character.hpp"
@@ -18,10 +19,10 @@ namespace Dummy {
 class GameStatic
 {
 public:
-    bool RegisterNPC(char_id id, const PositionChar& pos);
+    char_id RegisterNPC(char_id id, const PositionChar& pos);
 
-    DialogSentence& RegisterDialog(const std::string& speaker, const std::string& sentence);
-    DialogChoice& RegisterChoice(const std::string& question);
+    event_id RegisterDialog(const std::string& speaker, const std::string& sentence);
+    event_id RegisterChoice(const std::string& question);
 
 public:
     uint64_t version = 0;
@@ -53,6 +54,11 @@ public:
     void stopPlayer();
     void interractInFrontOfPlayer();
 
+    void blockEvents(bool);
+    void registerEvent(event_id);
+    event_id dequeEvent();
+    bool eventBlocked() const;
+
     const PlayerInstance& player() const;
     const Dummy::Map* currentMap() const;
     const Dummy::Floor* currentFloor() const;
@@ -63,6 +69,9 @@ private:
 private:
     const GameStatic& m_game;
     PlayerInstance m_player = {"Unnamed", 0, PositionChar()};
+
+    bool m_eventsBlocked = false;
+    std::deque<event_id> m_eventsQueue;
 };
 
 } // namespace Dummy

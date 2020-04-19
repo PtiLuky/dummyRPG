@@ -37,11 +37,16 @@ public:
     CharacterInstance(char_id id, const PositionChar& position);
 
     char_id characterId() const;
+    event_id eventId() const;
     const PositionChar& pos() const;
+
+    void setEvent(event_id);
 
 private:
     char_id m_charId = 0;
     PositionChar m_pos;
+
+    event_id m_event = undefEvent;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,6 +65,7 @@ private:
     std::string m_name;
     sprite_id m_spriteId = 0;
     PositionChar m_pos;
+    bool m_isBusy = false;
 
     std::map<item_id, uint16_t> m_bag;
 };

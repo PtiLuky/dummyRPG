@@ -15,7 +15,7 @@ namespace Dummy {
 struct DialogOption
 {
     std::string option;
-    event_id nextOption = undefEvent;
+    event_id nextEvent = undefEvent;
 };
 
 class DialogChoice
@@ -24,15 +24,17 @@ class DialogChoice
 
 public:
     DialogChoice(const std::string& question, event_id);
+
     event_id id() const;
     uint8_t nbOptions() const;
     DialogOption option(uint8_t idx) const;
+    const std::string& question() const;
 
     bool setOption(const DialogOption&, uint8_t idx);
     bool addOption(const DialogOption&);
     bool removeOption(uint8_t idx);
 
-    const uint8_t NB_OPTIONS_MAX = 4;
+    static const uint8_t NB_OPTIONS_MAX = 4;
 
 private:
     event_id m_id;
@@ -50,6 +52,9 @@ public:
     DialogSentence(const std::string& speaker, const std::string& sentence, event_id);
 
     event_id id() const;
+    event_id nextEvent() const;
+    const std::string& speaker() const;
+    const std::string& sentence() const;
 
     void setNextEvent(event_id);
 

@@ -101,6 +101,7 @@ struct Event
 const Tileaspect undefAspect {static_cast<uint8_t>(-1), static_cast<uint8_t>(-1),
                               static_cast<chip_id>(0)};
 
+const char_id undefChar {static_cast<char_id>(-1)};
 const event_id undefEvent {static_cast<event_id>(-1)};
 /// The size in px of a tile (on the chipset and on the map)
 const int TILE_SIZE = 16;

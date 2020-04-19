@@ -25,6 +25,11 @@ DialogOption DialogChoice::option(uint8_t idx) const
     return m_options[idx];
 }
 
+const std::string& DialogChoice::question() const
+{
+    return m_question;
+}
+
 bool DialogChoice::setOption(const DialogOption& option, uint8_t idx)
 {
     if (idx > m_options.size())
@@ -68,6 +73,21 @@ DialogSentence::DialogSentence(const std::string& speaker, const std::string& se
 event_id DialogSentence::id() const
 {
     return m_id;
+}
+
+event_id DialogSentence::nextEvent() const
+{
+    return m_nextEvent;
+}
+
+const std::string& DialogSentence::speaker() const
+{
+    return m_speaker;
+}
+
+const std::string& DialogSentence::sentence() const
+{
+    return m_sentence;
 }
 
 void DialogSentence::setNextEvent(event_id nextEventId)

@@ -26,6 +26,11 @@ CharacterInstance::CharacterInstance(char_id id, const PositionChar& position)
     , m_pos(position)
 {}
 
+event_id CharacterInstance::eventId() const
+{
+    return m_event;
+}
+
 char_id CharacterInstance::characterId() const
 {
     return m_charId;
@@ -34,6 +39,11 @@ char_id CharacterInstance::characterId() const
 const PositionChar& CharacterInstance::pos() const
 {
     return m_pos;
+}
+
+void CharacterInstance::setEvent(event_id event)
+{
+    m_event = event;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

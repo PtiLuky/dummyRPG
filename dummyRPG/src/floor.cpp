@@ -52,6 +52,11 @@ const std::vector<CharacterInstance>& Floor::npcs() const
     return m_npcs;
 }
 
+CharacterInstance& Floor::npc(char_id id)
+{
+    return m_npcs[id];
+}
+
 void Floor::setBlockCell(Coord coord, bool val)
 {
     m_blockingLayer.set(coord, val);
@@ -96,8 +101,9 @@ void Floor::removeChipRef(chip_id idx)
     }
 }
 
-void Floor::registerNPC(char_id id, const PositionChar& pos)
+char_id Floor::registerNPC(char_id id, const PositionChar& pos)
 {
     m_npcs.push_back(CharacterInstance(id, pos));
+    return static_cast<char_id>(m_npcs.size() - 1);
 }
 } // namespace Dummy
