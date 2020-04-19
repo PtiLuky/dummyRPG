@@ -84,6 +84,23 @@ static GameStatic createFakeGame()
     pos3.dir                 = Dummy::Direction::Right;
     game.RegisterNPC(0, pos3);
 
+    auto& dialog1  = game.RegisterDialog("Number1", "Bonjour je suis 1.");
+    auto& dialogY  = game.RegisterDialog("Number1", "Bah non...");
+    auto& dialogN  = game.RegisterDialog("Number1", "Yesss bien joué");
+    auto& choice = game.RegisterChoice("Tu sais choisir l'option 3 ?");
+    dialog1.setNextEvent(choice.id());
+    choice.addOption({"1. Uhm...", dialogN.id()});
+    choice.addOption({"2. ?", dialogN.id()});
+    choice.addOption({"3. Maybe", dialogY.id()});
+    choice.addOption({"4. Uhm...", dialogN.id()});
+
+    auto& dialog2  = game.RegisterDialog("Number2", "Bonjour je suis 2.");
+    auto& dialog2b = game.RegisterDialog("Number2", "... Et je continue de parler");
+    dialog2.setNextEvent(dialog2b.id());
+
+    game.RegisterDialog("Number3", "Bonjour je suis 3.");
+    game.RegisterDialog("Number4", "Bonjour je suis 4.");
+
     return game;
 }
 static GameInstance createFakeGameInstance(const GameStatic& game)

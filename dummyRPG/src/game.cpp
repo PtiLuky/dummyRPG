@@ -20,6 +20,33 @@ bool GameStatic::RegisterNPC(char_id id, const PositionChar& pos)
     return true;
 }
 
+
+DialogSentence& GameStatic::RegisterDialog(const std::string& speaker, const std::string& sentence)
+{
+    uint32_t nextEventId = static_cast<uint32_t>(events.size());
+
+    Dummy::DialogSentence dialog(speaker, sentence, nextEventId);
+
+    uint32_t nextDialogId = static_cast<uint32_t>(dialogs.size());
+    events.push_back({Dummy::EventType::Dialog, nextDialogId});
+
+    dialogs.push_back(std::move(dialog));
+    return dialogs.back();
+}
+
+DialogChoice& GameStatic::RegisterChoice(const std::string& question)
+{
+    uint32_t nextEventId = static_cast<uint32_t>(events.size());
+
+    Dummy::DialogChoice choice(question, nextEventId);
+
+    uint32_t nextDialogId = static_cast<uint32_t>(dialogsChoices.size());
+    events.push_back({Dummy::EventType::Choice, nextDialogId});
+
+    dialogsChoices.push_back(std::move(choice));
+    return dialogsChoices.back();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 GameInstance::GameInstance(const GameStatic& game)

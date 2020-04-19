@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(dummyrpg STATIC
     include/dummyrpg/character.hpp
+    include/dummyrpg/dialog.hpp
     include/dummyrpg/dummy_types.hpp
     include/dummyrpg/floor.hpp
     include/dummyrpg/item.hpp
@@ -20,6 +21,7 @@ add_library(dummyrpg STATIC
     include/dummyrpg/sprite.hpp
 
     src/character.cpp
+    src/dialog.cpp
     src/floor.cpp
     src/item.cpp
     src/map.cpp
