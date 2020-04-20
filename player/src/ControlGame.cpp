@@ -9,9 +9,11 @@ GameControl::GameControl(const Dummy::GameStatic& game, Dummy::GameInstance& gam
     , m_gameInstance(gameInst)
 {}
 
-void GameControl::requestAction()
+void GameControl::registerKeyPressed(sf::Keyboard::Key keyCode, const Keymap& keymap)
 {
-    m_actionRequested = true;
+    if (keyCode == keymap.action) {
+        m_actionRequested = true;
+    }
 }
 
 void GameControl::doAction()
@@ -59,6 +61,8 @@ void GameControl::executeEvent(Dummy::event_id eventId)
         break;
     case Dummy::EventType::Choice:
         executeChoice(m_game.dialogsChoices[eventList[eventId].idxPerType]);
+        break;
+    default:
         break;
     }
 }

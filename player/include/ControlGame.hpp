@@ -14,7 +14,7 @@ class GameControl
 public:
     GameControl(const Dummy::GameStatic&, Dummy::GameInstance&);
 
-    void requestAction();
+    void registerKeyPressed(sf::Keyboard::Key, const Keymap&);
     void doAction();
 
     void applyPlayerMovement(const Keymap&);

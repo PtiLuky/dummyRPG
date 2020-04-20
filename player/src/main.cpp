@@ -28,41 +28,41 @@ static GameStatic createFakeGame()
     GameStatic game;
 
     // Create a map :)
-    game.chipsetPaths.push_back("Resources/chip1.png");
+    game.chipsetPaths.push_back("Resources/ClassicRPG_Sheet.png");
     Dummy::Map map(mapSize, mapSize, fkId);
     auto* floor = map.floorAt(0);
     for (uint16_t x = 0; x < mapSize; ++x)
         for (uint16_t y = 0; y < mapSize; ++y)
-            floor->setGraphicCell(0, {x, y}, {0, 0, fkId});
+            floor->setGraphicCell(0, {x, y}, {7, 0, fkId});
 
-    floor->setGraphicCell(2, {1, 1}, {3, 0, fkId});
+    floor->setGraphicCell(2, {1, 1}, {3, 4, fkId});
     floor->setBlockCell({1, 1}, true);
-    floor->setGraphicCell(2, {1, 2}, {3, 1, fkId});
-    floor->setGraphicCell(2, {1, 3}, {3, 1, fkId});
-    floor->setGraphicCell(2, {1, 4}, {3, 1, fkId});
-    floor->setGraphicCell(2, {1, 5}, {3, 1, fkId});
-    floor->setGraphicCell(2, {1, 6}, {3, 1, fkId});
-    floor->setGraphicCell(2, {1, 7}, {3, 1, fkId});
-    floor->setGraphicCell(2, {1, 8}, {3, 1, fkId});
+    floor->setGraphicCell(2, {1, 2}, {3, 4, fkId});
+    floor->setGraphicCell(2, {1, 3}, {3, 4, fkId});
+    floor->setGraphicCell(2, {1, 4}, {10, 1, fkId});
+    floor->setGraphicCell(2, {1, 5}, {3, 4, fkId});
+    floor->setGraphicCell(2, {1, 6}, {3, 4, fkId});
+    floor->setGraphicCell(2, {1, 7}, {3, 4, fkId});
+    floor->setGraphicCell(2, {1, 8}, {3, 4, fkId});
     floor->setBlockCell({1, 8}, true);
-    floor->setGraphicCell(2, {2, 1}, {1, 1, fkId});
+    floor->setGraphicCell(2, {2, 1}, {7, 1, fkId});
     floor->setBlockCell({2, 1}, true);
 
     game.maps.push_back(std::move(map));
 
     // Create sprite
     Dummy::AnimatedSprite sprite1;
-    sprite1.imgPath  = "Resources/bluewarrior.png";
-    sprite1.width    = 24;
-    sprite1.height   = 32;
-    sprite1.nbFrames = 3;
+    sprite1.imgPath  = "Resources/ClassicRPG_Sheet.png";
+    sprite1.width    = 16;
+    sprite1.height   = 16;
+    sprite1.nbFrames = 4;
     game.sprites.push_back(sprite1);
 
     Dummy::AnimatedSprite sprite2;
-    sprite2.imgPath  = "Resources/WhiteScale.png";
-    sprite2.width    = 24;
-    sprite2.height   = 32;
-    sprite2.nbFrames = 3;
+    sprite2.imgPath  = "Resources/ClassicRPG_Sheet.png";
+    sprite2.width    = 16;
+    sprite2.height   = 16;
+    sprite2.nbFrames = 4;
     game.sprites.push_back(sprite2);
 
 
@@ -168,10 +168,8 @@ int main()
             } else if (event.type == sf::Event::LostFocus) {
                 gameHasFocus = false;
             } else if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == keymap.action) {
-                    // split register and doing action to avoid multiple events
-                    gameControl.requestAction();
-                }
+                // split register and doing action to avoid multiple events
+                gameControl.registerKeyPressed(event.key.code, keymap);
             }
         }
 
