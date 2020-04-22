@@ -94,7 +94,10 @@ static GameStatic createFakeGame()
     auto choiceId   = game.RegisterChoice("Tu sais choisir l'option 3 ?");
     auto dialog2Id  = game.RegisterDialog("Number2", "Bonjour je suis 2.");
     auto dialog2bId = game.RegisterDialog("Number2", "... Et je continue de parler");
-    auto dialog2cId = game.RegisterDialog("Number2", "... Et je fais des phrases tr\u00e8s longues pour tester le d\u00e9bordement. :) :) :)");
+    auto dialog2cId = game.RegisterDialog(
+        "Number2",
+        "... Et je fais des phrases tr\u00e8s longues pour tester le d\u00e9bordement. :) :) :)\n"
+        "... genre longues... et je fais des phrases tr\u00e8s longues pour tester le d\u00e9bordement. :) :) :) (again)");
     auto dialog3Id = game.RegisterDialog("Number3", "Bonjour je suis 3.");
     auto dialog4Id = game.RegisterDialog("Number4", "Bonjour je suis 4.");
 
@@ -191,7 +194,7 @@ int main()
             gameControl.applyPlayerMovement(keymap);
         }
 
-        // Render game        
+        // Render game
         window.clear();
         renderer.render(window);
         gameControl.renderOverlays(window);

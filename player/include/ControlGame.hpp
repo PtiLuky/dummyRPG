@@ -34,7 +34,7 @@ private:
 
     bool m_actionRequested = false;
 
-    std::unique_ptr<DialogRender> m_dialog_render;
+    std::unique_ptr<DialogRender> m_dialogRender;
 };
 
 } // namespace DummyPlayer

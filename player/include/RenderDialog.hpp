@@ -31,9 +31,12 @@ public:
     void render(sf::RenderWindow&);
 
 private:
+    void wordWrap(sf::Text&, int width);
+
     sf::Font m_font;
     sf::Text m_textSpeaker;
-    sf::Text m_textSentence;
+    std::string m_textSentence;
+    sf::Text m_textSentenceWrapped;
 
     sf::Texture m_backgroundTexture;
     sf::Sprite m_backgroundSprite;
