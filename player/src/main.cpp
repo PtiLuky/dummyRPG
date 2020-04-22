@@ -90,22 +90,25 @@ static GameStatic createFakeGame()
 
     auto dialog1Id  = game.RegisterDialog("Number1", "Bonjour je suis 1.");
     auto dialogYId  = game.RegisterDialog("Number1", "Bah non...");
-    auto dialogNId  = game.RegisterDialog("Number1", "Yesss bien joué");
+    auto dialogNId  = game.RegisterDialog("Number1", "Yesss bien jou\u00e9");
     auto choiceId   = game.RegisterChoice("Tu sais choisir l'option 3 ?");
     auto dialog2Id  = game.RegisterDialog("Number2", "Bonjour je suis 2.");
     auto dialog2bId = game.RegisterDialog("Number2", "... Et je continue de parler");
-    auto dialog3Id  = game.RegisterDialog("Number3", "Bonjour je suis 3.");
-    auto dialog4Id  = game.RegisterDialog("Number4", "Bonjour je suis 4.");
+    auto dialog2cId = game.RegisterDialog("Number2", "... Et je fais des phrases tr\u00e8s longues pour tester le d\u00e9bordement. :) :) :)");
+    auto dialog3Id = game.RegisterDialog("Number3", "Bonjour je suis 3.");
+    auto dialog4Id = game.RegisterDialog("Number4", "Bonjour je suis 4.");
 
-    auto& dialog1 = game.dialogs[game.events[dialog1Id].idxPerType];
-    auto& dialog2 = game.dialogs[game.events[dialog2Id].idxPerType];
-    auto& choice  = game.dialogsChoices[game.events[choiceId].idxPerType];
+    auto& dialog1  = game.dialogs[game.events[dialog1Id].idxPerType];
+    auto& dialog2  = game.dialogs[game.events[dialog2Id].idxPerType];
+    auto& dialog2b = game.dialogs[game.events[dialog2bId].idxPerType];
+    auto& choice   = game.dialogsChoices[game.events[choiceId].idxPerType];
     dialog1.setNextEvent(choice.id());
     choice.addOption({"1. Uhm...", dialogNId});
     choice.addOption({"2. ?", dialogNId});
     choice.addOption({"3. Maybe", dialogYId});
     choice.addOption({"4. Uhm...", dialogNId});
     dialog2.setNextEvent(dialog2bId);
+    dialog2b.setNextEvent(dialog2cId);
 
     auto& pi1 = floor->npc(pi1Id);
     auto& pi2 = floor->npc(pi2Id);
@@ -145,7 +148,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), game.name);
     window.setFramerateLimit(WIN_FPS);
 
-    DummyPlayer::GameRender renderer(game, gameInstance, window);
+    DummyPlayer::GameRender renderer(game, gameInstance);
     auto* map = gameInstance.currentMap();
     if (map == nullptr)
         return 1; // corrupted data ???
@@ -188,8 +191,11 @@ int main()
             gameControl.applyPlayerMovement(keymap);
         }
 
-        // Render game
-        renderer.render();
+        // Render game        
+        window.clear();
+        renderer.render(window);
+        gameControl.renderOverlays(window);
+        window.display();
     }
 
     return 0;

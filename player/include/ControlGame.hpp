@@ -1,11 +1,14 @@
 #ifndef DUMMYRPG_CONTROLGAME_HPP
 #define DUMMYRPG_CONTROLGAME_HPP
 
+#include <SFML/Graphics.hpp>
+
 #include "dummyrpg/dialog.hpp"
 #include "dummyrpg/dummy_types.hpp"
 #include "dummyrpg/game.hpp"
 
 #include "Keymap.hpp"
+#include "RenderDialog.hpp"
 
 namespace DummyPlayer {
 
@@ -23,11 +26,15 @@ public:
     void executeDialog(const Dummy::DialogSentence&);
     void executeChoice(const Dummy::DialogChoice&);
 
+    void renderOverlays(sf::RenderWindow&);
+
 private:
     const Dummy::GameStatic& m_game;
     Dummy::GameInstance& m_gameInstance;
 
     bool m_actionRequested = false;
+
+    std::unique_ptr<DialogRender> m_dialog_render;
 };
 
 } // namespace DummyPlayer

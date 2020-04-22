@@ -26,24 +26,21 @@ public:
     /// \param window the current rendering windows. Must have a longer
     /// lifespan than this object.
     ///
-    explicit GameRender(const Dummy::GameStatic&, const Dummy::GameInstance&,
-                        sf::RenderWindow& window);
+    explicit GameRender(const Dummy::GameStatic&, const Dummy::GameInstance&);
 
     const Dummy::GameStatic& game() const;
     const sf::Vector2i& offset() const;
     sf::Vector2f itemPxPos(Dummy::Coord pos) const;
     float zoom() const;
 
-    void setMap(const Dummy::Map&);    ///< set the current map
-    void changeFloor(uint8_t floorId); ///< update floor-dependent elements
-    void render();                     ///< method to call in the rendering thread
+    void setMap(const Dummy::Map&);        ///< set the current map
+    void changeFloor(uint8_t floorId);     ///< update floor-dependent elements
+    void render(sf::RenderWindow& window); ///< method to call in the rendering thread
 
 private:
     std::vector<uint32_t> getCharacterDrawOrder();
 
 private:
-    sf::RenderWindow& m_window;
-
     std::unique_ptr<MapRender> m_mapRender;
     std::vector<std::unique_ptr<CharacterRender>> m_npcRenders;
 
