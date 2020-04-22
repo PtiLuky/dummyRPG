@@ -65,7 +65,6 @@ private:
     std::string m_name;
     sprite_id m_spriteId = 0;
     PositionChar m_pos;
-    bool m_isBusy = false;
 
     std::map<item_id, uint16_t> m_bag;
 };

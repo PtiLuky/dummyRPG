@@ -66,12 +66,12 @@ void DialogRender::showChoice(const Dummy::DialogChoice& choice)
     m_textSpeaker.setString(choice.question());
     sf::String choiceText;
     for (uint8_t i = 0; i < choice.nbOptions(); ++i) {
-        sf::String txt = choice.optionAt(i).option;
+        sf::String txt(choice.optionAt(i).option);
         txt.replace('\n', ' ');
         choiceText += txt;
         choiceText += '\n';
     }
-    m_textSentence = choiceText;
+    m_textSentence = choiceText.toAnsiString();
 }
 
 void DialogRender::setChoice(uint8_t choiceIdx)
