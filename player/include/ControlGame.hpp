@@ -36,7 +36,7 @@ private:
 
     std::unique_ptr<DialogRender> m_dialogRender;
 
-    Dummy::DialogChoice m_currChoice;
+    Dummy::DialogChoice m_currChoice{"undef", Dummy::undefEvent};
     int m_currChoiceIdx;
 };
 

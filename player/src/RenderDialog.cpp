@@ -65,7 +65,8 @@ void DialogRender::showChoice(const Dummy::DialogChoice& choice)
 
     m_textSpeaker.setString(choice.question());
     sf::String choiceText;
-    for (uint8_t i = 0; i < choice.nbOptions(); ++i) {
+    const uint8_t nbChoices = choice.nbOptions();
+    for (uint8_t i = 0; i < nbChoices; ++i) {
         sf::String txt(choice.optionAt(i).option);
         txt.replace('\n', ' ');
         choiceText += txt;

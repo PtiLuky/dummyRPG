@@ -7,7 +7,6 @@ namespace DummyPlayer {
 GameControl::GameControl(const Dummy::GameStatic& game, Dummy::GameInstance& gameInst)
     : m_game(game)
     , m_gameInstance(gameInst)
-    , m_currChoice("undef", Dummy::undefEvent)
 {
     try {
         m_dialogRender = std::make_unique<DialogRender>();
