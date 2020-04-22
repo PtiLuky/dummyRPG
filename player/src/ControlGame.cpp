@@ -7,6 +7,7 @@ namespace DummyPlayer {
 GameControl::GameControl(const Dummy::GameStatic& game, Dummy::GameInstance& gameInst)
     : m_game(game)
     , m_gameInstance(gameInst)
+    , m_currChoice("undef", Dummy::undefEvent)
 {
     try {
         m_dialogRender = std::make_unique<DialogRender>();
@@ -20,6 +21,19 @@ void GameControl::registerKeyPressed(sf::Keyboard::Key keyCode, const Keymap& ke
     if (keyCode == keymap.action) {
         m_actionRequested = true;
     }
+
+    if (m_currChoice.id() != Dummy::undefEvent) {
+        if (keyCode == keymap.moveUp)
+            --m_currChoiceIdx;
+        if (keyCode == keymap.moveDown)
+            ++m_currChoiceIdx;
+
+        m_currChoiceIdx += m_currChoice.nbOptions();
+        m_currChoiceIdx %= m_currChoice.nbOptions();
+
+        if (m_dialogRender)
+            m_dialogRender->setChoice(static_cast<uint8_t>(m_currChoiceIdx));
+    }
 }
 
 void GameControl::doAction()
@@ -29,6 +43,13 @@ void GameControl::doAction()
             // Finalize event
             if (m_dialogRender)
                 m_dialogRender->hide();
+
+            if (m_currChoice.id() != Dummy::undefEvent) {
+                auto option = m_currChoice.optionAt(static_cast<uint8_t>(m_currChoiceIdx));
+                m_gameInstance.registerEvent(option.nextEvent);
+                m_currChoice = Dummy::DialogChoice("undef", Dummy::undefEvent);
+            }
+
             m_gameInstance.blockEvents(false);
         } else {
             m_gameInstance.stopPlayer();
@@ -89,6 +110,8 @@ void GameControl::executeChoice(const Dummy::DialogChoice& choice)
 {
     m_gameInstance.blockEvents(true);
 
+    m_currChoice    = choice;
+    m_currChoiceIdx = 0;
     if (m_dialogRender)
         m_dialogRender->showChoice(choice);
 }

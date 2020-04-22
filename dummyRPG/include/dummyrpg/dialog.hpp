@@ -27,7 +27,7 @@ public:
 
     event_id id() const;
     uint8_t nbOptions() const;
-    DialogOption option(uint8_t idx) const;
+    DialogOption optionAt(uint8_t idx) const;
     const std::string& question() const;
 
     bool setOption(const DialogOption&, uint8_t idx);

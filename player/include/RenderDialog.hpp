@@ -45,7 +45,8 @@ private:
     sf::Sprite m_choiceSprite;
     int m_choiceFrame = 0;
 
-    bool m_show = false;
+    bool m_show     = false;
+    int m_choiceIdx = -1;
 };
 
 } // namespace DummyPlayer

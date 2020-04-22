@@ -17,7 +17,7 @@ uint8_t DialogChoice::nbOptions() const
     return static_cast<uint8_t>(m_options.size());
 }
 
-DialogOption DialogChoice::option(uint8_t idx) const
+DialogOption DialogChoice::optionAt(uint8_t idx) const
 {
     if (idx >= m_options.size())
         return DialogOption();

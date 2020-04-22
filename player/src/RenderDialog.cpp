@@ -2,8 +2,8 @@
 
 static const char* const DEFAULT_FONT       = "Resources/PixelOperator8.ttf";
 static const unsigned int DEFAULT_FONT_SIZE = 16;  // in px
-static const int DEFAULT_INTERLINE          = 8;   // in px
 static const int DIALOG_MARGIN              = 10;  // in px
+static const int CHOICE_MARGIN              = 36;  // in px
 static const int DIALOG_HEIGHT              = 150; // in px
 
 static const float CHOICE_SPRITE_ZOOM = 2.F;
@@ -51,7 +51,8 @@ DialogRender::DialogRender()
 
 void DialogRender::showText(const Dummy::DialogSentence& dialog)
 {
-    m_show = true;
+    m_show      = true;
+    m_choiceIdx = -1;
 
     m_textSpeaker.setString(dialog.speaker());
     m_textSentence = dialog.sentence();
@@ -59,11 +60,27 @@ void DialogRender::showText(const Dummy::DialogSentence& dialog)
 
 void DialogRender::showChoice(const Dummy::DialogChoice& choice)
 {
-    m_show = true;
+    m_show      = true;
+    m_choiceIdx = 0;
+
     m_textSpeaker.setString(choice.question());
+    sf::String choiceText;
+    for (uint8_t i = 0; i < choice.nbOptions(); ++i) {
+        sf::String txt = choice.optionAt(i).option;
+        txt.replace('\n', ' ');
+        choiceText += txt;
+        choiceText += '\n';
+    }
+    m_textSentence = choiceText;
 }
 
-void DialogRender::setChoice(uint8_t choiceIdx) {}
+void DialogRender::setChoice(uint8_t choiceIdx)
+{
+    if (m_choiceIdx < 0)
+        return;
+
+    m_choiceIdx = choiceIdx;
+}
 
 void DialogRender::hide()
 {
@@ -77,7 +94,7 @@ void DialogRender::render(sf::RenderWindow& window)
 
     const auto winSize = window.getSize();
     const sf::IntRect textRect(0, 0, static_cast<int>(winSize.x), DIALOG_HEIGHT);
-    int textY = static_cast<int>(winSize.y) - DIALOG_HEIGHT;
+    float textY = static_cast<int>(winSize.y) - DIALOG_HEIGHT;
 
     // Draw background
     m_backgroundSprite.setPosition(0, textY);
@@ -90,24 +107,38 @@ void DialogRender::render(sf::RenderWindow& window)
     window.draw(m_textSpeaker);
 
     // Draw sentence
-    textY += DEFAULT_INTERLINE;
+    textY += DEFAULT_FONT_SIZE / 2;
     textY += DEFAULT_FONT_SIZE;
+    auto& rect = m_choiceSprite.getTextureRect();
+    sf::Vector2f txtPos {DIALOG_MARGIN, textY};
+    sf::Vector2f iconPos;
+    if (m_choiceIdx >= 0) {
+        txtPos.x  = CHOICE_MARGIN;
+        iconPos.x = DIALOG_MARGIN;
+        iconPos.y = textY + m_choiceIdx * static_cast<int>(DEFAULT_FONT_SIZE);
+    } else {
+        iconPos.x = static_cast<int>(winSize.x) - rect.width * CHOICE_SPRITE_ZOOM;
+        iconPos.y =
+            static_cast<int>(winSize.y) - rect.height * CHOICE_SPRITE_ZOOM + m_choiceFrame * 4;
+    }
+
     m_textSentenceWrapped.setString(m_textSentence);
     wordWrap(m_textSentenceWrapped, static_cast<int>(winSize.x));
-    m_textSentenceWrapped.setPosition(DIALOG_MARGIN, textY);
+    m_textSentenceWrapped.setPosition(txtPos);
     window.draw(m_textSentenceWrapped);
 
     // Draw animated "next" icon
-    auto& rect = m_choiceSprite.getTextureRect();
-    m_choiceSprite.setPosition(static_cast<int>(winSize.x) - rect.width * CHOICE_SPRITE_ZOOM,
-                               static_cast<int>(winSize.y) - rect.height * CHOICE_SPRITE_ZOOM
-                                   + m_choiceFrame * 4);
+    m_choiceSprite.setPosition(iconPos);
     m_choiceFrame = (m_choiceFrame + 1) % 2;
+
     window.draw(m_choiceSprite);
 }
 
 void DialogRender::wordWrap(sf::Text& text, int width)
 {
+    if (m_choiceIdx >= 0) // with choice-screen we do not do word-wrapping (it moves lines..)
+        return;
+
     if (text.getLocalBounds().width <= width)
         return;
 

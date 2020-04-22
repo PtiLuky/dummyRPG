@@ -35,6 +35,9 @@ private:
     bool m_actionRequested = false;
 
     std::unique_ptr<DialogRender> m_dialogRender;
+
+    Dummy::DialogChoice m_currChoice;
+    int m_currChoiceIdx;
 };
 
 } // namespace DummyPlayer

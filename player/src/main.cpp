@@ -89,8 +89,8 @@ static GameStatic createFakeGame()
     auto pi4Id               = game.RegisterNPC(0, pos4);
 
     auto dialog1Id  = game.RegisterDialog("Number1", "Bonjour je suis 1.");
-    auto dialogYId  = game.RegisterDialog("Number1", "Bah non...");
-    auto dialogNId  = game.RegisterDialog("Number1", "Yesss bien jou\u00e9");
+    auto dialogNId  = game.RegisterDialog("Number1", "Bah non...");
+    auto dialogYId  = game.RegisterDialog("Number1", "Yesss bien jou\u00e9");
     auto choiceId   = game.RegisterChoice("Tu sais choisir l'option 3 ?");
     auto dialog2Id  = game.RegisterDialog("Number2", "Bonjour je suis 2.");
     auto dialog2bId = game.RegisterDialog("Number2", "... Et je continue de parler");
