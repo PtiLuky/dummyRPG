@@ -43,7 +43,7 @@ void CharacterRender::render(sf::RenderWindow& renderWindow)
     sf::Vector2f spritePos = m_gameRender.itemPxPos(m_posRef.coord);
     // moving the sprite to have feet in the cell
     spritePos.x += (Dummy::TILE_SIZE - m_spriteRef.width) * m_gameRender.zoom() / 2;
-    spritePos.y += -m_spriteRef.height * m_gameRender.zoom() / 2;
+    spritePos.y += (Dummy::TILE_SIZE - m_spriteRef.height) * m_gameRender.zoom();
     m_sprite.setPosition(spritePos);
 
 

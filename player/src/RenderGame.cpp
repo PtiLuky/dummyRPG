@@ -6,10 +6,8 @@
 
 namespace DummyPlayer {
 
-GameRender::GameRender(const Dummy::GameStatic& game, const Dummy::GameInstance& instance,
-                       sf::RenderWindow& window)
-    : m_window(window)
-    , m_game(game)
+GameRender::GameRender(const Dummy::GameStatic& game, const Dummy::GameInstance& instance)
+    : m_game(game)
     , m_gameInstance(instance)
 {}
 
@@ -72,30 +70,26 @@ void GameRender::changeFloor(uint8_t floorId)
     }
 }
 
-void GameRender::render()
+void GameRender::render(sf::RenderWindow& window)
 {
     auto& playerPos       = m_gameInstance.player().pos();
     const float tileToPix = m_zoom * Dummy::TILE_SIZE;
-    m_mapOffset.x = static_cast<int>(m_window.getSize().x / 2 - playerPos.coord.x * tileToPix);
-    m_mapOffset.y = static_cast<int>(m_window.getSize().y / 2 - playerPos.coord.y * tileToPix);
+    m_mapOffset.x = static_cast<int>(window.getSize().x / 2 - playerPos.coord.x * tileToPix);
+    m_mapOffset.y = static_cast<int>(window.getSize().y / 2 - playerPos.coord.y * tileToPix);
 
     auto characOrder = getCharacterDrawOrder();
 
-    m_window.clear();
-
     if (m_mapRender)
-        m_mapRender->renderBelow(m_window, playerPos.floorId);
+        m_mapRender->renderBelow(window, playerPos.floorId);
 
     for (const auto& characIdx : characOrder) {
         // Note: do we want to display NPC of inferior floors? If yes, we should handle that another
         // way
-        m_npcRenders[characIdx]->render(m_window);
+        m_npcRenders[characIdx]->render(window);
     }
 
     if (m_mapRender)
-        m_mapRender->renderAbove(m_window, playerPos.floorId);
-
-    m_window.display();
+        m_mapRender->renderAbove(window, playerPos.floorId);
 }
 
 std::vector<uint32_t> GameRender::getCharacterDrawOrder()

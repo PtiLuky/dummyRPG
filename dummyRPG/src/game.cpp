@@ -1,23 +1,48 @@
 #include "dummyrpg/game.hpp"
-
 #include "dummyrpg/floor.hpp"
 
 namespace Dummy {
 
-bool GameStatic::RegisterNPC(char_id id, const PositionChar& pos)
+char_id GameStatic::RegisterNPC(char_id id, const PositionChar& pos)
 {
     if (id >= characters.size())
-        return false;
+        return undefChar;
 
     if (pos.mapId >= maps.size())
-        return false;
+        return undefChar;
 
     auto* floor = maps[pos.mapId].floorAt(pos.floorId);
     if (floor == nullptr)
-        return false;
+        return undefChar;
 
-    floor->registerNPC(id, pos);
-    return true;
+    return floor->registerNPC(id, pos);
+}
+
+
+event_id GameStatic::RegisterDialog(const std::string& speaker, const std::string& sentence)
+{
+    uint32_t nextEventId = static_cast<uint32_t>(events.size());
+
+    Dummy::DialogSentence dialog(speaker, sentence, nextEventId);
+
+    uint32_t nextDialogId = static_cast<uint32_t>(dialogs.size());
+    events.push_back({Dummy::EventType::Dialog, nextDialogId});
+
+    dialogs.push_back(std::move(dialog));
+    return nextEventId;
+}
+
+event_id GameStatic::RegisterChoice(const std::string& question)
+{
+    uint32_t nextEventId = static_cast<uint32_t>(events.size());
+
+    Dummy::DialogChoice choice(question, nextEventId);
+
+    uint32_t nextDialogId = static_cast<uint32_t>(dialogsChoices.size());
+    events.push_back({Dummy::EventType::Choice, nextDialogId});
+
+    dialogsChoices.push_back(choice);
+    return nextEventId;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,9 +128,34 @@ void GameInstance::interractInFrontOfPlayer()
     for (auto& npc : floor->m_npcs) {
         if (npc.pos().coord == target) {
             npc.m_pos.dir = dirTarget;
-            // dialog and stuff ?
+            registerEvent(npc.eventId());
         }
     }
+}
+
+void GameInstance::blockEvents(bool block)
+{
+    m_eventsBlocked = block;
+}
+
+void GameInstance::registerEvent(event_id eventId)
+{
+    m_eventsQueue.push_back(eventId);
+}
+
+event_id GameInstance::dequeEvent()
+{
+    event_id event = undefEvent;
+    if (! m_eventsBlocked && m_eventsQueue.size() > 0) {
+        event = m_eventsQueue.front();
+        m_eventsQueue.pop_front();
+    }
+    return event;
+}
+
+bool GameInstance::eventBlocked() const
+{
+    return m_eventsBlocked;
 }
 
 const PlayerInstance& GameInstance::player() const

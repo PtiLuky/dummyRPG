@@ -45,6 +45,7 @@ public:
 
     const std::vector<GraphicLayer>& graphicLayers() const;
     const std::vector<CharacterInstance>& npcs() const;
+    CharacterInstance& npc(char_id);
 
     void setBlockCell(Coord, bool);
     void setGraphicCell(uint8_t layerIdx, Coord, Tileaspect);
@@ -56,7 +57,7 @@ public:
     /// layers' references to any old chipset still in use
     void removeChipRef(chip_id);
 
-    void registerNPC(char_id id, const PositionChar& pos);
+    char_id registerNPC(char_id id, const PositionChar& pos);
 
     // Consts
     static const uint8_t MAX_LAYERS_COUNT = 6; ///< total layers at most

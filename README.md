@@ -6,7 +6,7 @@ Core library for a 2D RPG game engine.
 
 ## Actual state
 
-**Library** (code in /dummyRPG/) and **player** (code in /player/) are progressing at the same time.
+**Library** (code in /dummyRPG/) and **Client** (code in /player/) are progressing at the same time.
 * [x] Load a map, a floor
 * [x] Display the character of the player
 * [x] Display the Non-player characters

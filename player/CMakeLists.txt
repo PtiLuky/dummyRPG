@@ -10,23 +10,26 @@ find_package(SFML COMPONENTS graphics audio REQUIRED)
 
 # Package some resources
 set(RESOURCE_FILES
-    temp_resources/chip1.png
-    temp_resources/bluewarrior.png
-    temp_resources/WhiteScale.png
     Resources/tilemap.frag
     Resources/tilemap.vert
+    Resources/chipsets/ClassicRPG_Sheet.png
+    Resources/chipsets/bluePx.png
+    Resources/fonts/EuropeanTeletext.ttf
+    Resources/fonts/PixelOperator8.ttf
 )
 
 add_executable(player
-    include/ControlPlayer.hpp
+    include/ControlGame.hpp
     include/Keymap.hpp
     include/RenderCharacter.hpp
+    include/RenderDialog.hpp
     include/RenderGame.hpp
     include/RenderMap.hpp
 
     src/main.cpp
-    src/ControlPlayer.cpp
+    src/ControlGame.cpp
     src/RenderCharacter.cpp
+    src/RenderDialog.cpp
     src/RenderGame.cpp
     src/RenderMap.cpp
     "${RESOURCE_FILES}"
