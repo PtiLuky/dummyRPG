@@ -146,7 +146,8 @@ void DialogRender::wordWrap(sf::Text& text, int width)
     size_t lastLinePos  = 0;
     size_t lastSpacePos = 0;
 
-    for (size_t currPos = 0; currPos <= str.getSize(); ++currPos) {
+    size_t textSize = str.getSize();
+    for (size_t currPos = 0; currPos <= textSize; ++currPos) {
         if (text.getString()[currPos] == ' ')
             lastSpacePos = currPos;
 
@@ -154,8 +155,8 @@ void DialogRender::wordWrap(sf::Text& text, int width)
             && lastSpacePos > lastLinePos) {
             str.insert(lastSpacePos, '\n');
             text.setString(str);
-            ++currPos;
-            lastLinePos = currPos;
+            lastLinePos = currPos + 1;
+            ++textSize;
         }
     }
 }
