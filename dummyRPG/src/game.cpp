@@ -32,7 +32,7 @@ bool GameStatic::checkFilesIntegrity() const
     return success;
 }
 
-event_id GameStatic::RegisterDialog(const std::string& speaker, const std::string& sentence)
+event_id GameStatic::registerDialog(const std::string& speaker, const std::string& sentence)
 {
     uint32_t nextEventId = static_cast<uint32_t>(events.size());
 
@@ -45,7 +45,7 @@ event_id GameStatic::RegisterDialog(const std::string& speaker, const std::strin
     return nextEventId;
 }
 
-event_id GameStatic::RegisterChoice(const std::string& question)
+event_id GameStatic::registerChoice(const std::string& question)
 {
     uint32_t nextEventId = static_cast<uint32_t>(events.size());
 
@@ -56,6 +56,16 @@ event_id GameStatic::RegisterChoice(const std::string& question)
 
     dialogsChoices.push_back(choice);
     return nextEventId;
+}
+
+chip_id GameStatic::registerChipset(const std::string& chipPath)
+{
+    if (tileSets.size() >= std::numeric_limits<chip_id>::max())
+        return 0;
+
+    chip_id nextChipId = static_cast<chip_id>(tileSets.size());
+    tileSets.push_back(chipPath);
+    return nextChipId;
 }
 
 bool GameStatic::assertFileExists(const std::string& path)

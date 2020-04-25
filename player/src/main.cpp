@@ -46,19 +46,19 @@ static GameStatic createFakeGame()
     Dummy::Character perso1("Whity", 1);
     game.characters.push_back(perso1);
 
-    auto dialog1Id  = game.RegisterDialog("Number1", "Bonjour je suis 1.");
-    auto dialogNId  = game.RegisterDialog("Number1", "Bah non...");
-    auto dialogYId  = game.RegisterDialog("Number1", "Yesss bien jou\u00e9");
-    auto choiceId   = game.RegisterChoice("Tu sais choisir l'option 3 ?");
-    auto dialog2Id  = game.RegisterDialog("Number2", "Bonjour je suis 2.");
-    auto dialog2bId = game.RegisterDialog("Number2", "... Et je continue de parler");
-    auto dialog2cId = game.RegisterDialog(
+    auto dialog1Id  = game.registerDialog("Number1", "Bonjour je suis 1.");
+    auto dialogNId  = game.registerDialog("Number1", "Bah non...");
+    auto dialogYId  = game.registerDialog("Number1", "Yesss bien jou\u00e9");
+    auto choiceId   = game.registerChoice("Tu sais choisir l'option 3 ?");
+    auto dialog2Id  = game.registerDialog("Number2", "Bonjour je suis 2.");
+    auto dialog2bId = game.registerDialog("Number2", "... Et je continue de parler");
+    auto dialog2cId = game.registerDialog(
         "Number2",
         "... Et je fais des phrases tr\u00e8s longues pour tester le d\u00e9bordement. :) :) :)\n"
         "... genre longues... et je fais des phrases tr\u00e8s longues pour tester le "
         "d\u00e9bordement. :) :) :) (again)");
-    game.RegisterDialog("Number3", "Bonjour je suis 3.");
-    game.RegisterDialog("Number4", "Bonjour je suis 4.");
+    game.registerDialog("Number3", "Bonjour je suis 3.");
+    game.registerDialog("Number4", "Bonjour je suis 4.");
 
     auto& dialog1  = game.dialogs[game.events[dialog1Id].idxPerType];
     auto& dialog2  = game.dialogs[game.events[dialog2Id].idxPerType];

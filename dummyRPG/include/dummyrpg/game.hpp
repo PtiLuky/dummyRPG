@@ -19,8 +19,9 @@ namespace Dummy {
 class GameStatic
 {
 public:
-    event_id RegisterDialog(const std::string& speaker, const std::string& sentence);
-    event_id RegisterChoice(const std::string& question);
+    event_id registerDialog(const std::string& speaker, const std::string& sentence);
+    event_id registerChoice(const std::string& question);
+    chip_id registerChipset(const std::string& chipPath);
 
 
     bool loadFromFile(const std::string& gamePath);
