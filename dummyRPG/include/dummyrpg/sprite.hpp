@@ -12,7 +12,7 @@ namespace Dummy {
 ///
 struct AnimatedSprite
 {
-    std::string imgPath; ///< path of the sprite image
+    uint16_t spriteSheetId = 0; ///< game-id of the sprite sheet
 
     uint16_t width  = 0; ///< width (px) of the sprite
     uint16_t height = 0; ///< height (px) of the sprite

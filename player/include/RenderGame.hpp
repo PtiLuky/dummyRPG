@@ -33,8 +33,8 @@ public:
     sf::Vector2f itemPxPos(Dummy::Coord pos) const;
     float zoom() const;
 
-    void setMap(const Dummy::Map&);        ///< set the current map
-    void changeFloor(uint8_t floorId);     ///< update floor-dependent elements
+    void setMap(const Dummy::Map&);                           ///< set the current map
+    void changeFloor(const Dummy::Map& map, uint8_t floorId); ///< update floor-dependent elements
     void render(sf::RenderWindow& window); ///< method to call in the rendering thread
 
 private:

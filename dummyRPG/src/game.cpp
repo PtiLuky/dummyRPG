@@ -1,23 +1,36 @@
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/floor.hpp"
 
+#include <filesystem>
+#include <iostream>
+
+static const char* MAP_SUBDIR    = "maps/";
+static const char* IMG_SUBDIR    = "images/";
+static const char* FONTS_SUBDIR  = "fonts/";  // unused
+static const char* SOUNDS_SUBDIR = "sounds/"; // unused
+
 namespace Dummy {
 
-char_id GameStatic::RegisterNPC(char_id id, const PositionChar& pos)
+bool GameStatic::loadFromFile(const std::string& gamePath)
 {
-    if (id >= characters.size())
-        return undefChar;
-
-    if (pos.mapId >= maps.size())
-        return undefChar;
-
-    auto* floor = maps[pos.mapId].floorAt(pos.floorId);
-    if (floor == nullptr)
-        return undefChar;
-
-    return floor->registerNPC(id, pos);
+    return true;
 }
 
+bool GameStatic::checkFilesIntegrity() const
+{
+    bool success = true;
+
+    for (const auto& mapPath : mapsNames)
+        success &= assertFileExists(MAP_SUBDIR + mapPath);
+
+    for (const auto& tileSet : tileSets)
+        success &= assertFileExists(IMG_SUBDIR + tileSet);
+
+    for (const auto& spriteSheet : spriteSheets)
+        success &= assertFileExists(IMG_SUBDIR + spriteSheet);
+
+    return success;
+}
 
 event_id GameStatic::RegisterDialog(const std::string& speaker, const std::string& sentence)
 {
@@ -43,6 +56,16 @@ event_id GameStatic::RegisterChoice(const std::string& question)
 
     dialogsChoices.push_back(choice);
     return nextEventId;
+}
+
+bool GameStatic::assertFileExists(const std::string& path)
+{
+    if (std::filesystem::exists(path)) {
+        return true;
+    } else {
+        std::cerr << "Missing file: " << path << std::endl;
+        return false;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -158,6 +181,11 @@ bool GameInstance::eventBlocked() const
     return m_eventsBlocked;
 }
 
+void GameInstance::setCurrentMap(const std::shared_ptr<Map>& pMap)
+{
+    m_currMap = pMap;
+}
+
 const PlayerInstance& GameInstance::player() const
 {
     return m_player;
@@ -165,11 +193,7 @@ const PlayerInstance& GameInstance::player() const
 
 const Dummy::Map* GameInstance::currentMap() const
 {
-    uint16_t mapIdx = m_player.m_pos.mapId;
-    if (mapIdx >= m_game.maps.size())
-        return nullptr;
-
-    return &m_game.maps[mapIdx];
+    return m_currMap.get();
 }
 
 const Dummy::Floor* GameInstance::currentFloor() const

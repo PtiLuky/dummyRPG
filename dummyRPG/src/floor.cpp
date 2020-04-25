@@ -30,6 +30,11 @@ const BlockingLayer& Floor::blockingLayer() const
     return m_blockingLayer;
 }
 
+BlockingLayer& Floor::blockingLayer()
+{
+    return m_blockingLayer;
+}
+
 bool Floor::isWalkable(Coord coord) const
 {
     if (m_blockingLayer.at(coord) > 0) // 0 is false but encoded on uint8... can be improved
@@ -40,6 +45,11 @@ bool Floor::isWalkable(Coord coord) const
             return false;
 
     return true;
+}
+
+GraphicLayer& Floor::graphicLayersAt(uint8_t idx)
+{
+    return m_layers[idx];
 }
 
 const std::vector<GraphicLayer>& Floor::graphicLayers() const

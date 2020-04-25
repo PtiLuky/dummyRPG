@@ -78,6 +78,11 @@ struct Tileaspect
     chip_id chipId = 0;
 };
 
+inline bool operator==(const Tileaspect& lhs, const Tileaspect& rhs)
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.chipId == rhs.chipId;
+}
+
 /// Attack curve, def curve, etc. This is a simplification with a 4-segments "curve"
 struct Curve
 {

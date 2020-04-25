@@ -59,7 +59,7 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
     // TODO return an error value to have details on the failure
     if (! out.good())
         return false;
-
+/*
     // Header
     write4B(out, FILE_SIGNATURE_GDUMMY);
     writeHeader(game, out);
@@ -72,7 +72,7 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
     // Maps
     write2B(out, TAG_MAPS);
     for (auto& map : game.maps)
-        writeMap(out, map);
+        writeMap(out, *map);
 
     // Items
     write2B(out, TAG_ITEMS);
@@ -99,7 +99,7 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
 
     // File signature
     write4B(out, FILE_SIGNATURE_GDUMMY);
-
+*/
     return out.good();
 }
 
@@ -160,7 +160,7 @@ template <typename T> void Serializer::writeLayer(std::ostream& out, const Layer
 }
 
 void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
-{
+{/*
     write2B(out, TAG_NAME);
     writeStr(out, game.name);
     write2B(out, TAG_VERSION);
@@ -179,7 +179,7 @@ void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
     write1B(out, static_cast<uint8_t>(game.chipsetPaths.size()));
     write2B(out, TAG_DYNAMIC_SPRITE_COUNT);
     write2B(out, static_cast<uint16_t>(game.sprites.size()));
-    write2B(out, TAG_END_OF_HEADER);
+    write2B(out, TAG_END_OF_HEADER);*/
 }
 
 void Serializer::writeChipset(std::ostream& out, const std::string& chip)
@@ -236,7 +236,7 @@ void Serializer::writeMonster(std::ostream& out, const Monster& monster)
 }
 
 void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
-{
+{/*
     write2B(out, TAG_DYNAMIC_SPRITE);
     writeStr(out, sprite.imgPath);
     write2B(out, sprite.x);
@@ -255,7 +255,7 @@ void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
 
     write2B(out, sprite.x4);
     write2B(out, sprite.y4);
-    write1B(out, sprite.nbFrames4);
+    write1B(out, sprite.nbFrames4);*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -265,7 +265,7 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
     // TODO return an error value to have details on the failure
     if (! in.good())
         return false;
-
+/*
     // Header
     if (! readHeader(in, game))
         return false;
@@ -315,7 +315,7 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
 
     if (read4B(in) != FILE_SIGNATURE_GDUMMY)
         return false;
-
+*/
     return true;
 }
 
@@ -380,7 +380,7 @@ template <typename T> void Serializer::readLayer(std::istream& in, Layer<T>& lay
 }
 
 bool Serializer::readHeader(std::istream& in, GameStatic& game)
-{
+{/*
     if (read4B(in) != FILE_SIGNATURE_GDUMMY)
         return false;
 
@@ -420,7 +420,7 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
             return false;
         }
     }
-
+*/
     return false; // exited because of !in.good() without having TAG_END_OF_HEADER
 }
 
@@ -505,7 +505,7 @@ bool Serializer::readMonsters(std::istream& in, std::vector<Monster>& monsters)
 }
 
 bool Serializer::readSprites(std::istream& in, std::vector<AnimatedSprite>& sprites)
-{
+{/*
     for (auto& sprite : sprites) {
         if (read2B(in) != TAG_DYNAMIC_SPRITE)
             return false;
@@ -527,7 +527,7 @@ bool Serializer::readSprites(std::istream& in, std::vector<AnimatedSprite>& spri
         sprite.x4        = read2B(in);
         sprite.y4        = read2B(in);
         sprite.nbFrames4 = read1B(in);
-    }
+    }*/
     return true;
 }
 

@@ -19,15 +19,16 @@ namespace Dummy {
 class GameStatic
 {
 public:
-    char_id RegisterNPC(char_id id, const PositionChar& pos);
-
     event_id RegisterDialog(const std::string& speaker, const std::string& sentence);
     event_id RegisterChoice(const std::string& question);
+
+
+    bool loadFromFile(const std::string& gamePath);
+    bool checkFilesIntegrity() const; ///< returns true if all referenced files are present
 
 public:
     uint64_t version = 0;
     std::string name;
-    std::vector<Map> maps;
 
     std::vector<Item> items;
 
@@ -38,8 +39,13 @@ public:
     std::vector<DialogSentence> dialogs;
     std::vector<DialogChoice> dialogsChoices;
 
-    std::vector<std::string> chipsetPaths;
+    std::vector<std::string> mapsNames;
+    std::vector<std::string> tileSets;
+    std::vector<std::string> spriteSheets;
     std::vector<AnimatedSprite> sprites;
+
+private:
+    static bool assertFileExists(const std::string& path);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,6 +64,7 @@ public:
     void registerEvent(event_id);
     event_id dequeEvent();
     bool eventBlocked() const;
+    void setCurrentMap(const std::shared_ptr<Map>& pMap);
 
     const PlayerInstance& player() const;
     const Dummy::Map* currentMap() const;
@@ -69,6 +76,8 @@ private:
 private:
     const GameStatic& m_game;
     PlayerInstance m_player = {"Unnamed", 0, PositionChar()};
+
+    std::shared_ptr<Map> m_currMap;
 
     bool m_eventsBlocked = false;
     std::deque<event_id> m_eventsQueue;

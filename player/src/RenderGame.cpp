@@ -42,13 +42,12 @@ void GameRender::setMap(const Dummy::Map& map)
         std::cerr << "Error : MapRender creation failed (" << e.what() << ")." << std::endl;
     }
 
-    changeFloor(m_gameInstance.player().pos().floorId);
+    changeFloor(map, m_gameInstance.player().pos().floorId);
 }
 
-void GameRender::changeFloor(uint8_t floorId)
+void GameRender::changeFloor(const Dummy::Map& map, uint8_t floorId)
 {
-    const auto& playerPos = m_gameInstance.player().pos();
-    const auto* floor     = m_game.maps[playerPos.mapId].floorAt(floorId);
+    const auto* floor = map.floorAt(floorId);
     if (floor == nullptr)
         return;
 

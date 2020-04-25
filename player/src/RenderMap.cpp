@@ -40,7 +40,7 @@ MapRender::MapRender(const Dummy::Map& map, const GameRender& gameRender)
     for (uint8_t i = 0; i < nbChips; ++i) {
         Dummy::chip_id chipId = map.chipsetsUsed()[i];
         sf::Texture chipTex;
-        std::string path = gameRender.game().chipsetPaths.at(chipId);
+        std::string path = gameRender.game().tileSets[chipId];
         if (! chipTex.loadFromFile(path))
             throw MapRenderError("Could not load a chipset texture: " + path);
 

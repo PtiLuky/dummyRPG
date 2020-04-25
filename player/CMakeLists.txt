@@ -12,8 +12,8 @@ find_package(SFML COMPONENTS graphics audio REQUIRED)
 set(RESOURCE_FILES
     Resources/tilemap.frag
     Resources/tilemap.vert
-    Resources/chipsets/ClassicRPG_Sheet.png
-    Resources/chipsets/bluePx.png
+    Resources/images/ClassicRPG_Sheet.png
+    Resources/images/bluePx.png
     Resources/fonts/EuropeanTeletext.ttf
     Resources/fonts/PixelOperator8.ttf
 )
@@ -46,7 +46,8 @@ else()
 endif()
 
 foreach(RESOURCE_FILE IN LISTS RESOURCE_FILES)
-    file(COPY "${RESOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/Resources")
+    get_filename_component(DIR_PATH "${RESOURCE_FILE}" DIRECTORY )
+    file(COPY "${RESOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/${DIR_PATH}")
 endforeach()
 
 set_target_properties(player PROPERTIES

@@ -41,9 +41,11 @@ public:
     uint16_t height() const;
 
     const BlockingLayer& blockingLayer() const;
+    BlockingLayer& blockingLayer();
     bool isWalkable(Coord) const;
 
     const std::vector<GraphicLayer>& graphicLayers() const;
+    GraphicLayer& graphicLayersAt(uint8_t idx);
     const std::vector<CharacterInstance>& npcs() const;
     CharacterInstance& npc(char_id);
 

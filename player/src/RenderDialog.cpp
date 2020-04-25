@@ -1,6 +1,8 @@
 #include "RenderDialog.hpp"
 
-static const char* const DEFAULT_FONT       = "Resources/PixelOperator8.ttf";
+#include "dummyrpg/game.hpp"
+
+static const char* const DEFAULT_FONT       = "Resources/fonts/PixelOperator8.ttf";
 static const unsigned int DEFAULT_FONT_SIZE = 16;  // in px
 static const int DIALOG_MARGIN              = 10;  // in px
 static const int CHOICE_MARGIN              = 36;  // in px
@@ -22,7 +24,7 @@ DialogRender::DialogRender()
         throw DialogRenderError(errorMsg);
     }
 
-    if (! m_backgroundTexture.loadFromFile("Resources/bluePx.png"))
+    if (! m_backgroundTexture.loadFromFile("Resources/images/bluePx.png"))
         throw DialogRenderError("Could not load a sprite texture: Resources/bluePx.png");
 
     // TODO slicing sprite shader for text boxes
@@ -30,7 +32,7 @@ DialogRender::DialogRender()
     m_backgroundSprite.setTexture(m_backgroundTexture);
 
     // TODO better choice icon ?
-    if (! m_choiceTexture.loadFromFile("Resources/ClassicRPG_Sheet.png"))
+    if (! m_choiceTexture.loadFromFile("Resources/images/ClassicRPG_Sheet.png"))
         throw DialogRenderError("Could not load a sprite texture: Resources/ClassicRPG_Sheet.png");
 
     m_choiceSprite.setTexture(m_choiceTexture);

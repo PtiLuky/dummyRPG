@@ -22,8 +22,9 @@ CharacterRender::CharacterRender(const Dummy::AnimatedSprite& spriteRef,
     , m_spriteRef(spriteRef)
     , m_gameRender(gameRender)
 {
-    if (! m_texture.loadFromFile(m_spriteRef.imgPath))
-        throw CharacterRenderError("Could not load a sprite texture: " + m_spriteRef.imgPath);
+    std::string imgPath = gameRender.game().spriteSheets[m_spriteRef.spriteSheetId];
+    if (! m_texture.loadFromFile(imgPath))
+        throw CharacterRenderError("Could not load a sprite texture: " + imgPath);
 
     sf::IntRect rect(m_spriteRef.x, m_spriteRef.y, m_spriteRef.width, m_spriteRef.height);
     m_sprite.setTexture(m_texture);
