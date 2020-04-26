@@ -59,20 +59,20 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
     // TODO return an error value to have details on the failure
     if (! out.good())
         return false;
-/*
+
     // Header
     write4B(out, FILE_SIGNATURE_GDUMMY);
     writeHeader(game, out);
 
     // Chipsets
     write2B(out, TAG_CHIPSETS);
-    for (auto& chipPath : game.chipsetPaths)
+    for (auto& chipPath : game.tileSets)
         writeChipset(out, chipPath);
 
     // Maps
     write2B(out, TAG_MAPS);
-    for (auto& map : game.maps)
-        writeMap(out, *map);
+    for (auto& map : game.mapsNames)
+        writeMapName(out, map);
 
     // Items
     write2B(out, TAG_ITEMS);
@@ -99,7 +99,24 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
 
     // File signature
     write4B(out, FILE_SIGNATURE_GDUMMY);
-*/
+
+    return out.good();
+}
+
+bool Serializer::serializeMapToFile(const Map& game, std::ostream& out)
+{
+    // TODO return an error value to have details on the failure
+    if (! out.good())
+        return false;
+
+    // Header
+    write4B(out, FILE_SIGNATURE_GDUMMY);
+
+    writeMap(out, game);
+
+    // File signature
+    write4B(out, FILE_SIGNATURE_GDUMMY);
+
     return out.good();
 }
 
@@ -160,13 +177,13 @@ template <typename T> void Serializer::writeLayer(std::ostream& out, const Layer
 }
 
 void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
-{/*
+{
     write2B(out, TAG_NAME);
     writeStr(out, game.name);
     write2B(out, TAG_VERSION);
     write8B(out, game.version);
     write2B(out, TAG_MAP_COUNT);
-    write2B(out, static_cast<uint16_t>(game.maps.size()));
+    write2B(out, static_cast<uint16_t>(game.mapsNames.size()));
     write2B(out, TAG_ITEM_COUNT);
     write2B(out, static_cast<uint16_t>(game.items.size()));
     write2B(out, TAG_CHARACTER_COUNT);
@@ -176,16 +193,22 @@ void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
     // write2B(out, TAG_EVENT_COUNT);
     // write4B(out, static_cast<uint32_t>(game.monsters.size()));
     write2B(out, TAG_CHIPSET_COUNT);
-    write1B(out, static_cast<uint8_t>(game.chipsetPaths.size()));
+    write1B(out, static_cast<uint8_t>(game.tileSets.size()));
     write2B(out, TAG_DYNAMIC_SPRITE_COUNT);
     write2B(out, static_cast<uint16_t>(game.sprites.size()));
-    write2B(out, TAG_END_OF_HEADER);*/
+    write2B(out, TAG_END_OF_HEADER);
 }
 
 void Serializer::writeChipset(std::ostream& out, const std::string& chip)
 {
     write2B(out, TAG_CHIPSET);
     writeStr(out, chip);
+}
+
+void Serializer::writeMapName(std::ostream& out, const std::string& mapName)
+{
+    write2B(out, TAG_MAP);
+    writeStr(out, mapName);
 }
 
 void Serializer::writeMap(std::ostream& out, const Map& map)
@@ -236,9 +259,9 @@ void Serializer::writeMonster(std::ostream& out, const Monster& monster)
 }
 
 void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
-{/*
+{
     write2B(out, TAG_DYNAMIC_SPRITE);
-    writeStr(out, sprite.imgPath);
+    write2B(out, sprite.spriteSheetId);
     write2B(out, sprite.x);
     write2B(out, sprite.y);
     write2B(out, sprite.width);
@@ -255,7 +278,7 @@ void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
 
     write2B(out, sprite.x4);
     write2B(out, sprite.y4);
-    write1B(out, sprite.nbFrames4);*/
+    write1B(out, sprite.nbFrames4);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -265,26 +288,28 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
     // TODO return an error value to have details on the failure
     if (! in.good())
         return false;
-/*
+
     // Header
     if (! readHeader(in, game))
         return false;
 
     // Content
-    while (in.good()) {
+    bool contentDone = false;
+    while (in.good() && ! contentDone) {
         uint16_t temp2B = read2B(in);
         switch (temp2B) {
 
         case TAG_END_OF_CONTENT:
+            contentDone = true;
             break;
 
         case TAG_CHIPSETS:
-            if (! readChipsets(in, game.chipsetPaths))
+            if (! readChipsets(in, game.tileSets))
                 return false;
             break;
 
         case TAG_MAPS:
-            if (! readMaps(in, game.maps))
+            if (! readMapNames(in, game.mapsNames))
                 return false;
             break;
 
@@ -315,7 +340,25 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
 
     if (read4B(in) != FILE_SIGNATURE_GDUMMY)
         return false;
-*/
+
+    return true;
+}
+
+bool Serializer::parseMapFromFile(std::istream& in, Map& map)
+{
+    // TODO return an error value to have details on the failure
+    if (! in.good())
+        return false;
+
+    if (read4B(in) != FILE_SIGNATURE_GDUMMY)
+        return false;
+
+    if (! readMap(in, map))
+        return false;
+
+    if (read4B(in) != FILE_SIGNATURE_GDUMMY)
+        return false;
+
     return true;
 }
 
@@ -380,7 +423,7 @@ template <typename T> void Serializer::readLayer(std::istream& in, Layer<T>& lay
 }
 
 bool Serializer::readHeader(std::istream& in, GameStatic& game)
-{/*
+{
     if (read4B(in) != FILE_SIGNATURE_GDUMMY)
         return false;
 
@@ -395,7 +438,7 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
             game.version = read8B(in);
             break;
         case TAG_MAP_COUNT:
-            game.maps.resize(read2B(in));
+            game.mapsNames.resize(read2B(in));
             break;
         case TAG_ITEM_COUNT:
             game.items.resize(read2B(in), Item("error", 0));
@@ -409,7 +452,7 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
         // write2B(out, TAG_EVENT_COUNT);
         // read4B(out, static_cast<uint32_t>(game.monsters.size()));
         case TAG_CHIPSET_COUNT:
-            game.chipsetPaths.resize(read1B(in));
+            game.tileSets.resize(read1B(in));
             break;
         case TAG_DYNAMIC_SPRITE_COUNT:
             game.sprites.resize(read2B(in));
@@ -420,7 +463,7 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
             return false;
         }
     }
-*/
+
     return false; // exited because of !in.good() without having TAG_END_OF_HEADER
 }
 
@@ -434,35 +477,43 @@ bool Serializer::readChipsets(std::istream& in, std::vector<std::string>& chips)
     return true;
 }
 
-bool Serializer::readMaps(std::istream& in, std::vector<Map>& maps)
+bool Serializer::readMapNames(std::istream& in, std::vector<std::string>& chips)
 {
-    for (auto& map : maps) {
+    for (auto& chip : chips) {
         if (read2B(in) != TAG_MAP)
             return false;
+        chip = readStr(in);
+    }
+    return true;
+}
 
-        uint16_t w = read2B(in);
-        uint16_t h = read2B(in);
+bool Serializer::readMap(std::istream& in, Map& map)
+{
+    if (read2B(in) != TAG_MAP)
+        return false;
 
-        map.reset(w, h, 0);
+    uint16_t w = read2B(in);
+    uint16_t h = read2B(in);
 
-        map.m_chipsets.resize(read1B(in));
-        for (auto& chipId : map.m_chipsets)
-            chipId = read1B(in);
+    map.reset(w, h, 0);
 
-        map.m_floors.resize(read1B(in));
-        for (auto& pFloor : map.m_floors) {
-            if (read2B(in) != TAG_MAP)
-                return false;
+    map.m_chipsets.resize(read1B(in));
+    for (auto& chipId : map.m_chipsets)
+        chipId = read1B(in);
 
-            pFloor.reset(new Floor(w, h));
-            readLayer(in, pFloor->m_blockingLayer);
+    map.m_floors.resize(read1B(in));
+    for (auto& pFloor : map.m_floors) {
+        if (read2B(in) != TAG_FLOOR)
+            return false;
 
-            uint8_t nbGraphLayers = read1B(in);
-            for (size_t i = 0; i < nbGraphLayers; ++i) {
-                if (i >= pFloor->m_layers.size())
-                    pFloor->addLayerAbove();
-                readLayer(in, pFloor->m_layers[i]);
-            }
+        pFloor.reset(new Floor(w, h));
+        readLayer(in, pFloor->m_blockingLayer);
+
+        uint8_t nbGraphLayers = read1B(in);
+        for (size_t i = 0; i < nbGraphLayers; ++i) {
+            if (i >= pFloor->m_layers.size())
+                pFloor->addLayerAbove();
+            readLayer(in, pFloor->m_layers[i]);
         }
     }
     return true;
@@ -505,16 +556,16 @@ bool Serializer::readMonsters(std::istream& in, std::vector<Monster>& monsters)
 }
 
 bool Serializer::readSprites(std::istream& in, std::vector<AnimatedSprite>& sprites)
-{/*
+{
     for (auto& sprite : sprites) {
         if (read2B(in) != TAG_DYNAMIC_SPRITE)
             return false;
-        sprite.imgPath  = readStr(in);
-        sprite.x        = read2B(in);
-        sprite.y        = read2B(in);
-        sprite.width    = read2B(in);
-        sprite.height   = read2B(in);
-        sprite.nbFrames = read1B(in);
+        sprite.spriteSheetId = read2B(in);
+        sprite.x             = read2B(in);
+        sprite.y             = read2B(in);
+        sprite.width         = read2B(in);
+        sprite.height        = read2B(in);
+        sprite.nbFrames      = read1B(in);
 
         sprite.x2        = read2B(in);
         sprite.y2        = read2B(in);
@@ -527,7 +578,7 @@ bool Serializer::readSprites(std::istream& in, std::vector<AnimatedSprite>& spri
         sprite.x4        = read2B(in);
         sprite.y4        = read2B(in);
         sprite.nbFrames4 = read1B(in);
-    }*/
+    }
     return true;
 }
 

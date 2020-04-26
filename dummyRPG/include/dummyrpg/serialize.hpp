@@ -24,9 +24,11 @@ class Serializer
 {
 public:
     static bool serializeGameToFile(const GameStatic&, std::ostream&);
+    static bool serializeMapToFile(const Map&, std::ostream&);
     static bool serializeSaveToFile(const GameInstance&, std::ostream&);
 
     static bool parseGameFromFile(std::istream&, GameStatic&);
+    static bool parseMapFromFile(std::istream&, Map&);
     static bool parseSaveFromFile(std::istream&, GameInstance&);
 
 private:
@@ -41,7 +43,8 @@ private:
     template <typename T> static void readLayer(std::istream&, Layer<T>&);
     static bool readHeader(std::istream&, GameStatic&);
     static bool readChipsets(std::istream&, std::vector<std::string>&);
-    static bool readMaps(std::istream&, std::vector<Map>&);
+    static bool readMapNames(std::istream&, std::vector<std::string>&);
+    static bool readMap(std::istream&, Map&);
     static bool readItems(std::istream&, std::vector<Item>&);
     static bool readCharacters(std::istream&, std::vector<Character>&);
     static bool readMonsters(std::istream&, std::vector<Monster>&);
@@ -58,6 +61,7 @@ private:
     template <typename T> static void writeLayer(std::ostream&, const Layer<T>&);
     static void writeHeader(const GameStatic&, std::ostream&);
     static void writeChipset(std::ostream&, const std::string&);
+    static void writeMapName(std::ostream&, const std::string&);
     static void writeMap(std::ostream&, const Map&);
     static void writeItem(std::ostream&, const Item&);
     static void writeCharacter(std::ostream&, const Character&);

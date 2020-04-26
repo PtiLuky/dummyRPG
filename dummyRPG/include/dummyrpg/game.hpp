@@ -25,7 +25,8 @@ public:
 
 
     bool loadFromFile(const std::string& gamePath);
-    bool checkFilesIntegrity() const; ///< returns true if all referenced files are present
+    /// returns true if all referenced files are present
+    bool checkFilesIntegrity(const std::string& gamePath) const;
 
 public:
     uint64_t version = 0;

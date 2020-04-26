@@ -4,10 +4,10 @@
 #include <fstream>
 #include <iostream>
 
-static const char* MAP_SUBDIR    = "maps/";
-static const char* IMG_SUBDIR    = "images/";
-static const char* FONTS_SUBDIR  = "fonts/";  // unused
-static const char* SOUNDS_SUBDIR = "sounds/"; // unused
+static const char* const MAP_SUBDIR    = "maps/";
+static const char* const IMG_SUBDIR    = "images/";
+static const char* const FONTS_SUBDIR  = "fonts/";  // unused
+static const char* const SOUNDS_SUBDIR = "sounds/"; // unused
 
 namespace Dummy {
 
@@ -16,18 +16,18 @@ bool GameStatic::loadFromFile(const std::string& gamePath)
     return true;
 }
 
-bool GameStatic::checkFilesIntegrity() const
+bool GameStatic::checkFilesIntegrity(const std::string& gamePath) const
 {
     bool success = true;
 
     for (const auto& mapPath : mapsNames)
-        success &= assertFileExists(MAP_SUBDIR + mapPath);
+        success = success && assertFileExists(gamePath + "/" + MAP_SUBDIR + mapPath);
 
     for (const auto& tileSet : tileSets)
-        success &= assertFileExists(IMG_SUBDIR + tileSet);
+        success = success && assertFileExists(gamePath + "/" + IMG_SUBDIR + tileSet);
 
     for (const auto& spriteSheet : spriteSheets)
-        success &= assertFileExists(IMG_SUBDIR + spriteSheet);
+        success = success && assertFileExists(gamePath + "/" + IMG_SUBDIR + spriteSheet);
 
     return success;
 }
