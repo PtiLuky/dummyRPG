@@ -1,7 +1,7 @@
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/floor.hpp"
 
-#include <filesystem>
+#include <fstream>
 #include <iostream>
 
 static const char* MAP_SUBDIR    = "maps/";
@@ -70,7 +70,8 @@ chip_id GameStatic::registerChipset(const std::string& chipPath)
 
 bool GameStatic::assertFileExists(const std::string& path)
 {
-    if (std::filesystem::exists(path)) {
+    std::ifstream f(path.c_str());
+    if (f.good()) {
         return true;
     } else {
         std::cerr << "Missing file: " << path << std::endl;
