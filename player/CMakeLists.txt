@@ -18,7 +18,7 @@ set(RESOURCE_FILES
     Resources/fonts/PixelOperator8.ttf
 )
 
-add_executable(player
+set(PLAYER_FILES
     include/ControlGame.hpp
     include/Keymap.hpp
     include/RenderCharacter.hpp
@@ -26,23 +26,35 @@ add_executable(player
     include/RenderGame.hpp
     include/RenderMap.hpp
 
-    src/main.cpp
     src/ControlGame.cpp
     src/RenderCharacter.cpp
     src/RenderDialog.cpp
     src/RenderGame.cpp
     src/RenderMap.cpp
-    "${RESOURCE_FILES}"
+    "${RESOURCE_FILES}")
+
+add_executable(testPlayer
+    src/testPlayer.cpp
+    "${PLAYER_FILES}"
+)
+
+add_executable(player
+    src/player.cpp
+    "${PLAYER_FILES}"
 )
 
 target_include_directories(player PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(testPlayer PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(player dummyrpg sfml-graphics)
+target_link_libraries(testPlayer dummyrpg sfml-graphics)
 
 # Add compilation warnings
 if(MSVC)
   target_compile_options(player PRIVATE /W4 /w14640)
+  target_compile_options(testPlayer PRIVATE /W4 /w14640)
 else()
   target_compile_options(player PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic)
+  target_compile_options(testPlayer PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic)
 endif()
 
 foreach(RESOURCE_FILE IN LISTS RESOURCE_FILES)

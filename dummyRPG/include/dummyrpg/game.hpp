@@ -19,14 +19,17 @@ namespace Dummy {
 class GameStatic
 {
 public:
+    void setGameDataPath(const std::string& rootPath);
     event_id registerDialog(const std::string& speaker, const std::string& sentence);
     event_id registerChoice(const std::string& question);
     chip_id registerChipset(const std::string& chipPath);
 
+    std::string spriteSheetPath(sprite_id) const;
+    std::string tileSetPath(chip_id) const;
 
-    bool loadFromFile(const std::string& gamePath);
     /// returns true if all referenced files are present
-    bool checkFilesIntegrity(const std::string& gamePath) const;
+    bool checkFilesIntegrity() const;
+    const std::string& gameDataPath() const;
 
 public:
     uint64_t version = 0;
@@ -47,7 +50,8 @@ public:
     std::vector<AnimatedSprite> sprites;
 
 private:
-    static bool assertFileExists(const std::string& path);
+    static bool assertFileExists(const std::string& filePath);
+    std::string m_gameDataPath;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

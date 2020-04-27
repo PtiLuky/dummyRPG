@@ -2,6 +2,14 @@
 
 #include <iostream>
 
+#include "Keymap.hpp"
+#include "RenderGame.hpp"
+#include "RenderMap.hpp"
+
+static const int WIN_WIDTH  = 600;
+static const int WIN_HEIGHT = 600;
+static const int WIN_FPS    = 6;
+
 namespace DummyPlayer {
 
 GameControl::GameControl(const Dummy::GameStatic& game, Dummy::GameInstance& gameInst)
@@ -13,6 +21,67 @@ GameControl::GameControl(const Dummy::GameStatic& game, Dummy::GameInstance& gam
     } catch (const DialogRenderError& e) {
         std::cerr << "Could not load Dialog Render" << e.what() << std::endl;
     }
+}
+
+int GameControl::run()
+{
+    DummyPlayer::Keymap keymap;
+    bool gameHasFocus = true;
+
+    sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), m_game.name);
+    window.setFramerateLimit(WIN_FPS);
+
+    DummyPlayer::GameRender renderer(m_game, m_gameInstance);
+    auto* map = m_gameInstance.currentMap();
+    if (map == nullptr)
+        return 1; // corrupted data ???
+    renderer.setMap(*map);
+
+    while (window.isOpen()) {
+        sf::Event event;
+
+        // Process input events
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            } else if (event.type == sf::Event::Resized) {
+                // update the view to the new size of the window
+                sf::FloatRect visibleArea(0.F, 0.F, static_cast<float>(event.size.width),
+                                          static_cast<float>(event.size.height));
+                window.setView(sf::View(visibleArea));
+            } else if (event.type == sf::Event::GainedFocus) {
+                gameHasFocus = true;
+            } else if (event.type == sf::Event::LostFocus) {
+                gameHasFocus = false;
+            } else if (event.type == sf::Event::KeyPressed) {
+                // split register and doing action to avoid multiple events
+                registerKeyPressed(event.key.code, keymap);
+            }
+        }
+
+        // Do actions registered in previous loop
+        doAction();
+
+        // Process game-sent events
+        Dummy::event_id eventId = m_gameInstance.dequeEvent();
+        while (eventId != Dummy::undefEvent) {
+            executeEvent(eventId);
+            eventId = m_gameInstance.dequeEvent();
+        }
+
+        // Process pressed-states (events will only give the pressed moment)
+        if (gameHasFocus) {
+            applyPlayerMovement(keymap);
+        }
+
+        // Render game
+        window.clear();
+        renderer.render(window);
+        renderOverlays(window);
+        window.display();
+    }
+
+    return 0;
 }
 
 void GameControl::registerKeyPressed(sf::Keyboard::Key keyCode, const Keymap& keymap)

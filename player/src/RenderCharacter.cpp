@@ -22,7 +22,7 @@ CharacterRender::CharacterRender(const Dummy::AnimatedSprite& spriteRef,
     , m_spriteRef(spriteRef)
     , m_gameRender(gameRender)
 {
-    std::string imgPath = gameRender.game().spriteSheets[m_spriteRef.spriteSheetId];
+    std::string imgPath = gameRender.game().spriteSheetPath(m_spriteRef.spriteSheetId);
     if (! m_texture.loadFromFile(imgPath))
         throw CharacterRenderError("Could not load a sprite texture: " + imgPath);
 

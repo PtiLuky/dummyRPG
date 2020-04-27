@@ -1,19 +1,11 @@
 #include <fstream>
 
 #include "dummyrpg/floor.hpp"
-#include "dummyrpg/game.hpp"
-#include "dummyrpg/serialize.hpp"
 
 #include "ControlGame.hpp"
-#include "Keymap.hpp"
-#include "RenderGame.hpp"
-#include "RenderMap.hpp"
 
 using Dummy::GameInstance;
 using Dummy::GameStatic;
-static const int WIN_WIDTH  = 600;
-static const int WIN_HEIGHT = 600;
-static const int WIN_FPS    = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
 // This method is to be deleted later, so yes it's dirty, and no I don't want to see all
@@ -140,9 +132,8 @@ static GameInstance createFakeGameInstance(const GameStatic& game)
     return gameInstance;
 }
 #pragma warning(pop)
+
 ///////////////////////////////////////////////////////////////////////////////
-
-
 
 int main()
 {
@@ -150,63 +141,6 @@ int main()
     GameInstance gameInstance = createFakeGameInstance(game);
     gameInstance.setCurrentMap(createMap());
 
-
     DummyPlayer::GameControl gameControl(game, gameInstance);
-    DummyPlayer::Keymap keymap;
-    bool gameHasFocus = true;
-
-    sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), game.name);
-    window.setFramerateLimit(WIN_FPS);
-
-    DummyPlayer::GameRender renderer(game, gameInstance);
-    auto* map = gameInstance.currentMap();
-    if (map == nullptr)
-        return 1; // corrupted data ???
-    renderer.setMap(*map);
-
-    while (window.isOpen()) {
-        sf::Event event;
-
-        // Process input events
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            } else if (event.type == sf::Event::Resized) {
-                // update the view to the new size of the window
-                sf::FloatRect visibleArea(0.F, 0.F, static_cast<float>(event.size.width),
-                                          static_cast<float>(event.size.height));
-                window.setView(sf::View(visibleArea));
-            } else if (event.type == sf::Event::GainedFocus) {
-                gameHasFocus = true;
-            } else if (event.type == sf::Event::LostFocus) {
-                gameHasFocus = false;
-            } else if (event.type == sf::Event::KeyPressed) {
-                // split register and doing action to avoid multiple events
-                gameControl.registerKeyPressed(event.key.code, keymap);
-            }
-        }
-
-        // Do actions registered in previous loop
-        gameControl.doAction();
-
-        // Process game-sent events
-        Dummy::event_id eventId = gameInstance.dequeEvent();
-        while (eventId != Dummy::undefEvent) {
-            gameControl.executeEvent(eventId);
-            eventId = gameInstance.dequeEvent();
-        }
-
-        // Process pressed-states (events will only give the pressed moment)
-        if (gameHasFocus) {
-            gameControl.applyPlayerMovement(keymap);
-        }
-
-        // Render game
-        window.clear();
-        renderer.render(window);
-        gameControl.renderOverlays(window);
-        window.display();
-    }
-
-    return 0;
+    return gameControl.run();
 }

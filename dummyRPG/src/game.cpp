@@ -11,25 +11,30 @@ static const char* const SOUNDS_SUBDIR = "sounds/"; // unused
 
 namespace Dummy {
 
-bool GameStatic::loadFromFile(const std::string& gamePath)
-{
-    return true;
-}
-
-bool GameStatic::checkFilesIntegrity(const std::string& gamePath) const
+bool GameStatic::checkFilesIntegrity() const
 {
     bool success = true;
 
     for (const auto& mapPath : mapsNames)
-        success = success && assertFileExists(gamePath + "/" + MAP_SUBDIR + mapPath);
+        success = success && assertFileExists(m_gameDataPath + "/" + MAP_SUBDIR + mapPath);
 
     for (const auto& tileSet : tileSets)
-        success = success && assertFileExists(gamePath + "/" + IMG_SUBDIR + tileSet);
+        success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + tileSet);
 
     for (const auto& spriteSheet : spriteSheets)
-        success = success && assertFileExists(gamePath + "/" + IMG_SUBDIR + spriteSheet);
+        success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + spriteSheet);
 
     return success;
+}
+
+void GameStatic::setGameDataPath(const std::string& rootPath)
+{
+    m_gameDataPath = rootPath;
+}
+
+const std::string& GameStatic::gameDataPath() const
+{
+    return m_gameDataPath;
 }
 
 event_id GameStatic::registerDialog(const std::string& speaker, const std::string& sentence)
@@ -60,12 +65,27 @@ event_id GameStatic::registerChoice(const std::string& question)
 
 chip_id GameStatic::registerChipset(const std::string& chipPath)
 {
-    if (tileSets.size() >= std::numeric_limits<chip_id>::max())
+    size_t nbTileset = tileSets.size();
+    if (nbTileset >= std::numeric_limits<chip_id>::max())
         return 0;
 
-    chip_id nextChipId = static_cast<chip_id>(tileSets.size());
+    for (chip_id i = 0; i < nbTileset; ++i)
+        if (tileSets[i] == chipPath)
+            return i;
+
+    chip_id nextChipId = static_cast<chip_id>(nbTileset);
     tileSets.push_back(chipPath);
     return nextChipId;
+}
+
+std::string GameStatic::spriteSheetPath(sprite_id id) const
+{
+    return m_gameDataPath + "/" + IMG_SUBDIR + spriteSheets[id];
+}
+
+std::string GameStatic::tileSetPath(chip_id id) const
+{
+    return m_gameDataPath + "/" + IMG_SUBDIR + tileSets[id];
 }
 
 bool GameStatic::assertFileExists(const std::string& path)
