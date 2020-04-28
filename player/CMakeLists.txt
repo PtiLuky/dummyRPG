@@ -59,7 +59,7 @@ endif()
 
 foreach(RESOURCE_FILE IN LISTS RESOURCE_FILES)
     get_filename_component(DIR_PATH "${RESOURCE_FILE}" DIRECTORY )
-    file(COPY "${RESOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/${DIR_PATH}")
+    file(COPY "${RESOURCE_FILE}" DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${DIR_PATH})
 endforeach()
 
 set_target_properties(player PROPERTIES

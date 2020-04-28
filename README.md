@@ -11,15 +11,23 @@ Core library for a 2D RPG game engine.
 * [x] Display the character of the player
 * [x] Display the Non-player characters
 * [x] Move in the map
-* [ ] Chat with NPC
+* [x] Chat with NPC
 * [ ] Spawn monsters
 * [ ] Fights monsters
 * [ ] Items management
 * [ ] Events system
 
-**Editor** is not up to date yet and cannot be used to generate games with the new library.
-
 `¯\_(ツ)_/¯`
+
+**Editor** is accessible on github here : https://github.com/PtiLuky/dummyeditor .
+The editor contains this player, by installing the editor you will be able to create and play your map!
+* [x] Draw a map, a floor
+* [ ] Set the position of the player
+* [ ] Create the Non-player characters
+* [ ] Create dialogs with NPC
+* [ ] Spawn monsters
+* [ ] Fights monsters
+* [ ] Items management
 
 ## Installation
 
