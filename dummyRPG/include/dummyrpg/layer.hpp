@@ -48,6 +48,30 @@ public:
         m_content = std::vector(width * height, defaultValue);
     }
 
+    void resize(uint16_t width, uint16_t height, T defaultValue)
+    {
+        auto old = m_content;
+
+        if (width == 0)
+            height = 0;
+        else if (height == 0)
+            width = 0;
+
+        if (width > MAX_LAYER_BORDER_SIZE)
+            width = MAX_LAYER_BORDER_SIZE;
+        if (height > MAX_LAYER_BORDER_SIZE)
+            height = MAX_LAYER_BORDER_SIZE;
+
+        m_content = std::vector(width * height, defaultValue);
+        for (uint16_t x = 0; x < m_width && x < width; ++x)
+            for (uint16_t y = 0; y < m_height && y < height; ++y) {
+                uint32_t rowIdx               = y; // use uint32_t to avoid uint16 overflow
+                m_content[x + rowIdx * width] = old[x + rowIdx * m_width];
+            }
+
+        m_width  = width;
+        m_height = height;
+    }
     uint16_t width() const { return m_width; }
     uint16_t height() const { return m_height; }
     size_t size() const { return m_content.size(); }

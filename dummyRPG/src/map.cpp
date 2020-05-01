@@ -20,6 +20,12 @@ void Map::reset(uint16_t w, uint16_t h, chip_id firstChip)
     m_floors.push_back(std::make_unique<Floor>(w, h));
 }
 
+void Map::resize(uint16_t w, uint16_t h)
+{
+    for (auto& floor : m_floors)
+        floor->resize(w, h);
+}
+
 const std::vector<std::unique_ptr<Floor>>& Map::floors() const
 {
     return m_floors;

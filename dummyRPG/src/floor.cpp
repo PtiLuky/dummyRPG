@@ -15,6 +15,20 @@ Floor::Floor(uint16_t w, uint16_t h)
     addLayerAbove(); // above player
 }
 
+void Floor::resize(uint16_t w, uint16_t h)
+{
+    m_blockingLayer.resize(w, h, false);
+
+    for (auto& layer : m_layers)
+        layer.resize(w, h, undefAspect);
+
+    for (auto it = m_npcs.begin(); it != m_npcs.end(); ++it) {
+        auto coord = it->pos().coord;
+        if (coord.x >= w || coord.y >= h)
+            m_npcs.erase(it--);
+    }
+}
+
 uint16_t Floor::width() const
 {
     return m_blockingLayer.width();

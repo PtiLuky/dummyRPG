@@ -35,6 +35,7 @@ public:
     ~Map();
 
     void reset(uint16_t w, uint16_t h, chip_id firstChip);
+    void resize(uint16_t w, uint16_t h);
 
     /////////////////////////////////////
     // const Getters

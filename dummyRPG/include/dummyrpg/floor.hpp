@@ -37,6 +37,8 @@ public:
     /// \param h height of the floor. 1024 max.
     Floor(uint16_t w, uint16_t h);
 
+    void resize(uint16_t w, uint16_t h);
+
     uint16_t width() const;
     uint16_t height() const;
 
