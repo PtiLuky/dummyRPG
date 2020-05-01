@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(SFML COMPONENTS graphics audio REQUIRED)
 
+if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ".")
+endif()
+
 ###############################################################################
 
 # Package some resources
