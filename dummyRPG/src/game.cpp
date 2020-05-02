@@ -65,7 +65,7 @@ event_id GameStatic::registerChoice(const std::string& question)
 
 chip_id GameStatic::registerChipset(const std::string& chipPath)
 {
-    size_t nbTileset = tileSets.size();
+    const size_t nbTileset = tileSets.size();
     if (nbTileset >= std::numeric_limits<chip_id>::max())
         return 0;
 
@@ -78,13 +78,34 @@ chip_id GameStatic::registerChipset(const std::string& chipPath)
     return nextChipId;
 }
 
+sprite_id GameStatic::registerSpriteSheet(const std::string& sheetPath)
+{
+    const size_t nbSheets = spriteSheets.size();
+    if (nbSheets >= std::numeric_limits<sprite_id>::max())
+        return 0;
+
+    for (sprite_id i = 0; i < nbSheets; ++i)
+        if (spriteSheets[i] == sheetPath)
+            return i;
+
+    sprite_id nextSheetId = static_cast<sprite_id>(nbSheets);
+    spriteSheets.push_back(sheetPath);
+    return nextSheetId;
+}
+
 std::string GameStatic::spriteSheetPath(sprite_id id) const
 {
+    if (id >= spriteSheets.size())
+        return "undefined";
+
     return m_gameDataPath + "/" + IMG_SUBDIR + spriteSheets[id];
 }
 
 std::string GameStatic::tileSetPath(chip_id id) const
 {
+    if (id >= tileSets.size())
+        return "undefined";
+
     return m_gameDataPath + "/" + IMG_SUBDIR + tileSets[id];
 }
 

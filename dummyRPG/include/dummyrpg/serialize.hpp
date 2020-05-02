@@ -42,8 +42,7 @@ private:
     // Read and complete complexe types
     template <typename T> static void readLayer(std::istream&, Layer<T>&);
     static bool readHeader(std::istream&, GameStatic&);
-    static bool readChipsets(std::istream&, std::vector<std::string>&);
-    static bool readMapNames(std::istream&, std::vector<std::string>&);
+    static bool readStrVec(std::istream&, std::vector<std::string>&, uint16_t tag);
     static bool readMap(std::istream&, Map&);
     static bool readItems(std::istream&, std::vector<Item>&);
     static bool readCharacters(std::istream&, std::vector<Character>&);
@@ -60,8 +59,7 @@ private:
     // Write complexe types
     template <typename T> static void writeLayer(std::ostream&, const Layer<T>&);
     static void writeHeader(const GameStatic&, std::ostream&);
-    static void writeChipset(std::ostream&, const std::string&);
-    static void writeMapName(std::ostream&, const std::string&);
+    static void writeStrElem(std::ostream&, const std::string&, uint16_t tag);
     static void writeMap(std::ostream&, const Map&);
     static void writeItem(std::ostream&, const Item&);
     static void writeCharacter(std::ostream&, const Character&);

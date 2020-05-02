@@ -19,7 +19,7 @@ To express yourself please chat with us on Discord or open a new Issue ticket on
 
 *(EN or FR)*
 
-Help to manage a Discord server, keep people informed with new updates, chat with developers to
+Help to manage a [Discord server](https://discord.gg/qzx4AjT), keep people informed with new updates, chat with developers to
 make the link between the users, the community and the dev.  
 And make the community grow!
 

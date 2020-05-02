@@ -97,7 +97,7 @@ void DialogRender::render(sf::RenderWindow& window)
 
     const auto winSize = window.getSize();
     const sf::IntRect textRect(0, 0, static_cast<int>(winSize.x), DIALOG_HEIGHT);
-    float textY = static_cast<int>(winSize.y) - DIALOG_HEIGHT;
+    float textY = static_cast<float>(winSize.y) - DIALOG_HEIGHT;
 
     // Draw background
     m_backgroundSprite.setPosition(0, textY);

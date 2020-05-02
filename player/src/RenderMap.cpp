@@ -101,7 +101,7 @@ void MapRender::renderBelow(sf::RenderWindow& renderWindow, uint8_t playerFloor)
     if (nbTexturesBelow >= m_tilemaps.size())
         return; // Data corrupted ? Should not happen...
 
-    auto offset = m_gameRender.offset();
+    sf::Vector2f offset(m_gameRender.offset());
     m_mapSprite.setPosition(offset.x, offset.y);
 
     for (size_t fIdx = 0; fIdx < nbTexturesBelow; ++fIdx) {
@@ -119,8 +119,8 @@ void MapRender::renderAbove(sf::RenderWindow& renderWindow, uint8_t playerFloor)
     if (nbTexturesBelow >= m_tilemaps.size())
         return; // Data corrupted ? Should not happen...
 
-    auto offset = m_gameRender.offset();
-    m_mapSprite.setPosition(offset.x, offset.y);
+    sf::Vector2f offset(m_gameRender.offset());
+    m_mapSprite.setPosition(offset.x,offset.y);
 
     size_t nextFloorLayersIdx = m_tilemaps.size();
     if (playerFloor + 1 < m_firstTexsIdx.size())

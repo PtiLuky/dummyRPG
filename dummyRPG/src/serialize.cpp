@@ -24,6 +24,7 @@ static const uint16_t TAG_CHARACTER_COUNT      = 0xdd05;
 static const uint16_t TAG_MONSTER_COUNT        = 0xdd06;
 static const uint16_t TAG_EVENT_COUNT          = 0xdd07;
 static const uint16_t TAG_CHIPSET_COUNT        = 0xdd08;
+static const uint16_t TAG_SPRITE_SHEET_COUNT   = 0xdd09;
 static const uint16_t TAG_DYNAMIC_SPRITE_COUNT = 0xdd0a;
 
 static const uint16_t TAG_END_OF_CONTENT = 0xddee;
@@ -45,6 +46,8 @@ static const uint16_t TAG_CHARACTER  = 0xd113;
 static const uint16_t TAG_MONSTERS = 0xd114;
 static const uint16_t TAG_MONSTER  = 0xd115;
 
+static const uint16_t TAG_SPRITE_SHEETS   = 0xd11f;
+static const uint16_t TAG_SPRITE_SHEET    = 0xd120;
 static const uint16_t TAG_DYNAMIC_SPRITES = 0xd121;
 static const uint16_t TAG_DYNAMIC_SPRITE  = 0xd123;
 
@@ -67,12 +70,12 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
     // Chipsets
     write2B(out, TAG_CHIPSETS);
     for (auto& chipPath : game.tileSets)
-        writeChipset(out, chipPath);
+        writeStrElem(out, chipPath, TAG_CHIPSET);
 
     // Maps
     write2B(out, TAG_MAPS);
     for (auto& map : game.mapsNames)
-        writeMapName(out, map);
+        writeStrElem(out, map, TAG_MAP);
 
     // Items
     write2B(out, TAG_ITEMS);
@@ -90,6 +93,9 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
         writeMonster(out, monster);
 
     // Sprites
+    write2B(out, TAG_SPRITE_SHEETS);
+    for (auto& sheet : game.spriteSheets)
+        writeStrElem(out, sheet, TAG_SPRITE_SHEET);
     write2B(out, TAG_DYNAMIC_SPRITES);
     for (auto& sprite : game.sprites)
         writeSprite(out, sprite);
@@ -194,21 +200,17 @@ void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
     // write4B(out, static_cast<uint32_t>(game.monsters.size()));
     write2B(out, TAG_CHIPSET_COUNT);
     write1B(out, static_cast<uint8_t>(game.tileSets.size()));
+    write2B(out, TAG_SPRITE_SHEET_COUNT);
+    write2B(out, static_cast<uint16_t>(game.spriteSheets.size()));
     write2B(out, TAG_DYNAMIC_SPRITE_COUNT);
     write2B(out, static_cast<uint16_t>(game.sprites.size()));
     write2B(out, TAG_END_OF_HEADER);
 }
 
-void Serializer::writeChipset(std::ostream& out, const std::string& chip)
+void Serializer::writeStrElem(std::ostream& out, const std::string& str, uint16_t tag)
 {
-    write2B(out, TAG_CHIPSET);
-    writeStr(out, chip);
-}
-
-void Serializer::writeMapName(std::ostream& out, const std::string& mapName)
-{
-    write2B(out, TAG_MAP);
-    writeStr(out, mapName);
+    write2B(out, tag);
+    writeStr(out, str);
 }
 
 void Serializer::writeMap(std::ostream& out, const Map& map)
@@ -304,12 +306,12 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
             break;
 
         case TAG_CHIPSETS:
-            if (! readChipsets(in, game.tileSets))
+            if (! readStrVec(in, game.tileSets, TAG_CHIPSET))
                 return false;
             break;
 
         case TAG_MAPS:
-            if (! readMapNames(in, game.mapsNames))
+            if (! readStrVec(in, game.mapsNames, TAG_MAP))
                 return false;
             break;
 
@@ -325,6 +327,11 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
 
         case TAG_MONSTERS:
             if (! readMonsters(in, game.monsters))
+                return false;
+            break;
+
+        case TAG_SPRITE_SHEETS:
+            if (! readStrVec(in, game.spriteSheets, TAG_SPRITE_SHEET))
                 return false;
             break;
 
@@ -454,6 +461,9 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
         case TAG_CHIPSET_COUNT:
             game.tileSets.resize(read1B(in));
             break;
+        case TAG_SPRITE_SHEET_COUNT:
+            game.spriteSheets.resize(read2B(in));
+            break;
         case TAG_DYNAMIC_SPRITE_COUNT:
             game.sprites.resize(read2B(in));
             break;
@@ -467,22 +477,12 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
     return false; // exited because of !in.good() without having TAG_END_OF_HEADER
 }
 
-bool Serializer::readChipsets(std::istream& in, std::vector<std::string>& chips)
+bool Serializer::readStrVec(std::istream& in, std::vector<std::string>& vec, uint16_t tag)
 {
-    for (auto& chip : chips) {
-        if (read2B(in) != TAG_CHIPSET)
+    for (auto& str : vec) {
+        if (read2B(in) != tag)
             return false;
-        chip = readStr(in);
-    }
-    return true;
-}
-
-bool Serializer::readMapNames(std::istream& in, std::vector<std::string>& chips)
-{
-    for (auto& chip : chips) {
-        if (read2B(in) != TAG_MAP)
-            return false;
-        chip = readStr(in);
+        str = readStr(in);
     }
     return true;
 }

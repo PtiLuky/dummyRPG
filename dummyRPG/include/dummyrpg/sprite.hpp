@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "dummy_types.hpp"
+
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace Dummy {
@@ -12,7 +14,7 @@ namespace Dummy {
 ///
 struct AnimatedSprite
 {
-    uint16_t spriteSheetId = 0; ///< game-id of the sprite sheet
+    uint16_t spriteSheetId = undefSprite; ///< game-id of the sprite sheet
 
     uint16_t width  = 0; ///< width (px) of the sprite
     uint16_t height = 0; ///< height (px) of the sprite

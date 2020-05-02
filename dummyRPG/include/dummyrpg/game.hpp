@@ -23,6 +23,7 @@ public:
     event_id registerDialog(const std::string& speaker, const std::string& sentence);
     event_id registerChoice(const std::string& question);
     chip_id registerChipset(const std::string& chipPath);
+    sprite_id registerSpriteSheet(const std::string& sheetPath);
 
     std::string spriteSheetPath(sprite_id) const;
     std::string tileSetPath(chip_id) const;
@@ -51,7 +52,7 @@ public:
 
 private:
     static bool assertFileExists(const std::string& filePath);
-    std::string m_gameDataPath;
+    std::string m_gameDataPath = ".";
 };
 
 ///////////////////////////////////////////////////////////////////////////////
