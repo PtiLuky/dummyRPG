@@ -29,6 +29,9 @@ MapRenderError::MapRenderError(const std::string& msg)
 MapRender::MapRender(const Dummy::Map& map, const GameRender& gameRender)
     : m_gameRender(gameRender)
 {
+    if (map.floors().size() == 0)
+        throw MapRenderError("Trying to load empty map.");
+
     // Load shader
     if (! m_mapShader.loadFromFile("Resources/tilemap.vert", "Resources/tilemap.frag"))
         throw MapRenderError("Could not load shader programs");
@@ -120,7 +123,7 @@ void MapRender::renderAbove(sf::RenderWindow& renderWindow, uint8_t playerFloor)
         return; // Data corrupted ? Should not happen...
 
     sf::Vector2f offset(m_gameRender.offset());
-    m_mapSprite.setPosition(offset.x,offset.y);
+    m_mapSprite.setPosition(offset.x, offset.y);
 
     size_t nextFloorLayersIdx = m_tilemaps.size();
     if (playerFloor + 1 < m_firstTexsIdx.size())

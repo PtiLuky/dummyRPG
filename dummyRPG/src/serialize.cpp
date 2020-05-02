@@ -268,6 +268,7 @@ void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
     write2B(out, sprite.y);
     write2B(out, sprite.width);
     write2B(out, sprite.height);
+    write1B(out, sprite.has4Directions ? 1 : 0);
     write1B(out, sprite.nbFrames);
 
     write2B(out, sprite.x2);
@@ -560,12 +561,13 @@ bool Serializer::readSprites(std::istream& in, std::vector<AnimatedSprite>& spri
     for (auto& sprite : sprites) {
         if (read2B(in) != TAG_DYNAMIC_SPRITE)
             return false;
-        sprite.spriteSheetId = read2B(in);
-        sprite.x             = read2B(in);
-        sprite.y             = read2B(in);
-        sprite.width         = read2B(in);
-        sprite.height        = read2B(in);
-        sprite.nbFrames      = read1B(in);
+        sprite.spriteSheetId  = read2B(in);
+        sprite.x              = read2B(in);
+        sprite.y              = read2B(in);
+        sprite.width          = read2B(in);
+        sprite.height         = read2B(in);
+        sprite.has4Directions = read1B(in);
+        sprite.nbFrames       = read1B(in);
 
         sprite.x2        = read2B(in);
         sprite.y2        = read2B(in);

@@ -40,6 +40,7 @@ void GameRender::setMap(const Dummy::Map& map)
         m_mapRender = std::make_unique<MapRender>(map, *this);
     } catch (const MapRenderError& e) {
         std::cerr << "Error : MapRender creation failed (" << e.what() << ")." << std::endl;
+        return;
     }
 
     changeFloor(map, m_gameInstance.player().pos().floorId);

@@ -22,7 +22,7 @@ void Map::reset(uint16_t w, uint16_t h, chip_id firstChip)
 
 void Map::resize(uint16_t w, uint16_t h)
 {
-    for (auto& floor : m_floors)
+    for (const auto& floor : m_floors)
         floor->resize(w, h);
 }
 
@@ -33,6 +33,8 @@ const std::vector<std::unique_ptr<Floor>>& Map::floors() const
 
 Floor* Map::floorAt(uint8_t floorIdx) const
 {
+    if (floorIdx >= m_floors.size())
+        return nullptr;
     return m_floors[floorIdx].get();
 }
 
@@ -43,11 +45,15 @@ const std::vector<chip_id>& Map::chipsetsUsed() const
 
 uint16_t Map::width() const
 {
+    if (m_floors.empty())
+        return 0;
     return m_floors[0]->width();
 }
 
 uint16_t Map::height() const
 {
+    if (m_floors.empty())
+        return 0;
     return m_floors[0]->height();
 }
 

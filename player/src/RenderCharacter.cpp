@@ -63,13 +63,14 @@ void CharacterRender::render(sf::RenderWindow& renderWindow)
     // Offset depending of the animation
     uint16_t spriteOffsetX = m_spriteRef.x;
     uint16_t spriteOffsetY = m_spriteRef.y;
-    if (currState == CharState::Walking) {
+
+    if (currState == CharState::Walking && m_spriteRef.nbFrames > 1) {
         m_lastFrame = m_lastFrame % m_spriteRef.nbFrames;
-    } else if (currState == CharState::Attack) {
+    } else if (currState == CharState::Attack && m_spriteRef.nbFrames2 > 1) {
         spriteOffsetX = m_spriteRef.x2;
         spriteOffsetY = m_spriteRef.y2;
         m_lastFrame   = m_lastFrame % m_spriteRef.nbFrames2;
-    } else if (currState == CharState::Dead) {
+    } else if (currState == CharState::Dead && m_spriteRef.nbFrames3 > 1) {
         spriteOffsetX = m_spriteRef.x3;
         spriteOffsetY = m_spriteRef.y3;
         m_lastFrame   = m_lastFrame % m_spriteRef.nbFrames3;
@@ -78,13 +79,17 @@ void CharacterRender::render(sf::RenderWindow& renderWindow)
     }
 
     // Offset depending of the direction
-    uint8_t lineIdx = LINE_TOP_VIEW;
-    if (currDir == Direction::Right)
-        lineIdx = LINE_RIGHT_VIEW;
-    else if (currDir == Direction::Bottom)
-        lineIdx = LINE_BOTTOM_VIEW;
-    else if (currDir == Direction::Left)
-        lineIdx = LINE_LEFT_VIEW;
+    uint8_t lineIdx = 0;
+    if (m_spriteRef.has4Directions) {
+        if (currDir == Direction::Top)
+            lineIdx = LINE_TOP_VIEW;
+        else if (currDir == Direction::Right)
+            lineIdx = LINE_RIGHT_VIEW;
+        else if (currDir == Direction::Bottom)
+            lineIdx = LINE_BOTTOM_VIEW;
+        else if (currDir == Direction::Left)
+            lineIdx = LINE_LEFT_VIEW;
+    }
 
     // Offset depending of the frame
     spriteOffsetX += m_lastFrame * m_spriteRef.width;
