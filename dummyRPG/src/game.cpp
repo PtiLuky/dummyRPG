@@ -15,7 +15,7 @@ bool GameStatic::checkFilesIntegrity() const
 {
     bool success = true;
 
-    for (const auto& mapPath : mapsNames)
+    for (const auto& mapPath : m_mapsNames)
         success = success && assertFileExists(m_gameDataPath + "/" + MAP_SUBDIR + mapPath);
 
     for (const auto& tileSet : m_tileSets)
@@ -27,64 +27,50 @@ bool GameStatic::checkFilesIntegrity() const
     return success;
 }
 ///////////////////////////////////////////////////////////////////////////////
-// Getters
+
 const std::string& GameStatic::name() const
 {
     return m_name;
 }
-const std::vector<AnimatedSprite>& GameStatic::sprites() const
+const std::vector<std::string>& GameStatic::mapNames() const
 {
-    return m_sprites;
+    return m_mapsNames;
 }
-AnimatedSprite* GameStatic::sprite(sprite_id id)
+void GameStatic::renameMap(const std::string& oldName, const std::string& newName)
 {
-    return id >= m_sprites.size() ? nullptr : &m_sprites[id];
+    for (auto& name : m_mapsNames)
+        if (name == oldName)
+            name = newName;
 }
-const std::vector<Character>& GameStatic::characters() const
+uint16_t GameStatic::registerMap(const std::string& mapName)
 {
-    return m_characters;
-}
-Character* GameStatic::character(char_id id)
-{
-    return id >= m_characters.size() ? nullptr : &m_characters[id];
-}
-///////////////////////////////////////////////////////////////////////////////
-void GameStatic::setGameDataPath(const std::string& rootPath)
-{
-    m_gameDataPath = rootPath;
-}
+    const size_t nbMaps = m_mapsNames.size();
+    if (nbMaps >= std::numeric_limits<uint16_t>::max())
+        return 0;
 
-const std::string& GameStatic::gameDataPath() const
-{
-    return m_gameDataPath;
+    for (uint16_t i = 0; i < nbMaps; ++i)
+        if (m_mapsNames[i] == mapName)
+            return i;
+
+    sprite_id nextMapId = static_cast<uint16_t>(nbMaps);
+    m_mapsNames.push_back(mapName);
+    return nextMapId;
 }
 
-event_id GameStatic::registerDialog(const std::string& speaker, const std::string& sentence)
+///////////////////////////////////////////////
+
+const std::vector<std::string>& GameStatic::tileSets() const
 {
-    uint32_t nextEventId = static_cast<uint32_t>(events.size());
-
-    Dummy::DialogSentence dialog(speaker, sentence, nextEventId);
-
-    uint32_t nextDialogId = static_cast<uint32_t>(dialogs.size());
-    events.push_back({Dummy::EventType::Dialog, nextDialogId});
-
-    dialogs.push_back(std::move(dialog));
-    return nextEventId;
+    return m_tileSets;
 }
-
-event_id GameStatic::registerChoice(const std::string& question)
+std::string GameStatic::tileset(chip_id id) const
 {
-    uint32_t nextEventId = static_cast<uint32_t>(events.size());
-
-    Dummy::DialogChoice choice(question, nextEventId);
-
-    uint32_t nextDialogId = static_cast<uint32_t>(dialogsChoices.size());
-    events.push_back({Dummy::EventType::Choice, nextDialogId});
-
-    dialogsChoices.push_back(choice);
-    return nextEventId;
+    return id < m_tileSets.size() ? m_tileSets[id] : "";
 }
-
+std::string GameStatic::tilesetPath(chip_id id) const
+{
+    return id < m_tileSets.size() ? m_gameDataPath + "/" + IMG_SUBDIR + m_tileSets[id] : "";
+}
 chip_id GameStatic::registerTileset(const std::string& chipPath)
 {
     const size_t nbTileset = m_tileSets.size();
@@ -100,31 +86,7 @@ chip_id GameStatic::registerTileset(const std::string& chipPath)
     return nextChipId;
 }
 
-sprite_id GameStatic::registerSpriteSheet(const std::string& sheetPath)
-{
-    const size_t nbSheets = m_spriteSheets.size();
-    if (nbSheets >= std::numeric_limits<sprite_id>::max())
-        return 0;
-
-    for (sprite_id i = 0; i < nbSheets; ++i)
-        if (m_spriteSheets[i] == sheetPath)
-            return i;
-
-    sprite_id nextSheetId = static_cast<sprite_id>(nbSheets);
-    m_spriteSheets.push_back(sheetPath);
-    return nextSheetId;
-}
-
-char_id GameStatic::registerCharacter(const std::string&& charName)
-{
-    const size_t nbChars = m_characters.size();
-    if (nbChars >= std::numeric_limits<Dummy::char_id>::max())
-        return undefChar;
-
-    char_id nextCharId = static_cast<char_id>(nbChars);
-    m_characters.push_back(Character(std::move(charName), Dummy::undefSprite));
-    return nextCharId;
-}
+///////////////////////////////////////////////
 
 const std::vector<std::string>& GameStatic::spriteSheets() const
 {
@@ -139,18 +101,127 @@ std::string GameStatic::spriteSheetPath(sprite_id id) const
     return id < m_spriteSheets.size() ? (m_gameDataPath + "/" + IMG_SUBDIR + m_spriteSheets[id])
                                       : "";
 }
-const std::vector<std::string>& GameStatic::tileSets() const
+sprite_id GameStatic::registerSpriteSheet(const std::string& sheetPath)
 {
-    return m_tileSets;
+    const size_t nbSheets = m_spriteSheets.size();
+    if (nbSheets >= std::numeric_limits<sprite_id>::max())
+        return undefSprite;
+
+    for (sprite_id i = 0; i < nbSheets; ++i)
+        if (m_spriteSheets[i] == sheetPath)
+            return i;
+
+    sprite_id nextSheetId = static_cast<sprite_id>(nbSheets);
+    m_spriteSheets.push_back(sheetPath);
+    return nextSheetId;
 }
-std::string GameStatic::tileset(chip_id id) const
+
+///////////////////////////////////////////////
+
+const std::vector<AnimatedSprite>& GameStatic::sprites() const
 {
-    return id < m_tileSets.size() ? m_tileSets[id] : "";
+    return m_sprites;
 }
-std::string GameStatic::tilesetPath(chip_id id) const
+const AnimatedSprite* GameStatic::sprite(sprite_id id) const
 {
-    return id < m_tileSets.size() ? m_gameDataPath + "/" + IMG_SUBDIR + m_tileSets[id] : "";
+    return id < m_sprites.size() ? &m_sprites[id] : nullptr;
 }
+AnimatedSprite* GameStatic::sprite(sprite_id id)
+{
+    return id < m_sprites.size() ? &m_sprites[id] : nullptr;
+}
+sprite_id GameStatic::registerSprite()
+{
+    const size_t nbSprites = m_sprites.size();
+    if (nbSprites >= std::numeric_limits<Dummy::sprite_id>::max())
+        return Dummy::undefSprite;
+
+    sprite_id nextSpriteId = static_cast<sprite_id>(nbSprites);
+    m_sprites.push_back(Dummy::AnimatedSprite());
+    return nextSpriteId;
+}
+
+///////////////////////////////////////////////
+
+const std::vector<Character>& GameStatic::characters() const
+{
+    return m_characters;
+}
+Character* GameStatic::character(char_id id)
+{
+    return id < m_characters.size() ? &m_characters[id] : nullptr;
+}
+char_id GameStatic::registerCharacter(const std::string&& charName)
+{
+    const size_t nbChars = m_characters.size();
+    if (nbChars >= std::numeric_limits<Dummy::char_id>::max())
+        return undefChar;
+
+    char_id nextCharId = static_cast<char_id>(nbChars);
+    m_characters.push_back(Character(std::move(charName), Dummy::undefSprite));
+    return nextCharId;
+}
+
+///////////////////////////////////////////////
+
+const Event* GameStatic::event(event_id id) const
+{
+    return id < m_events.size() ? &m_events[id] : nullptr;
+}
+const DialogSentence* GameStatic::dialog(event_id id) const
+{
+    return id < m_dialogs.size() ? &m_dialogs[id] : nullptr;
+}
+DialogSentence* GameStatic::dialog(event_id id)
+{
+    return id < m_dialogs.size() ? &m_dialogs[id] : nullptr;
+}
+const DialogChoice* GameStatic::choice(event_id id) const
+{
+    return id < m_dialogsChoices.size() ? &m_dialogsChoices[id] : nullptr;
+}
+DialogChoice* GameStatic::choice(event_id id)
+{
+    return id < m_dialogsChoices.size() ? &m_dialogsChoices[id] : nullptr;
+}
+
+event_id GameStatic::registerDialog(const std::string& speaker, const std::string& sentence)
+{
+    uint32_t nextEventId = static_cast<uint32_t>(m_events.size());
+
+    Dummy::DialogSentence dialog(speaker, sentence, nextEventId);
+
+    uint32_t nextDialogId = static_cast<uint32_t>(m_dialogs.size());
+    m_events.push_back({Dummy::EventType::Dialog, nextDialogId});
+
+    m_dialogs.push_back(std::move(dialog));
+    return nextEventId;
+}
+
+event_id GameStatic::registerChoice(const std::string& question)
+{
+    uint32_t nextEventId = static_cast<uint32_t>(m_events.size());
+
+    Dummy::DialogChoice choice(question, nextEventId);
+
+    uint32_t nextDialogId = static_cast<uint32_t>(m_dialogsChoices.size());
+    m_events.push_back({Dummy::EventType::Choice, nextDialogId});
+
+    m_dialogsChoices.push_back(choice);
+    return nextEventId;
+}
+///////////////////////////////////////////////////////////////////////////////
+
+void GameStatic::setGameDataPath(const std::string& rootPath)
+{
+    m_gameDataPath = rootPath;
+}
+
+const std::string& GameStatic::gameDataPath() const
+{
+    return m_gameDataPath;
+}
+
 
 bool GameStatic::assertFileExists(const std::string& path)
 {

@@ -74,7 +74,7 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
 
     // Maps
     write2B(out, TAG_MAPS);
-    for (auto& map : game.mapsNames)
+    for (auto& map : game.m_mapsNames)
         writeStrElem(out, map, TAG_MAP);
 
     // Items
@@ -189,7 +189,7 @@ void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
     write2B(out, TAG_VERSION);
     write8B(out, game.version);
     write2B(out, TAG_MAP_COUNT);
-    write2B(out, static_cast<uint16_t>(game.mapsNames.size()));
+    write2B(out, static_cast<uint16_t>(game.m_mapsNames.size()));
     write2B(out, TAG_ITEM_COUNT);
     write2B(out, static_cast<uint16_t>(game.m_items.size()));
     write2B(out, TAG_CHARACTER_COUNT);
@@ -312,7 +312,7 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
             break;
 
         case TAG_MAPS:
-            if (! readStrVec(in, game.mapsNames, TAG_MAP))
+            if (! readStrVec(in, game.m_mapsNames, TAG_MAP))
                 return false;
             break;
 
@@ -446,7 +446,7 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
             game.version = read8B(in);
             break;
         case TAG_MAP_COUNT:
-            game.mapsNames.resize(read2B(in));
+            game.m_mapsNames.resize(read2B(in));
             break;
         case TAG_ITEM_COUNT:
             game.m_items.resize(read2B(in), Item("error", 0));

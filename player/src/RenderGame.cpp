@@ -54,9 +54,13 @@ void GameRender::changeFloor(const Dummy::Map& map, uint8_t floorId)
 
     try {
         // Player
-        auto& spriteP   = m_game.m_sprites[m_gameInstance.player().spriteId()];
-        auto& positionP = m_gameInstance.player().pos();
-        m_npcRenders.push_back(std::make_unique<CharacterRender>(spriteP, positionP, *this));
+        // auto& spriteP   = m_game.m_sprites[m_gameInstance.player().spriteId()];
+        auto* spritePlayer = m_game.sprite(m_gameInstance.player().spriteId());
+        if (spritePlayer != nullptr) {
+            auto& positionP = m_gameInstance.player().pos();
+            m_npcRenders.push_back(
+                std::make_unique<CharacterRender>(*spritePlayer, positionP, *this));
+        }
 
         // NPC
         for (auto& npc : floor->npcs()) {

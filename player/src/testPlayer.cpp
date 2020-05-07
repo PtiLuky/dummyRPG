@@ -20,19 +20,19 @@ static GameStatic createFakeGame()
     game.registerSpriteSheet("ClassicRPG_Sheet.png");
 
     // Create sprite
-    Dummy::AnimatedSprite sprite1;
-    sprite1.spriteSheetId = 0;
-    sprite1.width         = 16;
-    sprite1.height        = 16;
-    sprite1.nbFrames      = 4;
-    game.m_sprites.push_back(sprite1);
+    auto spriteId1         = game.registerSprite();
+    auto* sprite1          = game.sprite(spriteId1);
+    sprite1->spriteSheetId = 0;
+    sprite1->width         = 16;
+    sprite1->height        = 16;
+    sprite1->nbFrames      = 4;
 
-    Dummy::AnimatedSprite sprite2;
-    sprite2.spriteSheetId = 0;
-    sprite2.width         = 16;
-    sprite2.height        = 16;
-    sprite2.nbFrames      = 4;
-    game.m_sprites.push_back(sprite2);
+    auto spriteId2         = game.registerSprite();
+    auto* sprite2          = game.sprite(spriteId2);
+    sprite2->spriteSheetId = 0;
+    sprite2->width         = 16;
+    sprite2->height        = 16;
+    sprite2->nbFrames      = 4;
 
     auto id = game.registerCharacter("Whity");
     game.character(id)->setSprite(1);
@@ -51,17 +51,17 @@ static GameStatic createFakeGame()
     game.registerDialog("Number3", "Bonjour je suis 3.");
     game.registerDialog("Number4", "Bonjour je suis 4.");
 
-    auto& dialog1  = game.dialogs[game.events[dialog1Id].idxPerType];
-    auto& dialog2  = game.dialogs[game.events[dialog2Id].idxPerType];
-    auto& dialog2b = game.dialogs[game.events[dialog2bId].idxPerType];
-    auto& choice   = game.dialogsChoices[game.events[choiceId].idxPerType];
-    dialog1.setNextEvent(choice.id());
-    choice.addOption({"1. Uhm...", dialogNId});
-    choice.addOption({"2. ?", dialogNId});
-    choice.addOption({"3. Maybe", dialogYId});
-    choice.addOption({"4. Uhm...", dialogNId});
-    dialog2.setNextEvent(dialog2bId);
-    dialog2b.setNextEvent(dialog2cId);
+    auto* dialog1  = game.dialog(game.event(dialog1Id)->idxPerType);
+    auto* dialog2  = game.dialog(game.event(dialog2Id)->idxPerType);
+    auto* dialog2b = game.dialog(game.event(dialog2bId)->idxPerType);
+    auto* choice   = game.choice(game.event(choiceId)->idxPerType);
+    dialog1->setNextEvent(choice->id());
+    choice->addOption({"1. Uhm...", dialogNId});
+    choice->addOption({"2. ?", dialogNId});
+    choice->addOption({"3. Maybe", dialogYId});
+    choice->addOption({"4. Uhm...", dialogNId});
+    dialog2->setNextEvent(dialog2bId);
+    dialog2b->setNextEvent(dialog2cId);
 
     return game;
 }

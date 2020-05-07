@@ -148,19 +148,19 @@ void GameControl::applyPlayerMovement(const Keymap& km)
 
 void GameControl::executeEvent(Dummy::event_id eventId)
 {
-    const auto& eventList = m_game.events;
-    if (eventId >= eventList.size()) // Undef event is -1 = uint32_t_max
+    const auto* event = m_game.event(eventId);
+    if (event == nullptr)
         return;
 
-    switch (eventList[eventId].type) {
-    case Dummy::EventType::Dialog:
-        executeDialog(m_game.dialogs[eventList[eventId].idxPerType]);
-        break;
-    case Dummy::EventType::Choice:
-        executeChoice(m_game.dialogsChoices[eventList[eventId].idxPerType]);
-        break;
-    default:
-        break;
+    if (event->type == Dummy::EventType::Dialog) {
+        const auto* dlg = m_game.dialog(event->idxPerType);
+        if (dlg != nullptr)
+            executeDialog(*dlg);
+
+    } else if (event->type == Dummy::EventType::Choice) {
+        const auto* dlg = m_game.choice(event->idxPerType);
+        if (dlg != nullptr)
+            executeChoice(*dlg);
     }
 }
 
