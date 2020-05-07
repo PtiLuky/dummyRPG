@@ -16,9 +16,8 @@ static GameStatic createFakeGame()
 {
     GameStatic game;
 
-    game.tileSets.push_back("Resources/images/ClassicRPG_Sheet.png");
-
-    game.spriteSheets.push_back("Resources/images/ClassicRPG_Sheet.png");
+    game.registerTileset("ClassicRPG_Sheet.png");
+    game.registerSpriteSheet("ClassicRPG_Sheet.png");
 
     // Create sprite
     Dummy::AnimatedSprite sprite1;
@@ -26,17 +25,17 @@ static GameStatic createFakeGame()
     sprite1.width         = 16;
     sprite1.height        = 16;
     sprite1.nbFrames      = 4;
-    game.sprites.push_back(sprite1);
+    game.m_sprites.push_back(sprite1);
 
     Dummy::AnimatedSprite sprite2;
     sprite2.spriteSheetId = 0;
     sprite2.width         = 16;
     sprite2.height        = 16;
     sprite2.nbFrames      = 4;
-    game.sprites.push_back(sprite2);
+    game.m_sprites.push_back(sprite2);
 
-    Dummy::Character perso1("Whity", 1);
-    game.characters.push_back(perso1);
+    auto id = game.registerCharacter("Whity");
+    game.character(id)->setSprite(1);
 
     auto dialog1Id  = game.registerDialog("Number1", "Bonjour je suis 1.");
     auto dialogNId  = game.registerDialog("Number1", "Bah non...");

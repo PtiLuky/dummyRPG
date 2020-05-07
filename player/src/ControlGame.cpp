@@ -28,7 +28,7 @@ int GameControl::run()
     DummyPlayer::Keymap keymap;
     bool gameHasFocus = true;
 
-    sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), m_game.name);
+    sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), m_game.name());
     window.setFramerateLimit(WIN_FPS);
 
     DummyPlayer::GameRender renderer(m_game, m_gameInstance);

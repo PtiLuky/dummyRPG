@@ -18,41 +18,61 @@ namespace Dummy {
 
 class GameStatic
 {
+    friend class Serializer;
+
 public:
     void setGameDataPath(const std::string& rootPath);
+
+    const std::string& name() const;
+
+    // Tile sets
+    const std::vector<std::string>& tileSets() const;
+    std::string tileset(chip_id) const;
+    std::string tilesetPath(chip_id) const;
+    // Sprite sheets
+    const std::vector<std::string>& spriteSheets() const;
+    std::string spriteSheet(sprite_id) const;
+    std::string spriteSheetPath(sprite_id) const;
+    // sprites
+    const std::vector<AnimatedSprite>& sprites() const;
+    AnimatedSprite* sprite(sprite_id);
+    // characters
+    const std::vector<Character>& characters() const;
+    Character* character(char_id);
+
     event_id registerDialog(const std::string& speaker, const std::string& sentence);
     event_id registerChoice(const std::string& question);
-    chip_id registerChipset(const std::string& chipPath);
-    sprite_id registerSpriteSheet(const std::string& sheetPath);
+    chip_id registerTileset(const std::string& chipFilename);
+    sprite_id registerSpriteSheet(const std::string& sheetFilename);
+    char_id registerCharacter(const std::string&& charName);
 
-    std::string spriteSheetPath(sprite_id) const;
-    std::string tileSetPath(chip_id) const;
 
     /// returns true if all referenced files are present
     bool checkFilesIntegrity() const;
     const std::string& gameDataPath() const;
 
 public:
-    uint64_t version = 0;
-    std::string name;
-
-    std::vector<Item> items;
-
-    std::vector<Character> characters;
-    std::vector<Monster> monsters;
-
     std::vector<Event> events;
     std::vector<DialogSentence> dialogs;
     std::vector<DialogChoice> dialogsChoices;
 
     std::vector<std::string> mapsNames;
-    std::vector<std::string> tileSets;
-    std::vector<std::string> spriteSheets;
-    std::vector<AnimatedSprite> sprites;
+    std::vector<AnimatedSprite> m_sprites;
 
 private:
     static bool assertFileExists(const std::string& filePath);
+
+    uint64_t version = 0;
+    std::string m_name;
     std::string m_gameDataPath = ".";
+
+    std::vector<std::string> m_tileSets;
+    std::vector<std::string> m_spriteSheets;
+
+    std::vector<Item> m_items;
+    std::vector<Monster> m_monsters;
+
+    std::vector<Character> m_characters;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

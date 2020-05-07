@@ -69,7 +69,7 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
 
     // Chipsets
     write2B(out, TAG_CHIPSETS);
-    for (auto& chipPath : game.tileSets)
+    for (auto& chipPath : game.m_tileSets)
         writeStrElem(out, chipPath, TAG_CHIPSET);
 
     // Maps
@@ -79,25 +79,25 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
 
     // Items
     write2B(out, TAG_ITEMS);
-    for (auto& item : game.items)
+    for (auto& item : game.m_items)
         writeItem(out, item);
 
     // Characters
     write2B(out, TAG_CHARACTERS);
-    for (auto& charac : game.characters)
+    for (auto& charac : game.m_characters)
         writeCharacter(out, charac);
 
     // Monsters
     write2B(out, TAG_MONSTERS);
-    for (auto& monster : game.monsters)
+    for (auto& monster : game.m_monsters)
         writeMonster(out, monster);
 
     // Sprites
     write2B(out, TAG_SPRITE_SHEETS);
-    for (auto& sheet : game.spriteSheets)
+    for (auto& sheet : game.m_spriteSheets)
         writeStrElem(out, sheet, TAG_SPRITE_SHEET);
     write2B(out, TAG_DYNAMIC_SPRITES);
-    for (auto& sprite : game.sprites)
+    for (auto& sprite : game.m_sprites)
         writeSprite(out, sprite);
 
     // File end of content tag
@@ -185,25 +185,25 @@ template <typename T> void Serializer::writeLayer(std::ostream& out, const Layer
 void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
 {
     write2B(out, TAG_NAME);
-    writeStr(out, game.name);
+    writeStr(out, game.m_name);
     write2B(out, TAG_VERSION);
     write8B(out, game.version);
     write2B(out, TAG_MAP_COUNT);
     write2B(out, static_cast<uint16_t>(game.mapsNames.size()));
     write2B(out, TAG_ITEM_COUNT);
-    write2B(out, static_cast<uint16_t>(game.items.size()));
+    write2B(out, static_cast<uint16_t>(game.m_items.size()));
     write2B(out, TAG_CHARACTER_COUNT);
-    write4B(out, static_cast<uint32_t>(game.characters.size()));
+    write4B(out, static_cast<uint32_t>(game.m_characters.size()));
     write2B(out, TAG_MONSTER_COUNT);
-    write4B(out, static_cast<uint32_t>(game.monsters.size()));
+    write4B(out, static_cast<uint32_t>(game.m_monsters.size()));
     // write2B(out, TAG_EVENT_COUNT);
     // write4B(out, static_cast<uint32_t>(game.monsters.size()));
     write2B(out, TAG_CHIPSET_COUNT);
-    write1B(out, static_cast<uint8_t>(game.tileSets.size()));
+    write1B(out, static_cast<uint8_t>(game.m_tileSets.size()));
     write2B(out, TAG_SPRITE_SHEET_COUNT);
-    write2B(out, static_cast<uint16_t>(game.spriteSheets.size()));
+    write2B(out, static_cast<uint16_t>(game.m_spriteSheets.size()));
     write2B(out, TAG_DYNAMIC_SPRITE_COUNT);
-    write2B(out, static_cast<uint16_t>(game.sprites.size()));
+    write2B(out, static_cast<uint16_t>(game.m_sprites.size()));
     write2B(out, TAG_END_OF_HEADER);
 }
 
@@ -307,7 +307,7 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
             break;
 
         case TAG_CHIPSETS:
-            if (! readStrVec(in, game.tileSets, TAG_CHIPSET))
+            if (! readStrVec(in, game.m_tileSets, TAG_CHIPSET))
                 return false;
             break;
 
@@ -317,27 +317,27 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
             break;
 
         case TAG_ITEMS:
-            if (! readItems(in, game.items))
+            if (! readItems(in, game.m_items))
                 return false;
             break;
 
         case TAG_CHARACTERS:
-            if (! readCharacters(in, game.characters))
+            if (! readCharacters(in, game.m_characters))
                 return false;
             break;
 
         case TAG_MONSTERS:
-            if (! readMonsters(in, game.monsters))
+            if (! readMonsters(in, game.m_monsters))
                 return false;
             break;
 
         case TAG_SPRITE_SHEETS:
-            if (! readStrVec(in, game.spriteSheets, TAG_SPRITE_SHEET))
+            if (! readStrVec(in, game.m_spriteSheets, TAG_SPRITE_SHEET))
                 return false;
             break;
 
         case TAG_DYNAMIC_SPRITES:
-            if (! readSprites(in, game.sprites))
+            if (! readSprites(in, game.m_sprites))
                 return false;
             break;
 
@@ -440,7 +440,7 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
         uint16_t temp2B = read2B(in);
         switch (temp2B) {
         case TAG_NAME:
-            game.name = readStr(in);
+            game.m_name = readStr(in);
             break;
         case TAG_VERSION:
             game.version = read8B(in);
@@ -449,24 +449,24 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
             game.mapsNames.resize(read2B(in));
             break;
         case TAG_ITEM_COUNT:
-            game.items.resize(read2B(in), Item("error", 0));
+            game.m_items.resize(read2B(in), Item("error", 0));
             break;
         case TAG_CHARACTER_COUNT:
-            game.characters.resize(read4B(in), Character("error", 0));
+            game.m_characters.resize(read4B(in), Character("error", 0));
             break;
         case TAG_MONSTER_COUNT:
-            game.monsters.resize(read4B(in), Monster("error", 0));
+            game.m_monsters.resize(read4B(in), Monster("error", 0));
             break;
         // write2B(out, TAG_EVENT_COUNT);
         // read4B(out, static_cast<uint32_t>(game.monsters.size()));
         case TAG_CHIPSET_COUNT:
-            game.tileSets.resize(read1B(in));
+            game.m_tileSets.resize(read1B(in));
             break;
         case TAG_SPRITE_SHEET_COUNT:
-            game.spriteSheets.resize(read2B(in));
+            game.m_spriteSheets.resize(read2B(in));
             break;
         case TAG_DYNAMIC_SPRITE_COUNT:
-            game.sprites.resize(read2B(in));
+            game.m_sprites.resize(read2B(in));
             break;
         case TAG_END_OF_HEADER:
             return true;

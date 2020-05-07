@@ -11,13 +11,13 @@ using Dummy::GameStatic;
 static GameInstance createFakeGameInstance(GameStatic& game)
 {
     // Edit game to add temps necessary sprites
-    game.spriteSheets.push_back("ClassicRPG_Sheet.png");
+    game.registerSpriteSheet("ClassicRPG_Sheet.png");
     Dummy::AnimatedSprite sprite1;
     sprite1.spriteSheetId = 0;
     sprite1.width         = 16;
     sprite1.height        = 16;
     sprite1.nbFrames      = 4;
-    game.sprites.push_back(sprite1);
+    game.m_sprites.push_back(sprite1);
 
 
     GameInstance gameInstance(game);

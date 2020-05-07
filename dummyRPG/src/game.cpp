@@ -18,15 +18,37 @@ bool GameStatic::checkFilesIntegrity() const
     for (const auto& mapPath : mapsNames)
         success = success && assertFileExists(m_gameDataPath + "/" + MAP_SUBDIR + mapPath);
 
-    for (const auto& tileSet : tileSets)
+    for (const auto& tileSet : m_tileSets)
         success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + tileSet);
 
-    for (const auto& spriteSheet : spriteSheets)
+    for (const auto& spriteSheet : m_spriteSheets)
         success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + spriteSheet);
 
     return success;
 }
-
+///////////////////////////////////////////////////////////////////////////////
+// Getters
+const std::string& GameStatic::name() const
+{
+    return m_name;
+}
+const std::vector<AnimatedSprite>& GameStatic::sprites() const
+{
+    return m_sprites;
+}
+AnimatedSprite* GameStatic::sprite(sprite_id id)
+{
+    return id >= m_sprites.size() ? nullptr : &m_sprites[id];
+}
+const std::vector<Character>& GameStatic::characters() const
+{
+    return m_characters;
+}
+Character* GameStatic::character(char_id id)
+{
+    return id >= m_characters.size() ? nullptr : &m_characters[id];
+}
+///////////////////////////////////////////////////////////////////////////////
 void GameStatic::setGameDataPath(const std::string& rootPath)
 {
     m_gameDataPath = rootPath;
@@ -63,50 +85,71 @@ event_id GameStatic::registerChoice(const std::string& question)
     return nextEventId;
 }
 
-chip_id GameStatic::registerChipset(const std::string& chipPath)
+chip_id GameStatic::registerTileset(const std::string& chipPath)
 {
-    const size_t nbTileset = tileSets.size();
+    const size_t nbTileset = m_tileSets.size();
     if (nbTileset >= std::numeric_limits<chip_id>::max())
         return 0;
 
     for (chip_id i = 0; i < nbTileset; ++i)
-        if (tileSets[i] == chipPath)
+        if (m_tileSets[i] == chipPath)
             return i;
 
     chip_id nextChipId = static_cast<chip_id>(nbTileset);
-    tileSets.push_back(chipPath);
+    m_tileSets.push_back(chipPath);
     return nextChipId;
 }
 
 sprite_id GameStatic::registerSpriteSheet(const std::string& sheetPath)
 {
-    const size_t nbSheets = spriteSheets.size();
+    const size_t nbSheets = m_spriteSheets.size();
     if (nbSheets >= std::numeric_limits<sprite_id>::max())
         return 0;
 
     for (sprite_id i = 0; i < nbSheets; ++i)
-        if (spriteSheets[i] == sheetPath)
+        if (m_spriteSheets[i] == sheetPath)
             return i;
 
     sprite_id nextSheetId = static_cast<sprite_id>(nbSheets);
-    spriteSheets.push_back(sheetPath);
+    m_spriteSheets.push_back(sheetPath);
     return nextSheetId;
 }
 
-std::string GameStatic::spriteSheetPath(sprite_id id) const
+char_id GameStatic::registerCharacter(const std::string&& charName)
 {
-    if (id >= spriteSheets.size())
-        return "undefined";
+    const size_t nbChars = m_characters.size();
+    if (nbChars >= std::numeric_limits<Dummy::char_id>::max())
+        return undefChar;
 
-    return m_gameDataPath + "/" + IMG_SUBDIR + spriteSheets[id];
+    char_id nextCharId = static_cast<char_id>(nbChars);
+    m_characters.push_back(Character(std::move(charName), Dummy::undefSprite));
+    return nextCharId;
 }
 
-std::string GameStatic::tileSetPath(chip_id id) const
+const std::vector<std::string>& GameStatic::spriteSheets() const
 {
-    if (id >= tileSets.size())
-        return "undefined";
-
-    return m_gameDataPath + "/" + IMG_SUBDIR + tileSets[id];
+    return m_spriteSheets;
+}
+std::string GameStatic::spriteSheet(sprite_id id) const
+{
+    return id < m_spriteSheets.size() ? m_spriteSheets[id] : "";
+}
+std::string GameStatic::spriteSheetPath(sprite_id id) const
+{
+    return id < m_spriteSheets.size() ? (m_gameDataPath + "/" + IMG_SUBDIR + m_spriteSheets[id])
+                                      : "";
+}
+const std::vector<std::string>& GameStatic::tileSets() const
+{
+    return m_tileSets;
+}
+std::string GameStatic::tileset(chip_id id) const
+{
+    return id < m_tileSets.size() ? m_tileSets[id] : "";
+}
+std::string GameStatic::tilesetPath(chip_id id) const
+{
+    return id < m_tileSets.size() ? m_gameDataPath + "/" + IMG_SUBDIR + m_tileSets[id] : "";
 }
 
 bool GameStatic::assertFileExists(const std::string& path)

@@ -17,10 +17,13 @@ class Character
     friend class Serializer;
 
 public:
-    Character(const std::string&& name, sprite_id spriteId);
+    Character(const std::string& name, sprite_id spriteId);
 
     const std::string& name() const;
     sprite_id spriteId() const;
+
+    void setName(const std::string& name);
+    void setSprite(sprite_id);
 
 private:
     std::string m_name;

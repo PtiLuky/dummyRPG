@@ -4,7 +4,7 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Character::Character(const std::string&& name, sprite_id spriteId)
+Character::Character(const std::string& name, sprite_id spriteId)
     : m_name(name)
     , m_spriteId(spriteId)
 {}
@@ -17,6 +17,16 @@ const std::string& Character::name() const
 sprite_id Character::spriteId() const
 {
     return m_spriteId;
+}
+
+void Character::setName(const std::string& name)
+{
+    m_name = name;
+}
+
+void Character::setSprite(sprite_id id)
+{
+    m_spriteId = id;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
