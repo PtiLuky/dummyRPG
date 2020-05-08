@@ -6,32 +6,23 @@
 
 static const char* const MAP_SUBDIR    = "maps/";
 static const char* const IMG_SUBDIR    = "images/";
-static const char* const FONTS_SUBDIR  = "fonts/";  // unused
-static const char* const SOUNDS_SUBDIR = "sounds/"; // unused
 
 namespace Dummy {
 
-bool GameStatic::checkFilesIntegrity() const
-{
-    bool success = true;
-
-    for (const auto& mapPath : m_mapsNames)
-        success = success && assertFileExists(m_gameDataPath + "/" + MAP_SUBDIR + mapPath);
-
-    for (const auto& tileSet : m_tileSets)
-        success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + tileSet);
-
-    for (const auto& spriteSheet : m_spriteSheets)
-        success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + spriteSheet);
-
-    return success;
-}
 ///////////////////////////////////////////////////////////////////////////////
+GameStatic::GameStatic(const std::string& path)
+    : m_gameDataPath(path)
+{}
 
 const std::string& GameStatic::name() const
 {
     return m_name;
 }
+const std::string& GameStatic::gameDataPath() const
+{
+    return m_gameDataPath;
+}
+
 const std::vector<std::string>& GameStatic::mapNames() const
 {
     return m_mapsNames;
@@ -212,16 +203,21 @@ event_id GameStatic::registerChoice(const std::string& question)
 }
 ///////////////////////////////////////////////////////////////////////////////
 
-void GameStatic::setGameDataPath(const std::string& rootPath)
+bool GameStatic::checkFilesIntegrity() const
 {
-    m_gameDataPath = rootPath;
-}
+    bool success = true;
 
-const std::string& GameStatic::gameDataPath() const
-{
-    return m_gameDataPath;
-}
+    for (const auto& mapPath : m_mapsNames)
+        success = success && assertFileExists(m_gameDataPath + "/" + MAP_SUBDIR + mapPath);
 
+    for (const auto& tileSet : m_tileSets)
+        success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + tileSet);
+
+    for (const auto& spriteSheet : m_spriteSheets)
+        success = success && assertFileExists(m_gameDataPath + "/" + IMG_SUBDIR + spriteSheet);
+
+    return success;
+}
 
 bool GameStatic::assertFileExists(const std::string& path)
 {
@@ -229,7 +225,7 @@ bool GameStatic::assertFileExists(const std::string& path)
     if (f.good()) {
         return true;
     } else {
-        std::cerr << "Missing file: " << path << std::endl;
+        LogErr("Missing file: " + path);
         return false;
     }
 }

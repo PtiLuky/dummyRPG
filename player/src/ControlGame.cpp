@@ -19,7 +19,7 @@ GameControl::GameControl(const Dummy::GameStatic& game, Dummy::GameInstance& gam
     try {
         m_dialogRender = std::make_unique<DialogRender>();
     } catch (const DialogRenderError& e) {
-        std::cerr << "Could not load Dialog Render" << e.what() << std::endl;
+        Dummy::LogErr(std::string("Could not load Dialog Render") + e.what());
     }
 }
 

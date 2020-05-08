@@ -12,6 +12,8 @@ struct AnimatedSprite;
 struct Curve;
 
 class Character;
+class DialogChoice;
+class DialogSentence;
 class GameInstance;
 class GameStatic;
 class Item;
@@ -25,11 +27,9 @@ class Serializer
 public:
     static bool serializeGameToFile(const GameStatic&, std::ostream&);
     static bool serializeMapToFile(const Map&, std::ostream&);
-    static bool serializeSaveToFile(const GameInstance&, std::ostream&);
 
     static bool parseGameFromFile(std::istream&, GameStatic&);
     static bool parseMapFromFile(std::istream&, Map&);
-    static bool parseSaveFromFile(std::istream&, GameInstance&);
 
 private:
     // Read and return simple types
@@ -48,6 +48,9 @@ private:
     static bool readCharacters(std::istream&, std::vector<Character>&);
     static bool readMonsters(std::istream&, std::vector<Monster>&);
     static bool readSprites(std::istream&, std::vector<AnimatedSprite>&);
+    static bool readEvents(std::istream&, GameStatic&);
+    static bool readEventDialogs(std::istream&, std::vector<DialogSentence>&);
+    static bool readEventChoices(std::istream&, std::vector<DialogChoice>&);
 
     // Write simple types
     static void write1B(std::ostream&, uint8_t);
@@ -65,6 +68,9 @@ private:
     static void writeCharacter(std::ostream&, const Character&);
     static void writeMonster(std::ostream&, const Monster&);
     static void writeSprite(std::ostream&, const AnimatedSprite&);
+    static void writeEvent(std::ostream&, const Event&);
+    static void writeEventDialog(std::ostream&, const DialogSentence&);
+    static void writeEventChoice(std::ostream&, const DialogChoice&);
 };
 
 } // namespace Dummy

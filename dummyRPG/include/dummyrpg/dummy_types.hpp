@@ -2,6 +2,7 @@
 #define DUMMYRPG_DUMMYTYPES_HPP
 
 #include <cstdint>
+#include <string>
 
 namespace Dummy {
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,7 @@ enum class CharState
     Dead,
 };
 
-enum class EventType
+enum class EventType : uint8_t
 {
     Dialog = 0,
     Choice,
@@ -98,6 +99,13 @@ struct Event
     EventType type;
     uint32_t idxPerType;
 };
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// Logger DECLARATIONS. Those methods must be implemented in a .cpp of your project
+void Log(const std::string&);
+void LogWarn(const std::string&);
+void LogErr(const std::string&);
 
 ///////////////////////////////////////////////////////////////////////////////
 /// CONST definitions

@@ -39,7 +39,7 @@ void GameRender::setMap(const Dummy::Map& map)
     try {
         m_mapRender = std::make_unique<MapRender>(map, *this);
     } catch (const MapRenderError& e) {
-        std::cerr << "Error : MapRender creation failed (" << e.what() << ")." << std::endl;
+        Dummy::LogErr(std::string("Error : MapRender creation failed (") + e.what() + ").");
         return;
     }
 
@@ -54,7 +54,6 @@ void GameRender::changeFloor(const Dummy::Map& map, uint8_t floorId)
 
     try {
         // Player
-        // auto& spriteP   = m_game.m_sprites[m_gameInstance.player().spriteId()];
         auto* spritePlayer = m_game.sprite(m_gameInstance.player().spriteId());
         if (spritePlayer != nullptr) {
             auto& positionP = m_gameInstance.player().pos();
@@ -70,7 +69,7 @@ void GameRender::changeFloor(const Dummy::Map& map, uint8_t floorId)
             m_npcRenders.push_back(std::make_unique<CharacterRender>(sprite, position, *this));
         }
     } catch (const CharacterRenderError& e) {
-        std::cerr << "Error : Character Render creation failed (" << e.what() << ")." << std::endl;
+        Dummy::LogErr(std::string("Error : Character Render creation failed (") + e.what() + ").");
     }
 }
 

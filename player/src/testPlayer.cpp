@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 
 #include "dummyrpg/floor.hpp"
 
@@ -14,7 +15,7 @@ using Dummy::GameStatic;
 #pragma warning(disable : 4244)
 static GameStatic createFakeGame()
 {
-    GameStatic game;
+    GameStatic game(".");
 
     game.registerTileset("ClassicRPG_Sheet.png");
     game.registerSpriteSheet("ClassicRPG_Sheet.png");
@@ -131,6 +132,22 @@ static GameInstance createFakeGameInstance(const GameStatic& game)
     return gameInstance;
 }
 #pragma warning(pop)
+
+///////////////////////////////////////////////////////////////////////////////
+// Implementation of log
+void Dummy::Log(const std::string& msg)
+{
+    std::cout << msg << std::endl;
+}
+void Dummy::LogWarn(const std::string& msg)
+{
+    std::cout << "(warning) " << msg << std::endl;
+}
+void Dummy::LogErr(const std::string& msg)
+{
+    std::cerr << "(error) " << msg << std::endl;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -51,7 +51,10 @@ static const uint16_t TAG_SPRITE_SHEET    = 0xd120;
 static const uint16_t TAG_DYNAMIC_SPRITES = 0xd121;
 static const uint16_t TAG_DYNAMIC_SPRITE  = 0xd123;
 
-static const uint16_t TAG_EVENTS = 0xd130;
+static const uint16_t TAG_EVENTS       = 0xd130;
+static const uint16_t TAG_EVENT        = 0xd131;
+static const uint16_t TAG_EVENT_DIALOG = 0xd132;
+static const uint16_t TAG_EVENT_CHOICE = 0xd133;
 
 namespace Dummy {
 
@@ -81,6 +84,15 @@ bool Serializer::serializeGameToFile(const GameStatic& game, std::ostream& out)
     write2B(out, TAG_ITEMS);
     for (auto& item : game.m_items)
         writeItem(out, item);
+
+    // Events
+    write2B(out, TAG_EVENTS);
+    for (auto& e : game.m_events)
+        writeEvent(out, e);
+    for (auto& d : game.m_dialogs)
+        writeEventDialog(out, d);
+    for (auto& c : game.m_dialogsChoices)
+        writeEventChoice(out, c);
 
     // Characters
     write2B(out, TAG_CHARACTERS);
@@ -122,18 +134,6 @@ bool Serializer::serializeMapToFile(const Map& game, std::ostream& out)
 
     // File signature
     write4B(out, FILE_SIGNATURE_GDUMMY);
-
-    return out.good();
-}
-
-bool Serializer::serializeSaveToFile(const GameInstance& sav, std::ostream& out)
-{
-    // TODO return an error value to have details on the failure
-    if (! out.good())
-        return false;
-
-    // Header
-    write4B(out, FILE_SIGNATURE_SDUMMY);
 
     return out.good();
 }
@@ -196,8 +196,8 @@ void Serializer::writeHeader(const GameStatic& game, std::ostream& out)
     write4B(out, static_cast<uint32_t>(game.m_characters.size()));
     write2B(out, TAG_MONSTER_COUNT);
     write4B(out, static_cast<uint32_t>(game.m_monsters.size()));
-    // write2B(out, TAG_EVENT_COUNT);
-    // write4B(out, static_cast<uint32_t>(game.monsters.size()));
+    write2B(out, TAG_EVENT_COUNT);
+    write4B(out, static_cast<uint32_t>(game.m_events.size()));
     write2B(out, TAG_CHIPSET_COUNT);
     write1B(out, static_cast<uint8_t>(game.m_tileSets.size()));
     write2B(out, TAG_SPRITE_SHEET_COUNT);
@@ -284,6 +284,34 @@ void Serializer::writeSprite(std::ostream& out, const AnimatedSprite& sprite)
     write1B(out, sprite.nbFrames4);
 }
 
+void Serializer::writeEvent(std::ostream& out, const Event& e)
+{
+    write2B(out, TAG_EVENT);
+    write1B(out, static_cast<uint8_t>(e.type));
+    write4B(out, e.idxPerType);
+}
+
+void Serializer::writeEventChoice(std::ostream& out, const DialogChoice& c)
+{
+    write2B(out, TAG_EVENT_CHOICE);
+    write4B(out, c.id());
+    writeStr(out, c.m_question);
+    write1B(out, static_cast<uint8_t>(c.m_options.size()));
+    for (auto& opt : c.m_options) {
+        writeStr(out, opt.option);
+        write4B(out, opt.nextEvent);
+    }
+}
+
+void Serializer::writeEventDialog(std::ostream& out, const DialogSentence& d)
+{
+    write2B(out, TAG_EVENT_DIALOG);
+    write4B(out, d.m_id);
+    writeStr(out, d.m_speaker);
+    writeStr(out, d.m_sentence);
+    write4B(out, d.m_nextEvent);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
@@ -318,6 +346,11 @@ bool Serializer::parseGameFromFile(std::istream& in, GameStatic& game)
 
         case TAG_ITEMS:
             if (! readItems(in, game.m_items))
+                return false;
+            break;
+
+        case TAG_EVENTS:
+            if (! readEvents(in, game))
                 return false;
             break;
 
@@ -368,11 +401,6 @@ bool Serializer::parseMapFromFile(std::istream& in, Map& map)
         return false;
 
     return true;
-}
-
-bool Serializer::parseSaveFromFile(std::istream& in, GameInstance& sav)
-{
-    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -457,8 +485,9 @@ bool Serializer::readHeader(std::istream& in, GameStatic& game)
         case TAG_MONSTER_COUNT:
             game.m_monsters.resize(read4B(in), Monster("error", 0));
             break;
-        // write2B(out, TAG_EVENT_COUNT);
-        // read4B(out, static_cast<uint32_t>(game.monsters.size()));
+        case TAG_EVENT_COUNT:
+            game.m_events.resize(read4B(in));
+            break;
         case TAG_CHIPSET_COUNT:
             game.m_tileSets.resize(read1B(in));
             break;
@@ -582,6 +611,36 @@ bool Serializer::readSprites(std::istream& in, std::vector<AnimatedSprite>& spri
         sprite.nbFrames4 = read1B(in);
     }
     return true;
+}
+
+bool Serializer::readEvents(std::istream& in, GameStatic& game)
+{
+    size_t eventIdx = 0;
+    for (;;) {
+        uint16_t tag = read2B(in);
+
+        if (tag == TAG_EVENT) {
+            game.m_events[eventIdx].type       = static_cast<EventType>(read1B(in));
+            game.m_events[eventIdx].idxPerType = read4B(in);
+            ++eventIdx;
+        } else if (tag == TAG_EVENT_CHOICE) {
+            game.m_dialogsChoices.push_back(DialogChoice("", 0));
+            game.m_dialogsChoices.back().m_id       = read4B(in);
+            game.m_dialogsChoices.back().m_question = readStr(in);
+            game.m_dialogsChoices.back().m_options.resize(read1B(in));
+            for (auto& opt : game.m_dialogsChoices.back().m_options) {
+                opt.option    = readStr(in);
+                opt.nextEvent = read4B(in);
+            }
+        } else if (tag == TAG_EVENT_DIALOG) {
+            game.m_dialogs.push_back(DialogSentence("", "", 0));
+            game.m_dialogs.back().m_id        = read4B(in);
+            game.m_dialogs.back().m_speaker   = readStr(in);
+            game.m_dialogs.back().m_sentence  = readStr(in);
+            game.m_dialogs.back().m_nextEvent = read4B(in);
+        } else
+            return true;
+    }
 }
 
 } // namespace Dummy

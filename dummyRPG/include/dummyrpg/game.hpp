@@ -21,9 +21,11 @@ class GameStatic
     friend class Serializer;
 
 public:
-    void setGameDataPath(const std::string& rootPath);
-
+    GameStatic(const std::string& path = ".");
     const std::string& name() const;
+    const std::string& gameDataPath() const;
+
+    // Maps
     const std::vector<std::string>& mapNames() const;
     void renameMap(const std::string& oldName, const std::string& newName);
     uint16_t registerMap(const std::string& mapName);
@@ -63,14 +65,13 @@ public:
     // Misc
     /// returns true if all referenced files are present
     bool checkFilesIntegrity() const;
-    const std::string& gameDataPath() const;
 
 private:
     static bool assertFileExists(const std::string& filePath);
 
     uint64_t version = 0;
     std::string m_name;
-    std::string m_gameDataPath = ".";
+    std::string m_gameDataPath;
     std::vector<std::string> m_mapsNames;
 
     std::vector<std::string> m_tileSets;

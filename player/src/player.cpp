@@ -31,20 +31,34 @@ static GameInstance createFakeGameInstance(GameStatic& game)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Implementation of logs
+void Dummy::Log(const std::string& msg)
+{
+    std::cout << msg << std::endl;
+}
+void Dummy::LogWarn(const std::string& msg)
+{
+    std::cout << "(warning) " << msg << std::endl;
+}
+void Dummy::LogErr(const std::string& msg)
+{
+    std::cerr << "(error) " << msg << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[])
 {
     if (argc != 3) {
         std::cerr
-            << "This application must be called with 2 parameters : the game_path and the map_name"
+            << "This application must be called with 2 parameters : \n\t 1. game_path \n\t2. map_name"
             << std::endl;
         return 1;
     }
 
     std::string gameFilePath = std::string(argv[1]) + "/game-data.gdummy";
     std::ifstream gameFile(gameFilePath, std::ios::binary);
-    GameStatic game;
-    game.setGameDataPath(argv[1]);
+    GameStatic game(argv[1]);
     Dummy::Serializer::parseGameFromFile(gameFile, game);
 
     std::string mapFilePath = std::string(argv[1]) + "/maps/" + std::string(argv[2]) + ".mdummy";
