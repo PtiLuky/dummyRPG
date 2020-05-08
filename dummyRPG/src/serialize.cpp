@@ -617,6 +617,7 @@ bool Serializer::readEvents(std::istream& in, GameStatic& game)
 {
     size_t eventIdx = 0;
     for (;;) {
+        auto tempPos = in.tellg();
         uint16_t tag = read2B(in);
 
         if (tag == TAG_EVENT) {
@@ -638,8 +639,10 @@ bool Serializer::readEvents(std::istream& in, GameStatic& game)
             game.m_dialogs.back().m_speaker   = readStr(in);
             game.m_dialogs.back().m_sentence  = readStr(in);
             game.m_dialogs.back().m_nextEvent = read4B(in);
-        } else
+        } else {
+            in.seekg(tempPos); // rewind the "next" tage already read"
             return true;
+        }
     }
 }
 

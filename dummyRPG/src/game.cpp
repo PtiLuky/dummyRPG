@@ -4,8 +4,8 @@
 #include <fstream>
 #include <iostream>
 
-static const char* const MAP_SUBDIR    = "maps/";
-static const char* const IMG_SUBDIR    = "images/";
+static const char* const MAP_SUBDIR = "maps/";
+static const char* const IMG_SUBDIR = "images/";
 
 namespace Dummy {
 
@@ -18,11 +18,6 @@ const std::string& GameStatic::name() const
 {
     return m_name;
 }
-const std::string& GameStatic::gameDataPath() const
-{
-    return m_gameDataPath;
-}
-
 const std::vector<std::string>& GameStatic::mapNames() const
 {
     return m_mapsNames;
@@ -149,7 +144,7 @@ char_id GameStatic::registerCharacter(const std::string&& charName)
         return undefChar;
 
     char_id nextCharId = static_cast<char_id>(nbChars);
-    m_characters.push_back(Character(std::move(charName), Dummy::undefSprite));
+    m_characters.push_back(Character(charName, Dummy::undefSprite));
     return nextCharId;
 }
 

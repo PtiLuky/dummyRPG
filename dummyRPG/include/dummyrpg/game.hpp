@@ -23,7 +23,6 @@ class GameStatic
 public:
     explicit GameStatic(const std::string& path = ".");
     const std::string& name() const;
-    const std::string& gameDataPath() const;
 
     // Maps
     const std::vector<std::string>& mapNames() const;
@@ -69,8 +68,8 @@ public:
 private:
     static bool assertFileExists(const std::string& filePath);
 
-    uint64_t version = 0;
-    std::string m_name;
+    uint64_t version = 0; // unused
+    std::string m_name;   // unused
     std::string m_gameDataPath;
     std::vector<std::string> m_mapsNames;
 
