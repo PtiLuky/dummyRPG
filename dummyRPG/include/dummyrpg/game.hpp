@@ -21,7 +21,7 @@ class GameStatic
     friend class Serializer;
 
 public:
-    GameStatic(const std::string& path = ".");
+    explicit GameStatic(const std::string& path = ".");
     const std::string& name() const;
     const std::string& gameDataPath() const;
 

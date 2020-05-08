@@ -8,23 +8,12 @@
 using Dummy::GameInstance;
 using Dummy::GameStatic;
 
-static GameInstance createFakeGameInstance(GameStatic& game)
+static GameInstance createFakeGameInstance(const GameStatic& game)
 {
-    // Edit game to add temps necessary sprites
-    /*
-    game.registerSpriteSheet("ClassicRPG_Sheet.png");
-    Dummy::AnimatedSprite sprite1;
-    sprite1.spriteSheetId = 0;
-    sprite1.width         = 16;
-    sprite1.height        = 16;
-    sprite1.nbFrames      = 4;
-    game.m_sprites.push_back(sprite1);*/
-
-
     GameInstance gameInstance(game);
     Dummy::PositionChar pos;
     pos.coord = {1, 1};
-    Dummy::PlayerInstance player("Toto", 0, pos);
+    Dummy::PlayerInstance player("Toto", 0, pos); // Will use first sprite if there is one
     gameInstance.registerPlayer(player);
 
     return gameInstance;
@@ -50,9 +39,9 @@ void Dummy::LogErr(const std::string& msg)
 int main(int argc, char* argv[])
 {
     if (argc != 3) {
-        std::cerr
-            << "This application must be called with 2 parameters : \n\t 1. game_path \n\t2. map_name"
-            << std::endl;
+        Dummy::LogErr("This application must be called with 2 parameters : " //
+                      "\n\t 1. game_path"                                    //
+                      "\n\t 2. map_name");
         return 1;
     }
 
