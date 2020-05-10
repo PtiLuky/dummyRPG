@@ -359,7 +359,7 @@ const Dummy::Floor* GameInstance::currentFloor() const
     if (map == nullptr)
         return nullptr;
 
-    return currentMap()->floorAt(m_player.m_pos.floorId);
+    return currentMap()->floorAt(m_currFloor);
 }
 
 Dummy::Floor* GameInstance::currentFloor()
@@ -368,7 +368,7 @@ Dummy::Floor* GameInstance::currentFloor()
     if (map == nullptr)
         return nullptr;
 
-    return currentMap()->floorAt(m_player.m_pos.floorId);
+    return currentMap()->floorAt(m_currFloor);
 }
 
 } // namespace Dummy

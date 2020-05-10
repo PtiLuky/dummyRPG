@@ -92,8 +92,6 @@ static std::shared_ptr<Dummy::Map> createMap()
 
     Dummy::PositionChar pos1;
     pos1.coord               = {3, 3};
-    pos1.mapId               = 0;
-    pos1.floorId             = 0;
     auto pi1Id               = floor->registerNPC(0, pos1);
     Dummy::PositionChar pos2 = pos1;
     pos2.coord               = {4, 3};

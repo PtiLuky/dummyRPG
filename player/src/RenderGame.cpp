@@ -43,7 +43,7 @@ void GameRender::setMap(const Dummy::Map& map)
         return;
     }
 
-    changeFloor(map, m_gameInstance.player().pos().floorId);
+    changeFloor(map, 0);
 }
 
 void GameRender::changeFloor(const Dummy::Map& map, uint8_t floorId)
@@ -82,8 +82,9 @@ void GameRender::render(sf::RenderWindow& window)
 
     auto characOrder = getCharacterDrawOrder();
 
+    uint8_t floorIdx = 0;
     if (m_mapRender)
-        m_mapRender->renderBelow(window, playerPos.floorId);
+        m_mapRender->renderBelow(window, floorIdx);
 
     for (const auto& characIdx : characOrder) {
         // Note: do we want to display NPC of inferior floors? If yes, we should handle that another
@@ -92,7 +93,7 @@ void GameRender::render(sf::RenderWindow& window)
     }
 
     if (m_mapRender)
-        m_mapRender->renderAbove(window, playerPos.floorId);
+        m_mapRender->renderAbove(window, floorIdx);
 }
 
 std::vector<uint32_t> GameRender::getCharacterDrawOrder()

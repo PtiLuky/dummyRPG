@@ -57,16 +57,9 @@ enum class EventType : uint8_t
 };
 
 /// Position of a character/item on a
-struct Position
+struct PositionChar
 {
     Coord coord     = {0, 0};
-    uint16_t mapId  = 0;
-    uint8_t floorId = 0;
-};
-
-/// Position of a character/item on a
-struct PositionChar : Position
-{
     Direction dir   = Direction::Bottom;
     CharState state = CharState::Idle;
 };

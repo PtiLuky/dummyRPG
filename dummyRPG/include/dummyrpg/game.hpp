@@ -117,6 +117,7 @@ private:
     PlayerInstance m_player = {"Unnamed", 0, PositionChar()};
 
     std::shared_ptr<Map> m_currMap;
+    uint8_t m_currFloor = 0;
 
     bool m_eventsBlocked = false;
     std::deque<event_id> m_eventsQueue;
