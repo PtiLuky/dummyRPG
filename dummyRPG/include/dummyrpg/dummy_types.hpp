@@ -34,7 +34,7 @@ inline bool operator==(const Coord& lhs, const Coord& rhs)
     return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 
-enum class Direction
+enum class Direction : uint8_t
 {
     Top = 0,
     Right,
@@ -42,7 +42,7 @@ enum class Direction
     Left
 };
 
-enum class CharState
+enum class CharState : uint8_t
 {
     Idle = 0,
     Walking,

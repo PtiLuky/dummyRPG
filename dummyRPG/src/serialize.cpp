@@ -233,6 +233,17 @@ void Serializer::writeMap(std::ostream& out, const Map& map)
         write1B(out, static_cast<uint8_t>(floor->graphicLayers().size()));
         for (auto& layer : floor->graphicLayers())
             writeLayer(out, layer);
+
+        // NPC
+        for (auto& npc : floor->m_npcs) {
+            write2B(out, TAG_CHARACTER);
+            write4B(out, npc.characterId());
+            write4B(out, npc.eventId());
+            write2B(out, npc.pos().coord.x);
+            write2B(out, npc.pos().coord.y);
+            write1B(out, static_cast<uint8_t>(npc.pos().dir));
+            write1B(out, static_cast<uint8_t>(npc.pos().state));
+        }
     }
 }
 
@@ -545,6 +556,25 @@ bool Serializer::readMap(std::istream& in, Map& map)
                 pFloor->addLayerAbove();
             readLayer(in, pFloor->m_layers[i]);
         }
+
+        auto posBeforeTag = in.tellg();
+        uint16_t tag      = read2B(in);
+        while (tag == TAG_CHARACTER) {
+            uint32_t id    = read4B(in);
+            uint32_t event = read4B(in);
+            PositionChar pos;
+            pos.coord.x = read2B(in);
+            pos.coord.y = read2B(in);
+            pos.dir     = static_cast<Direction>(read1B(in));
+            pos.state   = static_cast<CharState>(read1B(in));
+            CharacterInstance chara(id, pos);
+            chara.setEvent(event);
+            pFloor->m_npcs.push_back(chara);
+
+            posBeforeTag = in.tellg();
+            tag          = read2B(in);
+        }
+        in.seekg(posBeforeTag);
     }
     return true;
 }
