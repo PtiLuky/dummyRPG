@@ -225,17 +225,17 @@ void Serializer::writeMap(std::ostream& out, const Map& map)
         write1B(out, chipId);
     // floors
     write1B(out, static_cast<uint8_t>(map.floors().size()));
-    for (auto& floor : map.floors()) {
+    for (const auto& floor : map.floors()) {
         write2B(out, TAG_FLOOR);
         // blocking layer
         writeLayer(out, floor->blockingLayer());
         // graphic layers
         write1B(out, static_cast<uint8_t>(floor->graphicLayers().size()));
-        for (auto& layer : floor->graphicLayers())
+        for (const auto& layer : floor->graphicLayers())
             writeLayer(out, layer);
 
         // NPC
-        for (auto& npc : floor->m_npcs) {
+        for (const auto& npc : floor->m_npcs) {
             write2B(out, TAG_CHARACTER);
             write4B(out, npc.characterId());
             write4B(out, npc.eventId());

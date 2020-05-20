@@ -105,7 +105,7 @@ std::vector<uint32_t> GameRender::getCharacterDrawOrder()
     for (uint32_t i = 0; i < nbCharac; ++i) {
         uint32_t insertIdx = 0;
         for (insertIdx = 0; insertIdx < i; ++insertIdx)
-            if (m_npcRenders[i]->pos().coord.y <= m_npcRenders[insertIdx]->pos().coord.y)
+            if (m_npcRenders[i]->pos().coord.y < m_npcRenders[insertIdx]->pos().coord.y)
                 break;
         order.insert(order.begin() + insertIdx, i);
     }

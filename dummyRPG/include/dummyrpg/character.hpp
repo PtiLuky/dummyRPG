@@ -44,6 +44,7 @@ public:
     const PositionChar& pos() const;
 
     void setEvent(event_id);
+    void setPos(const PositionChar&);
 
 private:
     char_id m_charId = 0;

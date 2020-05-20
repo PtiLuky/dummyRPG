@@ -56,6 +56,11 @@ void CharacterInstance::setEvent(event_id event)
     m_event = event;
 }
 
+void CharacterInstance::setPos(const PositionChar& pos)
+{
+    m_pos = pos;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 PlayerInstance::PlayerInstance(const std::string&& name, sprite_id spriteId,

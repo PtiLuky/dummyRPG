@@ -81,6 +81,16 @@ CharacterInstance& Floor::npc(char_id id)
     return m_npcs[id];
 }
 
+void Floor::deleteNpcAt(Coord coord)
+{
+    size_t nbNpc = m_npcs.size();
+    for (size_t i = 0; i < nbNpc; ++i)
+        if (m_npcs[i].pos().coord == coord) {
+            m_npcs.erase(m_npcs.begin() + static_cast<long long>(i));
+            break;
+        }
+}
+
 void Floor::setBlockCell(Coord coord, bool val)
 {
     m_blockingLayer.set(coord, val);

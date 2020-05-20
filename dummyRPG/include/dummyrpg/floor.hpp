@@ -49,7 +49,8 @@ public:
     const std::vector<GraphicLayer>& graphicLayers() const;
     GraphicLayer& graphicLayersAt(uint8_t idx);
     const std::vector<CharacterInstance>& npcs() const;
-    CharacterInstance& npc(char_id);
+    CharacterInstance& npc(char_id instanceId);
+    void deleteNpcAt(Coord);
 
     void setBlockCell(Coord, bool);
     void setGraphicCell(uint8_t layerIdx, Coord, Tileaspect);
