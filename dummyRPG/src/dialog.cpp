@@ -64,7 +64,7 @@ bool DialogChoice::removeOption(uint8_t idx)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DialogSentence::DialogSentence(const std::string& speaker, const std::string& sentence, event_id id)
+DialogSentence::DialogSentence(char_id speaker, const std::string& sentence, event_id id)
     : m_id(id)
     , m_speaker(speaker)
     , m_sentence(sentence)
@@ -80,7 +80,7 @@ event_id DialogSentence::nextEvent() const
     return m_nextEvent;
 }
 
-const std::string& DialogSentence::speaker() const
+char_id DialogSentence::speakerId() const
 {
     return m_speaker;
 }
@@ -93,6 +93,11 @@ const std::string& DialogSentence::sentence() const
 void DialogSentence::setNextEvent(event_id nextEventId)
 {
     m_nextEvent = nextEventId;
+}
+
+void DialogSentence::setSentence(const std::string& str)
+{
+    m_sentence = str;
 }
 
 } // namespace Dummy

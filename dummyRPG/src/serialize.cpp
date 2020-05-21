@@ -318,7 +318,7 @@ void Serializer::writeEventDialog(std::ostream& out, const DialogSentence& d)
 {
     write2B(out, TAG_EVENT_DIALOG);
     write4B(out, d.m_id);
-    writeStr(out, d.m_speaker);
+    write4B(out, d.m_speaker);
     writeStr(out, d.m_sentence);
     write4B(out, d.m_nextEvent);
 }
@@ -664,9 +664,9 @@ bool Serializer::readEvents(std::istream& in, GameStatic& game)
                 opt.nextEvent = read4B(in);
             }
         } else if (tag == TAG_EVENT_DIALOG) {
-            game.m_dialogs.push_back(DialogSentence("", "", 0));
+            game.m_dialogs.push_back(DialogSentence(undefChar, "", 0));
             game.m_dialogs.back().m_id        = read4B(in);
-            game.m_dialogs.back().m_speaker   = readStr(in);
+            game.m_dialogs.back().m_speaker   = read4B(in);
             game.m_dialogs.back().m_sentence  = readStr(in);
             game.m_dialogs.back().m_nextEvent = read4B(in);
         } else {

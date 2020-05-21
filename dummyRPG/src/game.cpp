@@ -171,7 +171,7 @@ DialogChoice* GameStatic::choice(event_id id)
     return id < m_dialogsChoices.size() ? &m_dialogsChoices[id] : nullptr;
 }
 
-event_id GameStatic::registerDialog(const std::string& speaker, const std::string& sentence)
+event_id GameStatic::registerDialog(char_id speaker, const std::string& sentence)
 {
     uint32_t nextEventId = static_cast<uint32_t>(m_events.size());
 

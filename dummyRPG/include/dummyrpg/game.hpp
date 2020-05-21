@@ -58,7 +58,7 @@ public:
     DialogSentence* dialog(event_id dialogId);
     const DialogChoice* choice(event_id choiceId) const;
     DialogChoice* choice(event_id choiceId);
-    event_id registerDialog(const std::string& speaker, const std::string& sentence);
+    event_id registerDialog(char_id speaker, const std::string& sentence);
     event_id registerChoice(const std::string& question);
 
     // Misc

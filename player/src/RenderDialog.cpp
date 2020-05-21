@@ -56,7 +56,8 @@ void DialogRender::showText(const Dummy::DialogSentence& dialog)
     m_show      = true;
     m_choiceIdx = -1;
 
-    m_textSpeaker.setString(dialog.speaker());
+    std::string speakerName = std::to_string(dialog.speakerId()); // TODO use name instead of id
+    m_textSpeaker.setString(speakerName);
     m_textSentence = dialog.sentence();
 }
 

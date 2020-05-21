@@ -49,18 +49,19 @@ class DialogSentence
     friend class Serializer;
 
 public:
-    DialogSentence(const std::string& speaker, const std::string& sentence, event_id);
+    DialogSentence(char_id speakerId, const std::string& sentence, event_id);
 
     event_id id() const;
     event_id nextEvent() const;
-    const std::string& speaker() const;
+    char_id speakerId() const;
     const std::string& sentence() const;
 
     void setNextEvent(event_id);
+    void setSentence(const std::string&);
 
 private:
     event_id m_id;
-    std::string m_speaker;
+    char_id m_speaker;
     std::string m_sentence;
 
     event_id m_nextEvent = undefEvent;
