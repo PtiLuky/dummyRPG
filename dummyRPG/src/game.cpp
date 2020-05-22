@@ -156,19 +156,36 @@ const Event* GameStatic::event(event_id id) const
 }
 const DialogSentence* GameStatic::dialog(event_id id) const
 {
-    return id < m_dialogs.size() ? &m_dialogs[id] : nullptr;
+    const auto* e = event(id);
+    if (e == nullptr || e->type != Dummy::EventType::Dialog)
+        return nullptr;
+
+    return e->idxPerType < m_dialogs.size() ? &m_dialogs[e->idxPerType] : nullptr;
 }
-DialogSentence* GameStatic::dialog(event_id id)
+DialogSentence* GameStatic::dialog(event_id eventId)
 {
-    return id < m_dialogs.size() ? &m_dialogs[id] : nullptr;
+    const auto* e = event(eventId);
+    if (e == nullptr || e->type != Dummy::EventType::Dialog)
+        return nullptr;
+
+    return e->idxPerType < m_dialogs.size() ? &m_dialogs[e->idxPerType] : nullptr;
 }
 const DialogChoice* GameStatic::choice(event_id id) const
 {
-    return id < m_dialogsChoices.size() ? &m_dialogsChoices[id] : nullptr;
+    const auto* e = event(id);
+    if (e == nullptr || e->type != Dummy::EventType::Choice)
+        return nullptr;
+
+    return e->idxPerType < m_dialogsChoices.size() ? &m_dialogsChoices[e->idxPerType] : nullptr;
 }
-DialogChoice* GameStatic::choice(event_id id)
+DialogChoice* GameStatic::choice(event_id eventId)
 {
-    return id < m_dialogsChoices.size() ? &m_dialogsChoices[id] : nullptr;
+
+    const auto* e = event(eventId);
+    if (e == nullptr || e->type != Dummy::EventType::Choice)
+        return nullptr;
+
+    return e->idxPerType < m_dialogsChoices.size() ? &m_dialogsChoices[e->idxPerType] : nullptr;
 }
 
 event_id GameStatic::registerDialog(char_id speaker, const std::string& sentence)

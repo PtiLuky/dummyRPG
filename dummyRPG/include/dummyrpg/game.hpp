@@ -54,10 +54,10 @@ public:
 
     // Events
     const Event* event(event_id) const;
-    const DialogSentence* dialog(event_id dialogId) const;
-    DialogSentence* dialog(event_id dialogId);
-    const DialogChoice* choice(event_id choiceId) const;
-    DialogChoice* choice(event_id choiceId);
+    const DialogSentence* dialog(event_id eventId) const;
+    DialogSentence* dialog(event_id eventId);
+    const DialogChoice* choice(event_id eventId) const;
+    DialogChoice* choice(event_id eventId);
     event_id registerDialog(char_id speaker, const std::string& sentence);
     event_id registerChoice(const std::string& question);
 

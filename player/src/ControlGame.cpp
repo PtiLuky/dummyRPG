@@ -153,12 +153,12 @@ void GameControl::executeEvent(Dummy::event_id eventId)
         return;
 
     if (event->type == Dummy::EventType::Dialog) {
-        const auto* dlg = m_game.dialog(event->idxPerType);
+        const auto* dlg = m_game.dialog(eventId);
         if (dlg != nullptr)
             executeDialog(*dlg);
 
     } else if (event->type == Dummy::EventType::Choice) {
-        const auto* dlg = m_game.choice(event->idxPerType);
+        const auto* dlg = m_game.choice(eventId);
         if (dlg != nullptr)
             executeChoice(*dlg);
     }

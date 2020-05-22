@@ -30,6 +30,7 @@ public:
     DialogOption optionAt(uint8_t idx) const;
     const std::string& question() const;
 
+    void setQuestion(const std::string&);
     bool setOption(const DialogOption&, uint8_t idx);
     bool addOption(const DialogOption&);
     bool removeOption(uint8_t idx);

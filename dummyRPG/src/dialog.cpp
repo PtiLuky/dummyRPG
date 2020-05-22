@@ -30,6 +30,11 @@ const std::string& DialogChoice::question() const
     return m_question;
 }
 
+void DialogChoice::setQuestion(const std::string& question)
+{
+    m_question = question;
+}
+
 bool DialogChoice::setOption(const DialogOption& option, uint8_t idx)
 {
     if (idx > m_options.size())

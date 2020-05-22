@@ -58,10 +58,10 @@ static GameStatic createFakeGame()
     game.registerDialog(id3, "Bonjour je suis 3.");
     game.registerDialog(id4, "Bonjour je suis 4.");
 
-    auto* dialog1  = game.dialog(game.event(dialog1Id)->idxPerType);
-    auto* dialog2  = game.dialog(game.event(dialog2Id)->idxPerType);
-    auto* dialog2b = game.dialog(game.event(dialog2bId)->idxPerType);
-    auto* choice   = game.choice(game.event(choiceId)->idxPerType);
+    auto* dialog1  = game.dialog(dialog1Id);
+    auto* dialog2  = game.dialog(dialog2Id);
+    auto* dialog2b = game.dialog(dialog2bId);
+    auto* choice   = game.choice(choiceId);
     dialog1->setNextEvent(choice->id());
     choice->addOption({"1. Uhm...", dialogNId});
     choice->addOption({"2. ?", dialogNId});
