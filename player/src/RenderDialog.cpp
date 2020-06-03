@@ -57,7 +57,7 @@ void DialogRender::showText(const Dummy::DialogSentence& dialog)
     m_choiceIdx = -1;
 
     std::string speakerName = std::to_string(dialog.speakerId()); // TODO use name instead of id
-    m_textSpeaker.setString(speakerName);
+    m_textSpeaker.setString(sf::String::fromUtf8(speakerName.begin(), speakerName.end()));
     m_textSentence = dialog.sentence();
 }
 
@@ -66,11 +66,13 @@ void DialogRender::showChoice(const Dummy::DialogChoice& choice)
     m_show      = true;
     m_choiceIdx = 0;
 
-    m_textSpeaker.setString(choice.question());
+    std::string q = choice.question();
+    m_textSpeaker.setString(sf::String::fromUtf8(q.begin(), q.end()));
     sf::String choiceText;
     const uint8_t nbChoices = choice.nbOptions();
     for (uint8_t i = 0; i < nbChoices; ++i) {
-        sf::String txt(choice.optionAt(i).option);
+        std::string str = choice.optionAt(i).option;
+        sf::String txt(str);
         txt.replace('\n', ' ');
         choiceText += txt;
         choiceText += '\n';
@@ -126,7 +128,8 @@ void DialogRender::render(sf::RenderWindow& window)
             static_cast<int>(winSize.y) - rect.height * CHOICE_SPRITE_ZOOM + m_choiceFrame * 4;
     }
 
-    m_textSentenceWrapped.setString(m_textSentence);
+    std::string s = m_textSentence;
+    m_textSentenceWrapped.setString(sf::String::fromUtf8(s.begin(), s.end()));
     wordWrap(m_textSentenceWrapped, static_cast<int>(winSize.x));
     m_textSentenceWrapped.setPosition(txtPos);
     window.draw(m_textSentenceWrapped);
