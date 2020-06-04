@@ -2,7 +2,8 @@
 #define DUMMYRPG_GAME_HPP
 
 #include <deque>
-#include <map>
+#include <set>
+#include <unordered_map>
 
 #include "dummyrpg/character.hpp"
 #include "dummyrpg/dialog.hpp"
@@ -13,6 +14,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace Dummy {
+
+template <typename T, typename TT> using umap = std::unordered_map<T, TT>;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -42,13 +45,14 @@ public:
     sprite_id registerSpriteSheet(const std::string& sheetFilename);
 
     // sprites
-    const std::vector<AnimatedSprite>& sprites() const;
+    const umap<sprite_id, AnimatedSprite>& sprites() const;
     const AnimatedSprite* sprite(sprite_id) const;
     AnimatedSprite* sprite(sprite_id);
     sprite_id registerSprite();
 
     // characters
-    const std::vector<Character>& characters() const;
+    const umap<char_id, Character>& characters() const;
+    const Character* character(char_id) const;
     Character* character(char_id);
     char_id registerCharacter(const std::string&& charName);
 
@@ -64,9 +68,11 @@ public:
     // Misc
     /// returns true if all referenced files are present
     bool checkFilesIntegrity() const;
+    void cleanupUnused(); ///< remove all unreference events, tilesets, spritesheets...
 
 private:
     static bool assertFileExists(const std::string& filePath);
+    void extendUsageEvents(std::set<event_id>& usedEvents, event_id id);
 
     uint64_t version = 0; // unused
     std::string m_name;   // unused
@@ -76,15 +82,15 @@ private:
     std::vector<std::string> m_tileSets;
     std::vector<std::string> m_spriteSheets;
 
-    std::vector<Item> m_items;
-    std::vector<Monster> m_monsters;
+    umap<item_id, Item> m_items;
+    umap<monster_id, Monster> m_monsters;
 
-    std::vector<Character> m_characters;
-    std::vector<AnimatedSprite> m_sprites;
+    umap<char_id, Character> m_characters;
+    umap<sprite_id, AnimatedSprite> m_sprites;
 
-    std::vector<Event> m_events;
-    std::vector<DialogSentence> m_dialogs;
-    std::vector<DialogChoice> m_dialogsChoices;
+    umap<event_id, Event> m_events;
+    umap<event_id, DialogSentence> m_dialogs;
+    umap<event_id, DialogChoice> m_dialogsChoices;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -115,7 +115,7 @@ void GameControl::doAction()
             if (m_currChoice.id() != Dummy::undefEvent) {
                 auto option = m_currChoice.optionAt(static_cast<uint8_t>(m_currChoiceIdx));
                 m_gameInstance.registerEvent(option.nextEvent);
-                m_currChoice = Dummy::DialogChoice("undef", Dummy::undefEvent);
+                m_currChoice = Dummy::DialogChoice(Dummy::undefEvent, "undef");
             }
 
             m_gameInstance.blockEvents(false);

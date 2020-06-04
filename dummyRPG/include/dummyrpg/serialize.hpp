@@ -2,6 +2,7 @@
 #define DUMMYRPG_SERIALIZE_HPP
 
 #include <iostream>
+#include <unordered_map>
 
 #include "layer.hpp"
 
@@ -19,6 +20,8 @@ class GameStatic;
 class Item;
 class Map;
 class Monster;
+
+template <typename T, typename TT> using umap = std::unordered_map<T, TT>;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -42,15 +45,14 @@ private:
     // Read and complete complexe types
     template <typename T> static void readLayer(std::istream&, Layer<T>&);
     static bool readHeader(std::istream&, GameStatic&);
-    static bool readStrVec(std::istream&, std::vector<std::string>&, uint16_t tag);
     static bool readMap(std::istream&, Map&);
-    static bool readItems(std::istream&, std::vector<Item>&);
-    static bool readCharacters(std::istream&, std::vector<Character>&);
-    static bool readMonsters(std::istream&, std::vector<Monster>&);
-    static bool readSprites(std::istream&, std::vector<AnimatedSprite>&);
-    static bool readEvents(std::istream&, GameStatic&);
-    static bool readEventDialogs(std::istream&, std::vector<DialogSentence>&);
-    static bool readEventChoices(std::istream&, std::vector<DialogChoice>&);
+    static Item readItem(std::istream&);
+    static Character readCharacter(std::istream&);
+    static Monster readMonster(std::istream&);
+    static AnimatedSprite readSprite(std::istream&);
+    static Event readEvent(std::istream&);
+    static DialogSentence readEventDialog(std::istream&);
+    static DialogChoice readEventChoice(std::istream&);
 
     // Write simple types
     static void write1B(std::ostream&, uint8_t);

@@ -50,9 +50,13 @@ public:
     /// \brief addFloor Adds a floor ontop of all others. May return
     /// \return ptr to the created floor or nullptr if max has been reached
     Floor* addFloor();
-    bool removeFloorAt(uint8_t);     ///< returns true if removed
+    bool removeFloorAt(uint8_t); ///< returns true if removed
+
     bool registerChipset(chip_id);   ///< add chipset to list of chipsets to use
     bool unregisterChipset(chip_id); ///< unregister chip and delete all tiles from this chip
+
+    void unregisterCharacter(char_id); ///< delete all instances of this char
+    void replaceCharactedId(char_id oldId, char_id newId);
 
     /////////////////////////////////////
     // Consts

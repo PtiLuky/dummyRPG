@@ -17,7 +17,7 @@ class Character
     friend class Serializer;
 
 public:
-    Character(const std::string& name, sprite_id spriteId);
+    Character(char_id, const std::string& name, sprite_id spriteId);
 
     const std::string& name() const;
     sprite_id spriteId() const;
@@ -26,6 +26,7 @@ public:
     void setSprite(sprite_id);
 
 private:
+    char_id m_id;
     std::string m_name;
     sprite_id m_spriteId = 0;
 };
@@ -45,6 +46,7 @@ public:
 
     void setEvent(event_id);
     void setPos(const PositionChar&);
+    void changeId(char_id id);
 
 private:
     char_id m_charId = 0;

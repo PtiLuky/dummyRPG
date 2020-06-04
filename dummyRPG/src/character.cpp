@@ -4,8 +4,9 @@ namespace Dummy {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Character::Character(const std::string& name, sprite_id spriteId)
-    : m_name(name)
+Character::Character(char_id id, const std::string& name, sprite_id spriteId)
+    : m_id(id)
+    , m_name(name)
     , m_spriteId(spriteId)
 {}
 
@@ -59,6 +60,11 @@ void CharacterInstance::setEvent(event_id event)
 void CharacterInstance::setPos(const PositionChar& pos)
 {
     m_pos = pos;
+}
+
+void CharacterInstance::changeId(char_id id)
+{
+    m_charId = id;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

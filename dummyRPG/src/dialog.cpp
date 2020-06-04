@@ -2,7 +2,7 @@
 
 namespace Dummy {
 
-DialogChoice::DialogChoice(const std::string& question, event_id id)
+DialogChoice::DialogChoice(event_id id, const std::string& question)
     : m_id(id)
     , m_question(question)
 {}
@@ -69,7 +69,7 @@ bool DialogChoice::removeOption(uint8_t idx)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DialogSentence::DialogSentence(char_id speaker, const std::string& sentence, event_id id)
+DialogSentence::DialogSentence(event_id id, char_id speaker, const std::string& sentence)
     : m_id(id)
     , m_speaker(speaker)
     , m_sentence(sentence)

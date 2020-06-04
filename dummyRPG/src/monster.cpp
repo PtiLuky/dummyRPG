@@ -2,8 +2,9 @@
 
 namespace Dummy {
 
-Monster::Monster(const std::string&& name, sprite_id spriteId)
-    : m_name(name)
+Monster::Monster(monster_id id, const std::string&& name, sprite_id spriteId)
+    : m_id(id)
+    , m_name(name)
     , m_spriteId(spriteId)
 {}
 

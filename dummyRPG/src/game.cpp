@@ -1,5 +1,6 @@
 #include "dummyrpg/game.hpp"
 #include "dummyrpg/floor.hpp"
+#include "dummyrpg/serialize.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -104,13 +105,14 @@ sprite_id GameStatic::registerSpriteSheet(const std::string& sheetPath)
 
 ///////////////////////////////////////////////
 
-const std::vector<AnimatedSprite>& GameStatic::sprites() const
+const umap<sprite_id, AnimatedSprite>& GameStatic::sprites() const
 {
     return m_sprites;
 }
 const AnimatedSprite* GameStatic::sprite(sprite_id id) const
 {
-    return id < m_sprites.size() ? &m_sprites[id] : nullptr;
+    auto r = m_sprites.find(id);
+    return r == m_sprites.end() ? nullptr : &r->second;
 }
 AnimatedSprite* GameStatic::sprite(sprite_id id)
 {
@@ -118,100 +120,97 @@ AnimatedSprite* GameStatic::sprite(sprite_id id)
 }
 sprite_id GameStatic::registerSprite()
 {
-    const size_t nbSprites = m_sprites.size();
-    if (nbSprites >= std::numeric_limits<Dummy::sprite_id>::max())
-        return Dummy::undefSprite;
-
-    sprite_id nextSpriteId = static_cast<sprite_id>(nbSprites);
-    m_sprites.push_back(Dummy::AnimatedSprite());
-    return nextSpriteId;
+    // use first unused idx. Not best way, but not critical here
+    for (sprite_id id = 0; id < Dummy::undefSprite; ++id) {
+        if (m_sprites.find(id) == m_sprites.end()) {
+            Dummy::AnimatedSprite s;
+            s.id = id;
+            m_sprites.insert({id, s});
+            return id;
+        }
+    }
+    return Dummy::undefSprite;
 }
 
 ///////////////////////////////////////////////
 
-const std::vector<Character>& GameStatic::characters() const
+const umap<char_id, Character>& GameStatic::characters() const
 {
     return m_characters;
 }
+const Character* GameStatic::character(char_id id) const
+{
+    auto r = m_characters.find(id);
+    return r == m_characters.end() ? nullptr : &r->second;
+}
 Character* GameStatic::character(char_id id)
 {
-    return id < m_characters.size() ? &m_characters[id] : nullptr;
+    auto r = m_characters.find(id);
+    return r == m_characters.end() ? nullptr : &r->second;
 }
 char_id GameStatic::registerCharacter(const std::string&& charName)
 {
-    const size_t nbChars = m_characters.size();
-    if (nbChars >= std::numeric_limits<Dummy::char_id>::max())
-        return undefChar;
-
-    char_id nextCharId = static_cast<char_id>(nbChars);
-    m_characters.push_back(Character(charName, Dummy::undefSprite));
-    return nextCharId;
+    for (char_id id = 0; id < Dummy::undefChar; ++id) {
+        if (m_characters.find(id) == m_characters.end()) {
+            m_characters.insert({id, Character(id, charName, Dummy::undefSprite)});
+            return id;
+        }
+    }
+    return undefChar;
 }
 
 ///////////////////////////////////////////////
 
 const Event* GameStatic::event(event_id id) const
 {
-    return id < m_events.size() ? &m_events[id] : nullptr;
+    auto r = m_events.find(id);
+    return r == m_events.end() ? nullptr : &r->second;
 }
 const DialogSentence* GameStatic::dialog(event_id id) const
 {
-    const auto* e = event(id);
-    if (e == nullptr || e->type != Dummy::EventType::Dialog)
-        return nullptr;
-
-    return e->idxPerType < m_dialogs.size() ? &m_dialogs[e->idxPerType] : nullptr;
+    auto r = m_dialogs.find(id);
+    return r == m_dialogs.end() ? nullptr : &r->second;
 }
-DialogSentence* GameStatic::dialog(event_id eventId)
+DialogSentence* GameStatic::dialog(event_id id)
 {
-    const auto* e = event(eventId);
-    if (e == nullptr || e->type != Dummy::EventType::Dialog)
-        return nullptr;
-
-    return e->idxPerType < m_dialogs.size() ? &m_dialogs[e->idxPerType] : nullptr;
+    auto r = m_dialogs.find(id);
+    return r == m_dialogs.end() ? nullptr : &r->second;
 }
 const DialogChoice* GameStatic::choice(event_id id) const
 {
-    const auto* e = event(id);
-    if (e == nullptr || e->type != Dummy::EventType::Choice)
-        return nullptr;
-
-    return e->idxPerType < m_dialogsChoices.size() ? &m_dialogsChoices[e->idxPerType] : nullptr;
+    auto r = m_dialogsChoices.find(id);
+    return r == m_dialogsChoices.end() ? nullptr : &r->second;
 }
-DialogChoice* GameStatic::choice(event_id eventId)
+DialogChoice* GameStatic::choice(event_id id)
 {
-
-    const auto* e = event(eventId);
-    if (e == nullptr || e->type != Dummy::EventType::Choice)
-        return nullptr;
-
-    return e->idxPerType < m_dialogsChoices.size() ? &m_dialogsChoices[e->idxPerType] : nullptr;
+    auto r = m_dialogsChoices.find(id);
+    return r == m_dialogsChoices.end() ? nullptr : &r->second;
 }
 
 event_id GameStatic::registerDialog(char_id speaker, const std::string& sentence)
 {
-    uint32_t nextEventId = static_cast<uint32_t>(m_events.size());
-
-    Dummy::DialogSentence dialog(speaker, sentence, nextEventId);
-
-    uint32_t nextDialogId = static_cast<uint32_t>(m_dialogs.size());
-    m_events.push_back({Dummy::EventType::Dialog, nextDialogId});
-
-    m_dialogs.push_back(std::move(dialog));
-    return nextEventId;
+    // we use first unused idx. Not best way, but not critical here
+    for (event_id id = 0; id < Dummy::undefEvent; ++id) {
+        if (m_events.find(id) == m_events.end()) {
+            m_events.insert({id, {id, EventType::Dialog}});
+            m_dialogs.insert({id, Dummy::DialogSentence(id, speaker, sentence)});
+            return id;
+        }
+    }
+    return undefEvent;
 }
 
 event_id GameStatic::registerChoice(const std::string& question)
 {
-    uint32_t nextEventId = static_cast<uint32_t>(m_events.size());
-
-    Dummy::DialogChoice choice(question, nextEventId);
-
-    uint32_t nextDialogId = static_cast<uint32_t>(m_dialogsChoices.size());
-    m_events.push_back({Dummy::EventType::Choice, nextDialogId});
-
-    m_dialogsChoices.push_back(choice);
-    return nextEventId;
+    // we use first unused idx. Not best way, but not critical here
+    for (event_id id = 0; id < Dummy::undefEvent; ++id) {
+        if (m_events.find(id) == m_events.end()) {
+            m_events.insert({id, {id, EventType::Choice}});
+            m_dialogsChoices.insert({id, Dummy::DialogChoice(id, question)});
+            return id;
+        }
+    }
+    return undefEvent;
 }
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -240,6 +239,65 @@ bool GameStatic::assertFileExists(const std::string& path)
         LogErr("Missing file: " + path);
         return false;
     }
+}
+
+void GameStatic::cleanupUnused()
+{
+    std::set<chip_id> usedTilesetIds;
+    std::set<sprite_id> usedSpriteSheetIds;
+    std::set<event_id> usedEventsIds;
+
+    // Check usages
+    //
+    // Check all maps for events and tilesheets
+    for (const auto& mapName : m_mapsNames) {
+        auto pMap    = std::make_unique<Dummy::Map>();
+        auto mapPath = m_gameDataPath + "/" + MAP_SUBDIR + mapName;
+        std::ifstream mapDataFile(mapPath, std::ios::binary);
+        bool bRes = Dummy::Serializer::parseMapFromFile(mapDataFile, *pMap);
+        if (! bRes) {
+            LogErr("Error while loading the map " + mapPath);
+            continue;
+        }
+
+        // check use of tilesets
+        for (chip_id id : pMap->chipsetsUsed())
+            usedTilesetIds.insert(id);
+        // check use of events
+        for (const auto& floor : pMap->floors())
+            // TODO later : check use for other kind of event source than NPC
+            for (const auto& npc : floor->npcs())
+                extendUsageEvents(usedEventsIds, npc.eventId());
+    }
+    // Check use of spritesheets
+    for (const auto& sprite : m_sprites)
+        usedSpriteSheetIds.insert(sprite.second.spriteSheetId);
+}
+
+void GameStatic::extendUsageEvents(std::set<event_id>& usedEvents, event_id id)
+{
+    if (usedEvents.find(id) != usedEvents.end())
+        return; // already marked as "used", nothing to do
+
+    auto type = m_events[id].type;
+
+    if (type == EventType::Dialog) {
+        const auto& it = m_dialogs.find(id);
+        if (it == m_dialogs.end())
+            return;
+
+        extendUsageEvents(usedEvents, it->second.nextEvent());
+
+    } else if (type == EventType::Choice) {
+        const auto& it = m_dialogsChoices.find(id);
+        if (it == m_dialogsChoices.end())
+            return;
+
+        size_t nbOpt = it->second.nbOptions();
+        for (uint8_t opt = 0; opt < nbOpt; ++opt)
+            extendUsageEvents(usedEvents, it->second.optionAt(opt).nextEvent);
+    }
+    // TODO other type of events
 }
 
 ///////////////////////////////////////////////////////////////////////////////

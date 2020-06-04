@@ -16,9 +16,10 @@ class Monster
     friend class Serializer;
 
 public:
-    Monster(const std::string&& name, sprite_id spriteId);
+    Monster(monster_id, const std::string&& name, sprite_id spriteId);
 
 private:
+    monster_id m_id;
     std::string m_name;
     sprite_id m_spriteId = 0;
     Curve m_attacks;

@@ -91,6 +91,25 @@ void Floor::deleteNpcAt(Coord coord)
         }
 }
 
+void Floor::replaceCharactedId(char_id oldId, char_id newId)
+{
+    if (newId == undefChar)
+        deleteNpc(oldId);
+    else {
+        size_t nbNpc = m_npcs.size();
+        for (size_t i = 0; i < nbNpc; ++i)
+            if (m_npcs[i].characterId() == oldId)
+                m_npcs[i].changeId(newId);
+    }
+}
+
+void Floor::deleteNpc(char_id characterId)
+{
+    for (auto it = m_npcs.begin(); it != m_npcs.end(); ++it)
+        if (it->characterId() == characterId)
+            m_npcs.erase(it--);
+}
+
 void Floor::setBlockCell(Coord coord, bool val)
 {
     m_blockingLayer.set(coord, val);

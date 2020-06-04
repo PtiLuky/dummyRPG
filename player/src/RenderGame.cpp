@@ -63,10 +63,12 @@ void GameRender::changeFloor(const Dummy::Map& map, uint8_t floorId)
 
         // NPC
         for (auto& npc : floor->npcs()) {
-            auto& charac   = m_game.characters()[npc.characterId()];
-            auto& sprite   = m_game.sprites()[charac.spriteId()];
-            auto& position = npc.pos();
-            m_npcRenders.push_back(std::make_unique<CharacterRender>(sprite, position, *this));
+            const auto* charac = m_game.character(npc.characterId());
+            const auto* sprite = charac == nullptr ? nullptr : m_game.sprite(charac->spriteId());
+            auto& position     = npc.pos();
+            if (sprite == nullptr)
+                continue;
+            m_npcRenders.push_back(std::make_unique<CharacterRender>(*sprite, position, *this));
         }
     } catch (const CharacterRenderError& e) {
         Dummy::LogErr(std::string("Error : Character Render creation failed (") + e.what() + ").");

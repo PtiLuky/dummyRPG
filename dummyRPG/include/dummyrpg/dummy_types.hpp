@@ -89,8 +89,8 @@ struct Curve
 
 struct Event
 {
+    event_id id;
     EventType type;
-    uint32_t idxPerType;
 };
 
 

@@ -23,7 +23,7 @@ class DialogChoice
     friend class Serializer;
 
 public:
-    DialogChoice(const std::string& question, event_id);
+    DialogChoice(event_id, const std::string& question);
 
     event_id id() const;
     uint8_t nbOptions() const;
@@ -50,7 +50,7 @@ class DialogSentence
     friend class Serializer;
 
 public:
-    DialogSentence(char_id speakerId, const std::string& sentence, event_id);
+    DialogSentence(event_id, char_id speakerId, const std::string& sentence);
 
     event_id id() const;
     event_id nextEvent() const;

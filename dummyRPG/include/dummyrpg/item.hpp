@@ -13,9 +13,10 @@ class Item
     friend class Serializer;
 
 public:
-    Item(const std::string&& m_name, sprite_id spriteId);
+    Item(item_id, const std::string&& m_name, sprite_id spriteId);
 
 private:
+    item_id m_id;
     std::string m_name;
     sprite_id m_spriteId = 0;
 };

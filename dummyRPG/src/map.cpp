@@ -103,4 +103,15 @@ bool Map::unregisterChipset(chip_id idx)
     return true;
 }
 
+void Map::unregisterCharacter(char_id id)
+{
+    for (const auto& floor : m_floors)
+        floor->deleteNpc(id);
+}
+void Map::replaceCharactedId(char_id oldId, char_id newId)
+{
+    for (const auto& floor : m_floors)
+        floor->replaceCharactedId(oldId, newId);
+}
+
 } // namespace Dummy

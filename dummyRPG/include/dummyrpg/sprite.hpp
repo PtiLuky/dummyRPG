@@ -14,6 +14,7 @@ namespace Dummy {
 ///
 struct AnimatedSprite
 {
+    sprite_id id;
     uint16_t spriteSheetId = undefSprite; ///< game-id of the sprite sheet
 
     uint16_t width  = 0; ///< width (px) of the sprite
