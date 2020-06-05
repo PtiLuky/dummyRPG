@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     GameStatic game(argv[1]);
     Dummy::Serializer::parseGameFromFile(gameFile, game);
 
-    std::string mapFilePath = std::string(argv[1]) + "/maps/" + std::string(argv[2]) + ".mdummy";
+    std::string mapFilePath = std::string(argv[1]) + "/maps/" + std::string(argv[2]) + MAP_FILE_EXT;
     std::ifstream mapFile(mapFilePath, std::ios::binary);
     std::shared_ptr<Dummy::Map> pMap = std::make_shared<Dummy::Map>();
     Dummy::Serializer::parseMapFromFile(mapFile, *pMap);

@@ -243,8 +243,6 @@ bool GameStatic::assertFileExists(const std::string& path)
 
 void GameStatic::cleanupUnused()
 {
-    std::set<chip_id> usedTilesetIds;
-    std::set<sprite_id> usedSpriteSheetIds;
     std::set<event_id> usedEventsIds;
 
     // Check usages
@@ -252,26 +250,29 @@ void GameStatic::cleanupUnused()
     // Check all maps for events and tilesheets
     for (const auto& mapName : m_mapsNames) {
         auto pMap    = std::make_unique<Dummy::Map>();
-        auto mapPath = m_gameDataPath + "/" + MAP_SUBDIR + mapName;
+        auto mapPath = m_gameDataPath + "/" + MAP_SUBDIR + mapName + MAP_FILE_EXT;
         std::ifstream mapDataFile(mapPath, std::ios::binary);
         bool bRes = Dummy::Serializer::parseMapFromFile(mapDataFile, *pMap);
         if (! bRes) {
             LogErr("Error while loading the map " + mapPath);
             continue;
         }
-
-        // check use of tilesets
-        for (chip_id id : pMap->chipsetsUsed())
-            usedTilesetIds.insert(id);
         // check use of events
         for (const auto& floor : pMap->floors())
             // TODO later : check use for other kind of event source than NPC
             for (const auto& npc : floor->npcs())
                 extendUsageEvents(usedEventsIds, npc.eventId());
     }
-    // Check use of spritesheets
-    for (const auto& sprite : m_sprites)
-        usedSpriteSheetIds.insert(sprite.second.spriteSheetId);
+
+    // Clean up
+    //
+    // Clean up events
+    for (auto it = m_events.cbegin(); it != m_events.cend();) {
+        if (usedEventsIds.find(it->first) == usedEventsIds.end())
+            it = m_events.erase(it);
+        else
+            ++it;
+    }
 }
 
 void GameStatic::extendUsageEvents(std::set<event_id>& usedEvents, event_id id)
@@ -279,6 +280,7 @@ void GameStatic::extendUsageEvents(std::set<event_id>& usedEvents, event_id id)
     if (usedEvents.find(id) != usedEvents.end())
         return; // already marked as "used", nothing to do
 
+    usedEvents.insert(id);
     auto type = m_events[id].type;
 
     if (type == EventType::Dialog) {

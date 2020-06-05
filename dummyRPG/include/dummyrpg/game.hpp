@@ -12,6 +12,8 @@
 #include "dummyrpg/monster.hpp"
 #include "dummyrpg/sprite.hpp"
 
+static const char* const MAP_FILE_EXT = ".mdummy";
+
 ///////////////////////////////////////////////////////////////////////////////
 namespace Dummy {
 
