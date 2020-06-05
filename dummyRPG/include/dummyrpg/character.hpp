@@ -19,6 +19,7 @@ class Character
 public:
     Character(char_id, const std::string& name, sprite_id spriteId);
 
+    char_id id() const;
     const std::string& name() const;
     sprite_id spriteId() const;
 

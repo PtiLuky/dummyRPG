@@ -158,6 +158,26 @@ char_id GameStatic::registerCharacter(const std::string&& charName)
     }
     return undefChar;
 }
+void GameStatic::unregisterCharacter(char_id id)
+{
+    auto it = m_characters.find(id);
+    if (it == m_characters.end())
+        return;
+
+    for (const auto& mapName : m_mapsNames) {
+        auto pMap    = std::make_unique<Dummy::Map>();
+        auto mapPath = m_gameDataPath + "/" + MAP_SUBDIR + mapName + MAP_FILE_EXT;
+        std::ifstream mapDataFile(mapPath, std::ios::binary);
+        bool bRes = Dummy::Serializer::parseMapFromFile(mapDataFile, *pMap);
+        if (! bRes)
+            continue;
+        // check use of events
+        for (const auto& floor : pMap->floors())
+            floor->deleteNpc(id);
+    }
+
+    m_characters.erase(id);
+}
 
 ///////////////////////////////////////////////
 

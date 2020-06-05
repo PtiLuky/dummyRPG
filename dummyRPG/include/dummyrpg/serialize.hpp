@@ -2,7 +2,7 @@
 #define DUMMYRPG_SERIALIZE_HPP
 
 #include <iostream>
-#include <unordered_map>
+#include <map>
 
 #include "layer.hpp"
 
@@ -21,7 +21,7 @@ class Item;
 class Map;
 class Monster;
 
-template <typename T, typename TT> using umap = std::unordered_map<T, TT>;
+template <typename T, typename TT> using umap = std::map<T, TT>;
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -22,10 +22,12 @@ void Floor::resize(uint16_t w, uint16_t h)
     for (auto& layer : m_layers)
         layer.resize(w, h, undefAspect);
 
-    for (auto it = m_npcs.begin(); it != m_npcs.end(); ++it) {
+    for (auto it = m_npcs.begin(); it != m_npcs.end();) {
         auto coord = it->pos().coord;
         if (coord.x >= w || coord.y >= h)
-            m_npcs.erase(it--);
+            it = m_npcs.erase(it);
+        else
+            ++it;
     }
 }
 
@@ -105,9 +107,11 @@ void Floor::replaceCharactedId(char_id oldId, char_id newId)
 
 void Floor::deleteNpc(char_id characterId)
 {
-    for (auto it = m_npcs.begin(); it != m_npcs.end(); ++it)
+    for (auto it = m_npcs.begin(); it != m_npcs.end();)
         if (it->characterId() == characterId)
-            m_npcs.erase(it--);
+            it = m_npcs.erase(it);
+        else
+            ++it;
 }
 
 void Floor::setBlockCell(Coord coord, bool val)

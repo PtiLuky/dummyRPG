@@ -10,6 +10,11 @@ Character::Character(char_id id, const std::string& name, sprite_id spriteId)
     , m_spriteId(spriteId)
 {}
 
+char_id Character::id() const
+{
+    return m_id;
+}
+
 const std::string& Character::name() const
 {
     return m_name;

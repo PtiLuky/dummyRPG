@@ -2,8 +2,8 @@
 #define DUMMYRPG_GAME_HPP
 
 #include <deque>
+#include <map>
 #include <set>
-#include <unordered_map>
 
 #include "dummyrpg/character.hpp"
 #include "dummyrpg/dialog.hpp"
@@ -17,7 +17,7 @@ static const char* const MAP_FILE_EXT = ".mdummy";
 ///////////////////////////////////////////////////////////////////////////////
 namespace Dummy {
 
-template <typename T, typename TT> using umap = std::unordered_map<T, TT>;
+template <typename T, typename TT> using umap = std::map<T, TT>;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -57,6 +57,7 @@ public:
     const Character* character(char_id) const;
     Character* character(char_id);
     char_id registerCharacter(const std::string&& charName);
+    void unregisterCharacter(char_id);
 
     // Events
     const Event* event(event_id) const;
