@@ -51,6 +51,7 @@ public:
     const AnimatedSprite* sprite(sprite_id) const;
     AnimatedSprite* sprite(sprite_id);
     sprite_id registerSprite();
+    void unregisterSprite(sprite_id);
 
     // characters
     const umap<char_id, Character>& characters() const;

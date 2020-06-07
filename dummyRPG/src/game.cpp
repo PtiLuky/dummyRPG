@@ -116,7 +116,8 @@ const AnimatedSprite* GameStatic::sprite(sprite_id id) const
 }
 AnimatedSprite* GameStatic::sprite(sprite_id id)
 {
-    return id < m_sprites.size() ? &m_sprites[id] : nullptr;
+    auto r = m_sprites.find(id);
+    return r == m_sprites.end() ? nullptr : &r->second;
 }
 sprite_id GameStatic::registerSprite()
 {
@@ -130,6 +131,21 @@ sprite_id GameStatic::registerSprite()
         }
     }
     return Dummy::undefSprite;
+}
+
+void GameStatic::unregisterSprite(sprite_id id)
+{
+    for (auto& item : m_items)
+        if (item.second.spriteId() == id)
+            item.second.setSprite(undefSprite);
+    for (auto& monster : m_monsters)
+        if (monster.second.spriteId() == id)
+            monster.second.setSprite(undefSprite);
+    for (auto& chara : m_characters)
+        if (chara.second.spriteId() == id)
+            chara.second.setSprite(undefSprite);
+
+    m_sprites.erase(id);
 }
 
 ///////////////////////////////////////////////
